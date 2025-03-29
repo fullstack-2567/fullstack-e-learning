@@ -17,6 +17,8 @@ npm run dev to start
 ![image](https://github.com/user-attachments/assets/005a2f6b-fbe9-47b7-aa6f-95da816121ce)
 
 
-แล้วก็ตัว Navbar/Sibar ของแต่ละ role ก็มีแล้วนะ
+
+แล้วก็ตัว Navbar/Sidebar ของแต่ละ role ก็มีแล้วนะ
+
 ![image](https://github.com/user-attachments/assets/31c576ea-4367-499c-b874-783db7c39448)
 
