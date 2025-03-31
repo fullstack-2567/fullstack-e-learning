@@ -1,5 +1,5 @@
 import OpenAPIClientAxios from 'openapi-client-axios'
-import { Client } from './?????/backend-openapi' // <- edit this to point to generated declaration file
+import { Client } from '@/utils/backend-openapi'
 
 const API_URL = import.meta.env.VITE_END_POINT
 
