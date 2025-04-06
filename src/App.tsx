@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
