@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+// Pages
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
@@ -16,6 +17,26 @@ import AdminReport from "./pages/admin/AdminReport";
 // ใช้ค่าจาก .env 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
+// Centralized route definitions for better maintainability 
+const ROUTES = {
+  // Public Routes
+  LOGIN: '/login',
+  
+  // Learner Routes
+  CONTENT_MENU: '/contents',
+  CONTENT_VIDEO: '/video',
+  SUBMIT_PROJECT: '/submit-project',
+  
+  // Approver Routes
+  APPROVER_PROJECT_MENU: '/approver/project-menu',
+  APPROVER_PROJECT_DETAILS: '/approver/project-details',
+  
+  // Admin Routes
+  ADMIN_DASHBOARD_PROJECT: '/admin/dashboard/project',
+  ADMIN_DASHBOARD_ELEARNING: '/admin/dashboard/e-learning',
+  ADMIN_REPORT: '/admin/report',
+};
+
 export default function App() {
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -23,12 +44,12 @@ export default function App() {
         <AuthProvider>
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
+            <Route path={ROUTES.LOGIN} element={<Login />} />
 
             {/* Protected Routes for Learner/Project Submiter */}
             <Route 
-              path="/contents" 
+              path={ROUTES.CONTENT_MENU}
               element={
                 <ProtectedRoute>
                   <ContentMenu />
@@ -36,7 +57,7 @@ export default function App() {
               } 
             />
             <Route 
-              path="/video" 
+              path={ROUTES.CONTENT_VIDEO}
               element={
                 <ProtectedRoute>
                   <ContentVideo />
@@ -44,7 +65,7 @@ export default function App() {
               } 
             />
             <Route 
-              path="/submit-project" 
+              path={ROUTES.SUBMIT_PROJECT}
               element={
                 <ProtectedRoute>
                   <SubmitProject />
@@ -54,7 +75,7 @@ export default function App() {
 
             {/* Protected Routes for Approver */}
             <Route 
-              path="/approver/project-menu" 
+              path={ROUTES.APPROVER_PROJECT_MENU}
               element={
                 <ProtectedRoute allowedRoles={['approver', 'admin']}>
                   <ApproveProjectMenu />
@@ -62,7 +83,7 @@ export default function App() {
               } 
             />
             <Route 
-              path="/approver/project-details" 
+              path={ROUTES.APPROVER_PROJECT_DETAILS}
               element={
                 <ProtectedRoute allowedRoles={['approver', 'admin']}>
                   <ApproveProjectDetails />
@@ -72,7 +93,7 @@ export default function App() {
 
             {/* Protected Routes for Admin */}
             <Route 
-              path="/admin/dashboard/project" 
+              path={ROUTES.ADMIN_DASHBOARD_PROJECT}
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboardProject />
@@ -80,7 +101,7 @@ export default function App() {
               } 
             />
             <Route 
-              path="/admin/dashboard/e-learning" 
+              path={ROUTES.ADMIN_DASHBOARD_ELEARNING}
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboardElearning />
@@ -88,13 +109,16 @@ export default function App() {
               } 
             />
             <Route 
-              path="/admin/report" 
+              path={ROUTES.ADMIN_REPORT}
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminReport />
                 </ProtectedRoute>
               } 
             />
+
+            {/* Catch-all route */}
+            <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
           </Routes>
         </AuthProvider>
       </Router>

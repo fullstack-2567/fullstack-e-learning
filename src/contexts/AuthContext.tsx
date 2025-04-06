@@ -1,13 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/api';
-
-interface User {
-  user_id: string;
-  name: string;
-  email: string;
-  role?: string;
-}
+import { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
@@ -32,11 +26,46 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Function to get route based on user role
+export const getRouteByRole = (role?: string): string => {
+  if (role === 'admin') return '/admin/dashboard/project';
+  if (role === 'approver') return '/approver/project-menu';
+  return '/contents'; // Default is learner
+};
+
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Add a token expired state
+  const [tokenExpired, setTokenExpired] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  // Set up token refresh interval
+  useEffect(() => {
+    let refreshInterval: number | undefined;
+    
+    if (isAuthenticated) {
+      // Refresh token every 14 minutes (assuming 15 min expiry)
+      refreshInterval = window.setInterval(() => {
+        refreshToken().catch(() => {
+          // If refresh fails, set token as expired
+          setTokenExpired(true);
+        });
+      }, 14 * 60 * 1000);
+    }
+    
+    return () => {
+      if (refreshInterval) window.clearInterval(refreshInterval);
+    };
+  }, [isAuthenticated]);
+
+  // Handle expired token - redirect to login
+  useEffect(() => {
+    if (tokenExpired) {
+      logout();
+    }
+  }, [tokenExpired]);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -83,9 +112,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
       
       setIsAuthenticated(true);
-      localStorage.setItem('user_data', JSON.stringify(userData));
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Clear auth if we can't get user data
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
     } finally {
       setIsLoading(false);
     }
@@ -111,17 +142,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       setUser(userData);
       setIsAuthenticated(true);
-      localStorage.setItem('user_data', JSON.stringify(userData));
       
       // Redirect based on role
-      if (userData.role === 'admin') {
-        navigate('/admin/dashboard/project');
-      } else if (userData.role === 'approver') {
-        navigate('/approver/project-menu');
-      } else {
-        // Default role is learner
-        navigate('/contents');
-      }
+      navigate(getRouteByRole(userData.role));
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -144,10 +167,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // Clear local storage regardless of API response
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
-      localStorage.removeItem('user_data');
       
       setUser(null);
       setIsAuthenticated(false);
+      setTokenExpired(false);
       setIsLoading(false);
       
       navigate('/login');
@@ -172,7 +195,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error('Token refresh error:', error);
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
-      localStorage.removeItem('user_data');
       
       setUser(null);
       setIsAuthenticated(false);
