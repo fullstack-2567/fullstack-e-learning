@@ -1,0 +1,177 @@
+/* ReportComponent.module.css */
+
+.reportContainer {
+    background-color: #f0f2f5; /* Light grey background */
+    padding: 20px;
+    font-family: sans-serif; /* Basic font */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 100%; /* Limit width */
+    margin: 20px auto; /* Center component */
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dde1e6;
+  }
+  
+  .title {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+  }
+  
+  .exportButton {
+    background-color: #4a5568; /* Darker grey */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+  }
+  
+  .exportButton:hover {
+    background-color: #2d3748; /* Even darker on hover */
+  }
+  
+  .mainTabs {
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #dde1e6; /* Underline for the whole tab bar */
+    margin-bottom: 20px;
+    position: relative; /* Needed for absolute positioning of P icon */
+  }
+  
+  .tabButton {
+    background-color: transparent;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1em;
+    color: #666;
+    margin-right: 5px;
+    border-bottom: 3px solid transparent; /* Placeholder for active border */
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+  }
+  
+  .tabButton:hover {
+    color: #000;
+  }
+  
+  .activeTab {
+    color: #2b6cb0; /* Blue for active tab */
+    font-weight: bold;
+    border-bottom-color: #2b6cb0; /* Blue underline */
+  }
+  
+  .pIcon {
+    background-color: #2b6cb0; /* Blue background */
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-left: auto; /* Pushes it to the right */
+    position: relative;
+    top: -10px; /* Adjust vertical position relative to tabs */
+  
+  }
+  
+  
+  .contentArea {
+    background-color: #ffffff; /* White background for content */
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  .subTabs {
+    margin-bottom: 20px;
+    display: flex;
+  }
+  
+  .subTabButton {
+    background-color: #e2e8f0; /* Light grey background */
+    border: 1px solid #cbd5e0;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #4a5568;
+    margin-right: 8px;
+    border-radius: 15px; /* Pill shape */
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  
+  .subTabButton:hover {
+    background-color: #cbd5e0;
+  }
+  
+  .activeSubTab {
+    background-color: #4a5568; /* Darker grey for active */
+    color: white;
+    font-weight: bold;
+    border-color: #4a5568;
+  }
+  
+  .tableContainer {
+      overflow-x: auto; /* Allows horizontal scrolling on small screens */
+  }
+  
+  .reportTable {
+    width: 100%;
+    border-collapse: collapse; /* Removes space between borders */
+    font-size: 0.9em;
+  }
+  
+  .reportTable th,
+  .reportTable td {
+    border: 1px solid #e2e8f0; /* Light borders */
+    padding: 10px 12px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  
+  .reportTable th {
+    background-color: #f8fafc; /* Very light grey for header */
+    font-weight: bold;
+    color: #4a5568;
+  }
+  
+  .reportTable tbody tr:nth-child(even) {
+    background-color: #f8fafc; /* Subtle striping for rows */
+  }
+  
+  .reportTable tbody tr:hover {
+    background-color: #edf2f7; /* Highlight on hover */
+  }
+  
+  /* Adjust column widths if necessary */
+  .reportTable th:nth-child(1), .reportTable td:nth-child(1) { width: 5%; } /* No. */
+  .reportTable th:nth-child(2), .reportTable td:nth-child(2) { width: 35%; } /* Title */
+  .reportTable th:nth-child(3), .reportTable td:nth-child(3) { width: 25%; } /* Instructor */
+  .reportTable th:nth-child(4), .reportTable td:nth-child(4) { width: 15%; } /* Enrolled */
+  .reportTable th:nth-child(5), .reportTable td:nth-child(5) { width: 15%; } /* Completed */
+  
+  .placeholderContent {
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      min-height: 200px; /* Ensure some height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f8fafc;
+      border: 1px dashed #cbd5e0;
+      border-radius: 4px;
+  }
