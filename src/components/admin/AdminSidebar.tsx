@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import {  useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {

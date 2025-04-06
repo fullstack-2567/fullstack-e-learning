@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router";
+import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
 
 export default function ApproverNavbar() {
   const [scrolled, setScrolled] = useState(false);
