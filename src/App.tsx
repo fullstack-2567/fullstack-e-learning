@@ -1,4 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
@@ -9,32 +13,91 @@ import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 
+// ใช้ค่าจาก .env 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
 export default function App() {
   return (
-    <Router>
-      <Routes>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Router>
+        <AuthProvider>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
 
-        {/* เดี๋ยวตอนแรกเราทำแบบนี้ไปก่อนนะ ไว้มี login ละค่อยไปทำ protected path*/}  
+            {/* Protected Routes for Learner/Project Submiter */}
+            <Route 
+              path="/contents" 
+              element={
+                <ProtectedRoute>
+                  <ContentMenu />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/video" 
+              element={
+                <ProtectedRoute>
+                  <ContentVideo />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/submit-project" 
+              element={
+                <ProtectedRoute>
+                  <SubmitProject />
+                </ProtectedRoute>
+              } 
+            />
 
-        {/* All Roles */}
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
+            {/* Protected Routes for Approver */}
+            <Route 
+              path="/approver/project-menu" 
+              element={
+                <ProtectedRoute allowedRoles={['approver', 'admin']}>
+                  <ApproveProjectMenu />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/approver/project-details" 
+              element={
+                <ProtectedRoute allowedRoles={['approver', 'admin']}>
+                  <ApproveProjectDetails />
+                </ProtectedRoute>
+              } 
+            />
 
-        {/* Role Learner + Project Submiter */}
-        <Route path="/contents" element={<ContentMenu />} />
-        <Route path="/video" element={<ContentVideo />} />
-        <Route path="/submit-project" element={<SubmitProject />} />
-
-        {/* Role Approver */}
-        <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
-        <Route path="/approver/project-details" element={<ApproveProjectDetails />} />
-
-        {/* Role Admin */}
-        <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
-        <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
-        <Route path="/admin/report" element={<AdminReport />} />
-
-      </Routes>
-    </Router>
+            {/* Protected Routes for Admin */}
+            <Route 
+              path="/admin/dashboard/project" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboardProject />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/dashboard/e-learning" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminDashboardElearning />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/report" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminReport />
+                </ProtectedRoute>
+              } 
+            />
+          </Routes>
+        </AuthProvider>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
