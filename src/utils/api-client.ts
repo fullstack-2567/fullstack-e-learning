@@ -1,13 +1,17 @@
-import OpenAPIClientAxios from 'openapi-client-axios'
-import { Client } from '@/utils/backend-openapi'
+import OpenAPIClientAxios from 'openapi-client-axios';
+import { Client } from '@/utils/backend-openapi';
 
-const API_URL = import.meta.env.VITE_END_POINT
+const API_URL = import.meta.env.VITE_END_POINT;
 
 const api = new OpenAPIClientAxios({
   definition: `${API_URL}/api-json`,
-  withServer: { url: API_URL }
-})
-api.init()
+  withServer: { url: API_URL },
+  axiosConfigDefaults: {
+    withCredentials: true,
+  },
+});
 
-const client = await api.getClient<Client>()
-export default client
+await api.init(); 
+const client = await api.getClient<Client>();
+
+export default client;
