@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation } from "react-router";
+import { Link } from "react-router";
 
 export default function LearningNavbar() {
   const [scrolled, setScrolled] = useState(false);

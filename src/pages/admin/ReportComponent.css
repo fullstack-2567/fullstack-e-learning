@@ -1,6 +1,4 @@
-/* ReportComponent.module.css */
-
-.reportContainer {
+.reportContainer .projectpmContainer {
     background-color: #f0f2f5; /* Light grey background */
     padding: 20px;
     font-family: sans-serif; /* Basic font */

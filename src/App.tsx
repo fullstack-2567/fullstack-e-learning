@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
@@ -8,6 +8,8 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+import AdminCourses from "./pages/admin/AdminCourses";
+import AdminPM from "./pages/admin/AdminPM";
 
 export default function App() {
   return (
@@ -33,6 +35,8 @@ export default function App() {
         <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
         <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
         <Route path="/admin/report" element={<AdminReport />} />
+        <Route path="/admin/courses" element={<AdminCourses />} />
+        <Route path="/admin/projectmanagement" element={<AdminPM />} />
 
       </Routes>
     </Router>
