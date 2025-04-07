@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,37 +6,216 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckIcon, FileTextIcon, FileIcon } from "lucide-react";
+import { CheckIcon, FileTextIcon, FileIcon, AlertCircleIcon } from "lucide-react";
 import ApproverNavbar from "@/components/approver/ApproverNavbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getAllProject, updateProjectStatus } from "@/api/ProjectApi";
+import { Project } from "@/types/Project";
 
 export default function ApproveProjectDetails() {
     const navigate = useNavigate();
+    const { projectId } = useParams<{ projectId: string }>();
+    
+    const [project, setProject] = useState<Project | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [activeStep, setActiveStep] = useState(1);
     const [showApproveDialog, setShowApproveDialog] = useState(false);
     const [showRejectDialog, setShowRejectDialog] = useState(false);
     const [showSuccessDialog, setShowSuccessDialog] = useState(false);
     const [rejectReason, setRejectReason] = useState("");
     const [actionCompleted, setActionCompleted] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const projectData = {
-        thaiName: "โครงการพัฒนาระบบขนส่งสินค้าอัจฉริยะ",
-        englishName: "Smart Logistics System Development Project",
-        description: "โครงการนี้มุ่งเน้นการพัฒนาระบบขนส่งสินค้าที่ใช้ AI และ IoT เพื่อลดต้นทุนโลจิสติกส์ เพิ่มประสิทธิภาพการกระจายสินค้า และลดการปล่อยก๊าซเรือนกระจกefegefgefgefgefgefgegergerg",
-        extension: "โครงการต่อยอดจาก โครงการระบบติดตามขนส่งอัตโนมัติ (Automated Transport Tracking System)",
-        category: "โลจิสติกส์และขนส่ง",
-        duration: "1 มีนาคม 2568 ถึง 30 กันยายน 2568",
-        sdgs: ["SDG 9: Industry, innovation and infrastructure", "SDG 11: Sustainable cities and communities", "SDG 13: Climate action"],
-        file: "smart_logistics_project_details.pdf",
-        submitter: {
-            name: "นายกิตติ วัฒนชัย",
-            gender: "ชาย",
-            birthdate: "15 กรกฎาคม 2538",
-            education: "ปริญญาตรี",
-            phone: "081-234-5678",
-            email: "kitti.wattana@email.com"
-        },
-        projectId: "ONPY55433111"
+    useEffect(() => {
+        const fetchProjectFromAllProjects = async () => {
+            if (!projectId) {
+                setError("ไม่พบ ID โครงการ");
+                setLoading(false);
+                return;
+            }
+            
+            try {
+                setLoading(true);
+                const allProjects = await getAllProject();
+                
+                const foundProject = allProjects.find(p => p.projectId === projectId);
+                
+                if (foundProject) {
+                    setProject(foundProject);
+                    setActiveStep(calculateApprovalStep(foundProject));
+                } else {
+                    setError("ไม่พบข้อมูลโครงการที่ต้องการ");
+                }
+                
+                setLoading(false);
+            } catch (err) {
+                console.error("Error fetching projects:", err);
+                setError("ไม่สามารถโหลดข้อมูลโครงการได้ กรุณาลองใหม่อีกครั้ง");
+                setLoading(false);
+            }
+        };
+
+        fetchProjectFromAllProjects();
+    }, [projectId]);
+
+    const calculateApprovalStep = (project: Project): number => {
+        if (project.thirdApprovedDT) {
+            return 4; 
+        } else if (project.secondApprovedDT) {
+            return 3; 
+        } else if (project.firstApprovedDT) {
+            return 2; 
+        } else if (project.rejectedDT) {
+            return 0; 
+        } else {
+            return 1; 
+        }
+    };
+
+    const formatDateRange = (startDate: string | Date, endDate: string | Date): string => {
+        const start = typeof startDate === 'string' ? new Date(startDate) : startDate;
+        const end = typeof endDate === 'string' ? new Date(endDate) : endDate;
+        
+        const formatDate = (date: Date) => {
+            const day = date.getDate();
+            const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+                                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const month = thaiMonths[date.getMonth()];
+            // แปลงเป็นปี พ.ศ.
+            const year = date.getFullYear() + 543;
+            
+            return `${day} ${month} ${year}`;
+        };
+        
+        return `${formatDate(start)} ถึง ${formatDate(end)}`;
+    };
+
+    const getSdgDescription = (sdgType: string): string[] => {
+        const sdgMap: Record<string, string> = {
+            "SDG1": "SDG 1: No poverty",
+            "SDG2": "SDG 2: Zero hunger",
+            "SDG3": "SDG 3: Good health and well-being",
+            "SDG4": "SDG 4: Quality education",
+            "SDG5": "SDG 5: Gender equality",
+            "SDG6": "SDG 6: Clean water and sanitation",
+            "SDG7": "SDG 7: Affordable and clean energy",
+            "SDG8": "SDG 8: Decent work and economic growth",
+            "SDG9": "SDG 9: Industry, innovation and infrastructure",
+            "SDG10": "SDG 10: Reduced inequalities",
+            "SDG11": "SDG 11: Sustainable cities and communities",
+            "SDG12": "SDG 12: Responsible consumption and production",
+            "SDG13": "SDG 13: Climate action",
+            "SDG14": "SDG 14: Life below water",
+            "SDG15": "SDG 15: Life on land",
+            "SDG16": "SDG 16: Peace, justice and strong institutions",
+            "SDG17": "SDG 17: Partnerships for the goals"
+        };
+        
+        if (sdgType && sdgType.includes(",")) {
+            return sdgType.split(",").map(sdg => sdgMap[sdg.trim()] || sdg.trim());
+        }
+        
+        return [sdgMap[sdgType] || sdgType || ""];
+    };
+
+    const formatUserName = (user: any): string => {
+        if (!user) return "";
+        
+        let prefix = "";
+        if (user.prefix === "mr") prefix = "นาย";
+        else if (user.prefix === "mrs") prefix = "นาง";
+        else if (user.prefix === "miss") prefix = "นางสาว";
+        
+        return `${prefix}${user.firstName} ${user.lastName}`;
+    };
+
+    const getProjectTypeInThai = (type: string): string => {
+        const typeMap: Record<string, string> = {
+            "technology_and_innovation": "เทคโนโลยีและนวัตกรรม",
+            "social_development": "พัฒนาสังคม",
+            "environment": "สิ่งแวดล้อม",
+            "education": "การศึกษา",
+            "healthcare": "สาธารณสุข",
+            "agriculture": "เกษตรกรรม",
+            "energy": "พลังงาน",
+            "infrastructure": "โครงสร้างพื้นฐาน"
+        };
+        
+        return typeMap[type] || type || "";
+    };
+
+    const getFormattedGender = (sex: string): string => {
+        if (sex === "male") return "ชาย";
+        if (sex === "female") return "หญิง";
+        return sex || "";
+    };
+
+    const getFormattedEducation = (education: string): string => {
+        const educationMap: Record<string, string> = {
+            "elementary": "ประถมศึกษา",
+            "middle": "มัธยมศึกษาตอนต้น",
+            "high": "มัธยมศึกษาตอนปลาย",
+            "vocational": "ปวช./ปวส.",
+            "bachelor": "ปริญญาตรี",
+            "master": "ปริญญาโท",
+            "doctoral": "ปริญญาเอก"
+        };
+        
+        return educationMap[education] || education || "";
+    };
+
+    const formatBirthDate = (birthDate: string | Date): string => {
+        if (!birthDate) return "";
+        
+        const date = typeof birthDate === 'string' ? new Date(birthDate) : birthDate;
+        
+        const day = date.getDate();
+        const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+                            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+        const month = thaiMonths[date.getMonth()];
+        const year = date.getFullYear() + 543;
+        
+        return `${day} ${month} ${year}`;
+    };
+
+    const handleApprove = async () => {
+        if (!project || !projectId) return;
+        
+        try {
+            setIsSubmitting(true);
+            await updateProjectStatus(Number(projectId));
+            setActiveStep(Math.min(activeStep + 1, 4));
+            setShowApproveDialog(false);
+            setActionCompleted("อนุมัติ");
+            setShowSuccessDialog(true);
+        } catch (err) {
+            console.error("Error approving project:", err);
+            alert("เกิดข้อผิดพลาดในการอนุมัติโครงการ กรุณาลองใหม่อีกครั้ง");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleReject = async () => {
+        if (!project || !projectId) return;
+        
+        try {
+            setIsSubmitting(true);
+            setShowRejectDialog(false);
+            setActionCompleted("ตีกลับ");
+            setShowSuccessDialog(true);
+        } catch (err) {
+            console.error("Error rejecting project:", err);
+            alert("เกิดข้อผิดพลาดในการตีกลับโครงการ กรุณาลองใหม่อีกครั้ง");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const navigateToProjectMenu = () => {
+        setShowSuccessDialog(false);
+        navigate("/approver/project-menu");
     };
 
     const steps = [
@@ -47,23 +226,54 @@ export default function ApproveProjectDetails() {
         { label: "ตรวจสอบสำเร็จ", icon: <CheckIcon className="size-5" /> }
     ];
 
-    const handleApprove = () => {
-        setActiveStep(Math.min(activeStep + 1, steps.length - 1));
-        setShowApproveDialog(false);
-        setActionCompleted("อนุมัติ");
-        setShowSuccessDialog(true);
-    };
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex flex-col font-prompt">
+                <ApproverNavbar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto"></div>
+                        <p className="mt-4 text-gray-600">กำลังโหลดข้อมูลโครงการ...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-    const handleReject = () => {
-        setShowRejectDialog(false);
-        setActionCompleted("ตีกลับ");
-        setShowSuccessDialog(true);
-    };
+    if (error || !project) {
+        return (
+            <div className="min-h-screen bg-gray-100 flex flex-col font-prompt">
+                <ApproverNavbar />
+                <div className="flex-grow flex items-center justify-center">
+                    <div className="text-center max-w-md mx-auto">
+                        <AlertCircleIcon className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                        <h2 className="text-xl font-bold mb-2">เกิดข้อผิดพลาด</h2>
+                        <p className="text-gray-600 mb-4">{error || "ไม่พบข้อมูลโครงการ"}</p>
+                        <Button 
+                            onClick={() => navigate("/approver/project-menu")}
+                            className="bg-[#606A9B]"
+                        >
+                            กลับไปยังรายการโครงการ
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-    const navigateToProjectMenu = () => {
-        setShowSuccessDialog(false);
-        navigate("/approver/project-menu");
-    };
+    const parentProjectName = typeof project.parentProject === 'string' 
+        ? project.parentProject 
+        : project.parentProject?.projectThaiName || "ไม่มี";
+    const projectDate = project.startDate && project.endDate ? formatDateRange(project.startDate, project.endDate) : "ไม่ระบุ";
+    const sdgDescriptions = getSdgDescription(project.sdgType);
+    const projectTypeText = getProjectTypeInThai(project.projectType);
+    
+    const submitterName = project.submittedByUser ? formatUserName(project.submittedByUser) : "ไม่ระบุ";
+    const submitterGender = project.submittedByUser ? getFormattedGender(project.submittedByUser.sex) : "ไม่ระบุ";
+    const submitterBirthDate = project.submittedByUser ? formatBirthDate(project.submittedByUser.birthDate) : "ไม่ระบุ";
+    const submitterEducation = project.submittedByUser ? getFormattedEducation(project.submittedByUser.education) : "ไม่ระบุ";
+    const submitterPhone = project.submittedByUser ? project.submittedByUser.tel : "ไม่ระบุ";
+    const submitterEmail = project.submittedByUser ? project.submittedByUser.email : "ไม่ระบุ";
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col font-prompt">
@@ -134,39 +344,39 @@ export default function ApproveProjectDetails() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="projectName">ชื่อโครงการ (ภาษาไทย)</Label>
-                                    <Input id="projectName" className="mt-3" value={projectData.thaiName} readOnly />
+                                    <Input id="projectName" className="mt-3" value={project.projectThaiName} readOnly />
                                 </div>
                                 <div>
                                     <Label htmlFor="projectNameEn">ชื่อโครงการ (ภาษาอังกฤษ)</Label>
-                                    <Input id="projectNameEn" className="mt-3" value={projectData.englishName} readOnly />
+                                    <Input id="projectNameEn" className="mt-3" value={project.projectEngName} readOnly />
                                 </div>
                             </div>
 
                             <div>
                                 <Label htmlFor="projectDescription">คำอธิบายโครงการโดยสรุป</Label>
-                                <Input id="projectNameEn" className="mt-3" value={projectData.description} readOnly />
+                                <Input id="projectDescription" className="mt-3" value={project.projectSummary} readOnly />
                             </div>
 
                             <div>
-                                <Label htmlFor="projectExtension">เป็นการพัฒนาต่อยอดพลังงานหรือไม่</Label>
-                                <Input id="projectNameEn" className="mt-3" value={projectData.extension} readOnly />
+                                <Label htmlFor="projectExtension">เป็นการพัฒนาต่อยอดโครงการหรือไม่</Label>
+                                <Input id="projectExtension" className="mt-3" value={parentProjectName} readOnly />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="projectCategory">ประเภทโครงการ</Label>
-                                    <Input id="projectCategory" className="mt-3" value={projectData.category} readOnly />
+                                    <Input id="projectCategory" className="mt-3" value={projectTypeText} readOnly />
                                 </div>
                                 <div>
                                     <Label htmlFor="projectDuration">ระยะเวลาการดำเนินโครงการ</Label>
-                                    <Input id="projectDuration" className="mt-3" value={projectData.duration} readOnly />
+                                    <Input id="projectDuration" className="mt-3" value={projectDate} readOnly />
                                 </div>
                             </div>
 
                             <div>
                                 <Label>เป้าหมายการพัฒนาที่ยั่งยืน</Label>
                                 <div className="flex flex-wrap gap-2 mt-2">
-                                    {projectData.sdgs.map((sdg, index) => (
+                                    {sdgDescriptions.map((sdg, index) => (
                                         <Badge key={index} variant="secondary">{sdg}</Badge>
                                     ))}
                                 </div>
@@ -176,8 +386,10 @@ export default function ApproveProjectDetails() {
                                 <Label>ไฟล์รายละเอียดโครงการ</Label>
                                 <div className="flex items-center gap-2 mt-2 p-3 border rounded-md bg-gray-50">
                                     <FileIcon className="size-5 text-blue-600" />
-                                    <span>{projectData.file}</span>
-                                    <Button variant="outline" size="sm" className="ml-auto">ดาวน์โหลด</Button>
+                                    <span>{project.projectDescriptionFile || "ไม่มีไฟล์"}</span>
+                                    {project.projectDescriptionFile && (
+                                        <Button variant="outline" size="sm" className="ml-auto">ดาวน์โหลด</Button>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>
@@ -191,33 +403,33 @@ export default function ApproveProjectDetails() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="submitterName">ชื่อ - นามสกุล</Label>
-                                    <Input id="submitterName" className="mt-3" value={projectData.submitter.name} readOnly />
+                                    <Input id="submitterName" className="mt-3" value={submitterName} readOnly />
                                 </div>
                                 <div>
                                     <Label htmlFor="submitterGender">เพศ</Label>
-                                    <Input id="submitterGender" className="mt-3" value={projectData.submitter.gender} readOnly />
+                                    <Input id="submitterGender" className="mt-3" value={submitterGender} readOnly />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="submitterBirthdate">วัน/เดือน/ปี เกิด</Label>
-                                    <Input id="submitterBirthdate" className="mt-3" value={projectData.submitter.birthdate} readOnly />
+                                    <Input id="submitterBirthdate" className="mt-3" value={submitterBirthDate} readOnly />
                                 </div>
                                 <div>
                                     <Label htmlFor="submitterEducation">ระดับการศึกษา</Label>
-                                    <Input id="submitterEducation" className="mt-3" value={projectData.submitter.education} readOnly />
+                                    <Input id="submitterEducation" className="mt-3" value={submitterEducation} readOnly />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <Label htmlFor="submitterPhone">เบอร์โทร</Label>
-                                    <Input id="submitterPhone" className="mt-3" value={projectData.submitter.phone} readOnly />
+                                    <Input id="submitterPhone" className="mt-3" value={submitterPhone} readOnly />
                                 </div>
                                 <div>
                                     <Label htmlFor="submitterEmail">อีเมล</Label>
-                                    <Input id="submitterEmail" className="mt-3" value={projectData.submitter.email} readOnly />
+                                    <Input id="submitterEmail" className="mt-3" value={submitterEmail} readOnly />
                                 </div>
                             </div>
                         </CardContent>
@@ -225,19 +437,21 @@ export default function ApproveProjectDetails() {
 
                     <div className="flex items-center justify-between gap-4">
                         <div className="text-sm text-gray-500">
-                            <span className="font-medium">รหัสโครงการ:</span> {projectData.projectId}
+                            <span className="font-medium">รหัสโครงการ:</span> {project.projectId}
                         </div>
                         <div className="space-x-4">
                             <Button
                                 variant="outline"
                                 className="bg-white text-amber-600 border-amber-600 hover:bg-amber-50"
                                 onClick={() => setShowRejectDialog(true)}
+                                disabled={isSubmitting}
                             >
                                 ตีกลับ
                             </Button>
                             <Button
                                 onClick={() => setShowApproveDialog(true)}
                                 className="bg-green-600 hover:bg-green-700"
+                                disabled={isSubmitting}
                             >
                                 อนุมัติ
                             </Button>
@@ -251,21 +465,23 @@ export default function ApproveProjectDetails() {
                     <DialogHeader>
                         <DialogTitle>ยืนยันการอนุมัติโครงการ</DialogTitle>
                         <DialogDescription>
-                            คุณต้องการอนุมัติโครงการ "{projectData.thaiName}" ใช่หรือไม่?
+                            คุณต้องการอนุมัติโครงการ "{project.projectThaiName}" ใช่หรือไม่?
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                         <Button
                             variant="outline"
                             onClick={() => setShowApproveDialog(false)}
+                            disabled={isSubmitting}
                         >
                             ยกเลิก
                         </Button>
                         <Button
                             className="bg-green-600 hover:bg-green-700"
                             onClick={handleApprove}
+                            disabled={isSubmitting}
                         >
-                            ยืนยัน
+                            {isSubmitting ? "กำลังดำเนินการ..." : "ยืนยัน"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -276,7 +492,7 @@ export default function ApproveProjectDetails() {
                     <DialogHeader>
                         <DialogTitle>ยืนยันการตีกลับโครงการ</DialogTitle>
                         <DialogDescription>
-                            คุณต้องการตีกลับโครงการ "{projectData.thaiName}" ใช่หรือไม่?
+                            คุณต้องการตีกลับโครงการ "{project.projectThaiName}" ใช่หรือไม่?
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
@@ -293,15 +509,16 @@ export default function ApproveProjectDetails() {
                         <Button
                             variant="outline"
                             onClick={() => setShowRejectDialog(false)}
+                            disabled={isSubmitting}
                         >
                             ยกเลิก
                         </Button>
                         <Button
                             variant="destructive"
                             onClick={handleReject}
-                            disabled={!rejectReason.trim()}
+                            disabled={!rejectReason.trim() || isSubmitting}
                         >
-                            ยืนยันการตีกลับ
+                            {isSubmitting ? "กำลังดำเนินการ..." : "ยืนยันการตีกลับ"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -321,10 +538,10 @@ export default function ApproveProjectDetails() {
                         <DialogDescription>
                             <p>คุณได้
                                 {actionCompleted === "อนุมัติ"
-                                    ? <span className="text-green-600 font-bold">อนุมัติ</span>
-                                    : <span className="text-red-600 font-bold">ตีกลับ</span>
+                                    ? <span className="text-green-600 font-bold"> อนุมัติ </span>
+                                    : <span className="text-red-600 font-bold"> ตีกลับ </span>
                                 }
-                                โครงการ "{projectData.thaiName}" เรียบร้อยแล้ว</p>
+                                โครงการ "{project.projectThaiName}" เรียบร้อยแล้ว</p>
                         </DialogDescription>
                     </DialogHeader>
 
