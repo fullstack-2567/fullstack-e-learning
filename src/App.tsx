@@ -8,6 +8,8 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+// เพิ่มการ import หน้าจัดการคอร์ส
+import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 
 export default function App() {
   return (
@@ -33,6 +35,8 @@ export default function App() {
         <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
         <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
         <Route path="/admin/report" element={<AdminReport />} />
+        {/* เพิ่มเส้นทางสำหรับหน้าจัดการคอร์ส */}
+        <Route path="/admin/course-management" element={<AdminCourseManagement />} />
 
       </Routes>
     </Router>
