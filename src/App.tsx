@@ -8,6 +8,7 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/contents" element={<ContentMenu />} />
         <Route path="/video" element={<ContentVideo />} />
         <Route path="/submit-project" element={<SubmitProject />} />
+        <Route path="/submitsuccess" element= {<SubmitSuccess/>}></Route>
 
         {/* Role Approver */}
         <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
@@ -33,6 +35,7 @@ export default function App() {
         <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
         <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
         <Route path="/admin/report" element={<AdminReport />} />
+        
 
       </Routes>
     </Router>
