@@ -10,6 +10,7 @@ import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 import AdminCourses from "./pages/admin/AdminCourses";
 import AdminPM from "./pages/admin/AdminPM";
+import AdminNewCourses from "./pages/admin/AdminNewCourse"
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
         <Route path="/admin/report" element={<AdminReport />} />
         <Route path="/admin/courses" element={<AdminCourses />} />
+        <Route path="/admin/courses/create-course" element={<AdminNewCourses />} />
         <Route path="/admin/projectmanagement" element={<AdminPM />} />
 
       </Routes>

@@ -155,16 +155,12 @@ const ProjectManagementPage: React.FC = () => {
           {/* Header */}
           <div className="header flex justify-between items-center pb-4 mb-4 border-b border-gray-200">
             <h1 className="title text-2xl font-bold text-gray-700">
-              รายงาน สถิติ
+              จัดการโครงการ
             </h1>
           </div>
           {/* Toolbar */}
           <div className="toolbar">
-            {" "}
-            {/* Changed */}
             <button className="filterButton" title="Filter options">
-              {" "}
-              {/* Changed */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -173,8 +169,6 @@ const ProjectManagementPage: React.FC = () => {
                 stroke="currentColor"
                 className="icon"
               >
-                {" "}
-                {/* Changed */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -183,8 +177,6 @@ const ProjectManagementPage: React.FC = () => {
               </svg>
             </button>
             <div className="searchContainer">
-              {" "}
-              {/* Changed */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -193,8 +185,6 @@ const ProjectManagementPage: React.FC = () => {
                 stroke="currentColor"
                 className="searchIcon"
               >
-                {" "}
-                {/* Changed */}
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -209,25 +199,19 @@ const ProjectManagementPage: React.FC = () => {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="searchInput" // Changed
+                className="searchInput" 
               />
             </div>
           </div>
           {/* Table Area */}
           <div className="tableWrapper">
-            {" "}
-            {/* Changed */}
             {loading ? (
-              <div className="loading">Loading projects...</div> // Changed
+              <div className="loading">Loading projects...</div> 
             ) : (
               <table className="projectTable">
-                {" "}
-                {/* Changed */}
                 <thead>
                   <tr>
                     <th className="checkboxCol">
-                      {" "}
-                      {/* Changed */}
                       <input
                         type="checkbox"
                         checked={isAllSelectedOnPage}
@@ -237,7 +221,7 @@ const ProjectManagementPage: React.FC = () => {
                         }
                       />
                     </th>
-                    <th className="idCol">#</th> {/* Changed */}
+                    <th className="idCol">#</th>
                     <th>โครงการ</th>
                     <th>รายละเอียด</th>
                     <th>สถานะ</th>
@@ -307,7 +291,7 @@ const ProjectManagementPage: React.FC = () => {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="pageButton" // Changed
+                className="pageButton"
               >
                 &lt;
               </button>
@@ -316,7 +300,7 @@ const ProjectManagementPage: React.FC = () => {
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
-                className="pageButton" // Changed
+                className="pageButton"
               >
                 &gt;
               </button>
