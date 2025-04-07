@@ -27,7 +27,7 @@ export default function App() {
 
         {/* Role Approver */}
         <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
-        <Route path="/approver/project-details" element={<ApproveProjectDetails />} />
+        <Route path="/approver/project-details/:projectId" element={<ApproveProjectDetails />} />
 
         {/* Role Admin */}
         <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
