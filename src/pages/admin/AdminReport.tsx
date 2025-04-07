@@ -1,6 +1,9 @@
 import AdminSidebar from "@/components/admin/AdminSidebar"; // Assuming this path is correct
 import { useState } from "react";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import MyReport from "./ReportDocument";
 import "./ReportComponent.css"; // Make sure this CSS file exists and contains the styles
+import { Button } from "@/components/ui/button";
 
 // Define the structure for the course data
 interface CourseData {
@@ -252,15 +255,39 @@ const ReportComponent: React.FC = () => {
   const [userData] = useState<UserData[]>(sampleUserData);
   const [projectData] = useState<ProjectData[]>(sampleProjectData); // Add project data state
 
-  const handleExportClick = () => {
-    console.log(
-      "Export report clicked. Active tab:",
-      activeMainTab,
-      "SubTab:",
-      activeSubTab
-    );
-    // You might want different export logic depending on the active tab
-    alert("Export functionality not implemented yet.");
+  const getFileName = () => {
+    if (activeSubTab === "courses") return "courses-report.pdf";
+    if (activeSubTab === "users") return "users-report.pdf";
+    if (activeMainTab === "e-learning") return "projects-report.pdf";
+    return "report.pdf";
+  };
+
+  console.log("Exporting PDF with:", {
+    courseData:
+      activeMainTab === "e-learning" && activeSubTab === "courses"
+        ? courseData
+        : [],
+    userData:
+      activeMainTab === "e-learning" && activeSubTab === "users"
+        ? userData
+        : [],
+    projectData: activeMainTab === "project" ? projectData : [],
+  });
+
+  const renderPDF = () => {
+    if (activeSubTab === "courses") {
+      return (
+        <MyReport courseData={courseData} userData={[]} projectData={[]} />
+      );
+    } else if (activeSubTab === "users") {
+      return <MyReport courseData={[]} userData={userData} projectData={[]} />;
+    } else if (activeMainTab === "project") {
+      return (
+        <MyReport courseData={[]} userData={[]} projectData={projectData} />
+      );
+    } else {
+      return <MyReport courseData={[]} userData={[]} projectData={[]} />;
+    }
   };
 
   return (
@@ -269,18 +296,24 @@ const ReportComponent: React.FC = () => {
         <AdminSidebar />
       </div>
       <div className="flex-1 min-h-screen bg-gray-100 p-8 ml-64">
-        <div className="reportContainer bg-white shadow-md rounded-lg p-6">
+        <div
+          id="reportContainer"
+          className="reportContent bg-white shadow-md rounded-lg p-6"
+        >
           {/* Header */}
           <div className="header flex justify-between items-center pb-4 mb-4 border-b border-gray-200">
             <h1 className="title text-2xl font-bold text-gray-700">
-              รายงาน สถิติ
+              รายงานสถิติ
             </h1>
-            <button
-              className="exportButton bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded transition duration-200"
-              onClick={handleExportClick}
-            >
-              ออก รายงาน
-            </button>
+            <PDFDownloadLink document={renderPDF()} fileName={getFileName()}>
+              {({ loading }) =>
+                loading ? (
+                  <Button disabled>กำลังโหลด...</Button>
+                ) : (
+                  <Button>ออกรายงาน</Button>
+                )
+              }
+            </PDFDownloadLink>
           </div>
           {/* Main Tabs */}
           <div className="mainTabs flex border-b-2 border-gray-300 mb-6 relative">
@@ -414,21 +447,10 @@ const ReportComponent: React.FC = () => {
               </>
             )}
 
-            {/* --- NEW: Project Content --- */}
+            {/*Project Content*/}
             {activeMainTab === "project" && (
               <div className="tableContainer overflow-x-auto">
                 <table className="reportTable w-full text-sm text-left text-gray-600">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                    <tr>
-                      <th className="py-3 px-4 w-[5%]">No.</th>
-                      <th className="py-3 px-4 w-[35%]">ชื่อโปรเจกต์</th>{" "}
-                      {/* Project Name */}
-                      <th className="py-3 px-4 w-[25%]">ผู้ส่งโปรเจกต์</th>{" "}
-                      {/* Submitter */}
-                      <th className="py-3 px-4 w-[35%]">สถานะ</th>{" "}
-                      {/* Status */}
-                    </tr>
-                  </thead>
                   <tbody>
                     {projectData.map((project) => (
                       <tr
@@ -445,11 +467,11 @@ const ReportComponent: React.FC = () => {
                 </table>
               </div>
             )}
-          </div>{" "}
+          </div>
           {/* End Content Area */}
-        </div>{" "}
+        </div>
         {/* End Report Container */}
-      </div>{" "}
+      </div>
       {/* End Content Area Wrapper */}
     </div> /* End Main Flex Container */
   );

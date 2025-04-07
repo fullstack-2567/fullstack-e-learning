@@ -20,7 +20,7 @@
   .title {
     font-size: 1.8em;
     font-weight: bold;
-    color: #333;
+    color: #333333;
     margin: 0;
   }
   
@@ -53,14 +53,14 @@
     padding: 12px 20px;
     cursor: pointer;
     font-size: 1em;
-    color: #666;
+    color: #666666;
     margin-right: 5px;
     border-bottom: 3px solid transparent; /* Placeholder for active border */
     transition: color 0.2s ease, border-bottom-color 0.2s ease;
   }
   
   .tabButton:hover {
-    color: #000;
+    color: #000000;
   }
   
   .activeTab {
@@ -164,7 +164,7 @@
   .placeholderContent {
       padding: 20px;
       text-align: center;
-      color: #666;
+      color: #666666;
       min-height: 200px; /* Ensure some height */
       display: flex;
       align-items: center;
