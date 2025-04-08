@@ -80,9 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       setIsAuthenticated(true);
 
-      if (userData.role === "user") {
-        navigate(getRouteByRole(userData.role));
-      }
+      navigate(getRouteByRole(userData.role));
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
