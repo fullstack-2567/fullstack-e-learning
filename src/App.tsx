@@ -8,9 +8,13 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+
+// เพิ่มการ import หน้าจัดการคอร์ส
+import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 import AdminCourses from "./pages/admin/AdminCourses";
 import AdminPM from "./pages/admin/AdminPM";
 import AdminNewCourses from "./pages/admin/AdminNewCourse"
+
 
 export default function App() {
   return (
@@ -30,15 +34,19 @@ export default function App() {
 
         {/* Role Approver */}
         <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
-        <Route path="/approver/project-details" element={<ApproveProjectDetails />} />
+        <Route path="/approver/project-details/:projectId" element={<ApproveProjectDetails />} />
 
         {/* Role Admin */}
         <Route path="/admin/dashboard/project" element={<AdminDashboardProject />} />
         <Route path="/admin/dashboard/e-learning" element={<AdminDashboardElearning />} />
         <Route path="/admin/report" element={<AdminReport />} />
+
+        {/* เพิ่มเส้นทางสำหรับหน้าจัดการคอร์ส */}
         <Route path="/admin/courses" element={<AdminCourses />} />
         <Route path="/admin/courses/create-course" element={<AdminNewCourses />} />
         <Route path="/admin/projectmanagement" element={<AdminPM />} />
+        <Route path="/admin/course-management" element={<AdminCourseManagement />} />
+
 
       </Routes>
     </Router>
