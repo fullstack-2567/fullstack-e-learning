@@ -13,6 +13,8 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+// เพิ่มการ import หน้าจัดการคอร์ส
+import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 
 // ใช้ค่าจาก .env 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -35,6 +37,7 @@ const ROUTES = {
   ADMIN_DASHBOARD_PROJECT: '/admin/dashboard/project',
   ADMIN_DASHBOARD_ELEARNING: '/admin/dashboard/e-learning',
   ADMIN_REPORT: '/admin/report',
+  ADMIN_COURSE_MANAGEMENT: '/admin/course-management',
 };
 
 export default function App() {
@@ -113,6 +116,15 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminReport />
+                </ProtectedRoute>
+              } 
+            />
+            {/* เพิ่มเส้นทางสำหรับหน้าจัดการคอร์ส */}
+            <Route 
+              path={ROUTES.ADMIN_COURSE_MANAGEMENT}
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AdminCourseManagement />
                 </ProtectedRoute>
               } 
             />
