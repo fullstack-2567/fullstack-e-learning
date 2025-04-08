@@ -1,27 +1,27 @@
-import { ApiResponse, ErrorResponse, TokenResponse, GoogleAuthResponse, User } from '../types';
+import { ApiResponse, ErrorResponse, TokenResponse, User } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Generic API request with improved type safety
 export const apiRequest = async <T>(
   endpoint: string,
-  method: string = 'GET',
+  method: string = "GET",
   body?: any,
   token?: string
 ): Promise<ApiResponse<T>> => {
   const headers: HeadersInit = {
-    'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   };
 
   // Add authorization token if provided
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const config: RequestInit = {
     method,
     headers,
-    credentials: 'include' // For HttpOnly cookies if used
+    credentials: "include",
   };
 
   // Add request body if provided
@@ -36,7 +36,7 @@ export const apiRequest = async <T>(
     if (!response.ok) {
       throw {
         status: response.status,
-        data: data as ErrorResponse
+        data: data as ErrorResponse,
       };
     }
 
@@ -47,12 +47,12 @@ export const apiRequest = async <T>(
       throw {
         status: 0,
         data: {
-          status: 'error',
+          status: "error",
           error: {
-            code: 'NETWORK_ERROR',
-            message: 'Unable to connect to the server'
-          }
-        } as ErrorResponse
+            code: "NETWORK_ERROR",
+            message: "Unable to connect to the server",
+          },
+        } as ErrorResponse,
       };
     }
     throw error;
@@ -61,28 +61,19 @@ export const apiRequest = async <T>(
 
 // Auth services with better type definitions
 export const authService = {
-  // Google Login
-  googleLogin: (token: string): Promise<ApiResponse<GoogleAuthResponse>> => {
-    return apiRequest<GoogleAuthResponse>('/api/auth/google', 'POST', { token });
+  getCurrentUser: (): Promise<ApiResponse<User>> => {
+    return apiRequest<User>("/auth/me", "GET");
   },
 
-  // Refresh token
-  refreshToken: (refreshToken: string): Promise<ApiResponse<TokenResponse>> => {
-    return apiRequest<TokenResponse>('/api/auth/refresh', 'POST', { refresh_token: refreshToken });
+  logout: (): Promise<ApiResponse<{ success: boolean }>> => {
+    return apiRequest<{ success: boolean }>("/auth/logout", "POST");
   },
 
-  // Verify token
-  verifyToken: (accessToken: string): Promise<ApiResponse<{ valid: boolean }>> => {
-    return apiRequest<{ valid: boolean }>('/api/auth/verify', 'POST', { access_token: accessToken });
+  refreshToken: (): Promise<ApiResponse<TokenResponse>> => {
+    return apiRequest<TokenResponse>("/auth/refresh", "POST");
   },
 
-  // Get current user
-  getCurrentUser: (accessToken: string): Promise<ApiResponse<User>> => {
-    return apiRequest<User>('/api/auth/me', 'GET', undefined, accessToken);
+  googleLogin: (): Promise<ApiResponse<any>> => {
+    return apiRequest("/auth/google/login", "GET"); // หรือเปลี่ยนชื่อ method ได้ตาม backend
   },
-
-  // Logout
-  logout: (accessToken: string): Promise<ApiResponse<{ success: boolean }>> => {
-    return apiRequest<{ success: boolean }>('/api/auth/logout', 'POST', undefined, accessToken);
-  }
 };
