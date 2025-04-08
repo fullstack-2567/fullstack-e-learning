@@ -1,5 +1,5 @@
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminPM.css";
 import ContentManagement from "@/components/admin/ContentManagement";
@@ -97,6 +97,7 @@ const ProjectManagementPage: React.FC = () => {
     ROWS_PER_PAGE_OPTIONS[0]
   );
   const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const indeterminateCheckboxRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -153,6 +154,14 @@ const ProjectManagementPage: React.FC = () => {
   const isAllSelectedOnPage =
     paginatedProjects.length > 0 &&
     paginatedProjects.every((p) => selectedProjectIds.has(p.id));
+
+  useEffect(() => {
+    if (indeterminateCheckboxRef.current) {
+      if (selectedProjectIds.size > 0 && !isAllSelectedOnPage) {
+        indeterminateCheckboxRef.current.indeterminate = true;
+      }
+    }
+  }, [selectedProjectIds, isAllSelectedOnPage]);
 
   return (
     <div className="flex">
