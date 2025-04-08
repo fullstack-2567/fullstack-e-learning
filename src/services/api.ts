@@ -1,3 +1,4 @@
+import { Content } from "@/components/admin/ContentManagement";
 import { ApiResponse, ErrorResponse, TokenResponse, User } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -75,5 +76,23 @@ export const authService = {
 
   googleLogin: (): Promise<ApiResponse<any>> => {
     return apiRequest("/auth/google/login", "GET"); // หรือเปลี่ยนชื่อ method ได้ตาม backend
+  },
+};
+
+export const contentService = {
+  createNewContent: (content: Content): Promise<ApiResponse> => {
+    return apiRequest("/content/create", "POST", content);
+  },
+  getAllContents: (): Promise<any> => {
+    return apiRequest("/content", "GET");
+  },
+  updateContent: (content: Content): Promise<ApiResponse> => {
+    return apiRequest(`/content/${content.contentId}`, "PUT", content);
+  },
+  deleteContent: (id: string): Promise<ApiResponse> => {
+    return apiRequest(`/content/${id}`, "DELETE");
+  },
+  getContentById: (id: string): Promise<any> => {
+    return apiRequest<any>(`/content/${id}`, "GET");
   },
 };

@@ -42,6 +42,7 @@ const ROUTES = {
   ADMIN_DASHBOARD_ELEARNING: "/admin/dashboard/e-learning",
   ADMIN_REPORT: "/admin/report",
   ADMIN_COURSE_MANAGEMENT: "/admin/course-management",
+  ADMIN_COURSES: "/admin/courses",
 };
 
 export default function App() {
@@ -90,7 +91,7 @@ export default function App() {
             <Route
               path={ROUTES.APPROVER_PROJECT_MENU}
               element={
-                <ProtectedRoute allowedRoles={["approver", "admin"]}>
+                <ProtectedRoute allowedRoles={["approver"]}>
                   <ApproveProjectMenu />
                 </ProtectedRoute>
               }
@@ -98,7 +99,7 @@ export default function App() {
             <Route
               path={ROUTES.APPROVER_PROJECT_DETAILS}
               element={
-                <ProtectedRoute allowedRoles={["approver", "admin"]}>
+                <ProtectedRoute allowedRoles={["approver"]}>
                   <ApproveProjectDetails />
                 </ProtectedRoute>
               }
@@ -135,6 +136,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminCourseManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.ADMIN_COURSES}
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminCourses />
                 </ProtectedRoute>
               }
             />

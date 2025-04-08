@@ -2,6 +2,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AdminPM.css";
+import ContentManagement from "@/components/admin/ContentManagement";
 
 // Data Structure
 interface ProjectListItem {
@@ -95,6 +96,7 @@ const ProjectManagementPage: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(
     ROWS_PER_PAGE_OPTIONS[0]
   );
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
 
   useEffect(() => {
     setLoading(true);
@@ -145,7 +147,7 @@ const ProjectManagementPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handlenewCourse = () => {
-    navigate("/admin/courses/create-course");
+    setShowCreateDialog(true);
   };
 
   const isAllSelectedOnPage =
@@ -157,171 +159,8 @@ const ProjectManagementPage: React.FC = () => {
       <div className="w-64 fixed h-screen">
         <AdminSidebar />
       </div>
-      <div className="flex-1 min-h-screen bg-gray-100 p-8 ml-64">
-        <div className="projectpmContainer bg-white shadow-md rounded-lg p-6">
-          {/* Header */}
-          <div className="header flex justify-between items-center pb-4 mb-4 border-b border-gray-200">
-            <h1 className="title text-2xl font-bold text-gray-700">
-              คอร์สเรียน
-            </h1>
-
-            <button
-              className="exportButton bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded transition duration-200"
-              onClick={handlenewCourse}
-            >
-              สร้างคอร์สใหม่
-            </button>
-          </div>
-
-          {/* Toolbar */}
-          <div className="toolbar">
-            <button className="filterButton" title="Filter options">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="icon"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.572a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z"
-                />
-              </svg>
-            </button>
-            <div className="searchContainer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="searchIcon"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-                />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => {
-                  setSearchTerm(e.target.value);
-                  setCurrentPage(1);
-                }}
-                className="searchInput"
-              />
-            </div>
-          </div>
-          {/* Table Area */}
-          <div className="tableWrapper">
-            {loading ? (
-              <div className="loading">Loading projects...</div> // Changed
-            ) : (
-              <table className="projectTable">
-                <thead>
-                  <tr>
-                    <th className="checkboxCol">
-                      <input
-                        type="checkbox"
-                        checked={isAllSelectedOnPage}
-                        onChange={handleSelectAllClick}
-                        indeterminate={
-                          selectedProjectIds.size > 0 && !isAllSelectedOnPage
-                        }
-                      />
-                    </th>
-                    <th className="idCol">#</th> {/* Changed */}
-                    <th>โครงการ</th>
-                    <th>รายละเอียด</th>
-                    <th>สถานะ</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedProjects.length > 0 ? (
-                    paginatedProjects.map((project, index) => (
-                      <tr
-                        key={project.id}
-                        className={
-                          selectedProjectIds.has(project.id)
-                            ? "selectedRow"
-                            : ""
-                        }
-                      >
-                        {" "}
-                        <td className="checkboxCol">
-                          {" "}
-                          <input
-                            type="checkbox"
-                            checked={selectedProjectIds.has(project.id)}
-                            onChange={() => handleSelectRowClick(project.id)}
-                          />
-                        </td>
-                        <td className="idCol">
-                          {(currentPage - 1) * rowsPerPage + index + 1}
-                        </td>{" "}
-                        <td>{project.name}</td>
-                        <td>{project.description}</td>
-                        <td>
-                          <span className="statusTag">{project.statusTag}</span>
-                        </td>{" "}
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="noResults">
-                        No projects found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </div>
-          {!loading && totalRows > 0 && (
-            <div className="pagination">
-              <span className="rowCount">
-                {`${(currentPage - 1) * rowsPerPage + 1}-${Math.min(currentPage * rowsPerPage, totalRows)} of ${totalRows}`}
-              </span>
-              <span className="rowsPerPageLabel">Rows per page:</span>{" "}
-              <select
-                value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="rowsPerPageSelect" // Changed
-              >
-                {ROWS_PER_PAGE_OPTIONS.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="pageButton" // Changed
-              >
-                &lt;
-              </button>
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className="pageButton" // Changed
-              >
-                &gt;
-              </button>
-            </div>
-          )}
-        </div>
+      <div className="flex-1 min-h-screen bg-gray-100 ml-64">
+        <ContentManagement />
       </div>
     </div>
   );

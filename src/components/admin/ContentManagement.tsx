@@ -57,16 +57,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { contentService } from "@/services/api";
 
 // Types ตามโครงสร้าง API
-interface Content {
-  id: string;
-  contentTitle: string;
+export interface Content {
+  contentId?: string;
+  contentName: string;
   contentDescription: string;
   contentCategory: string;
-  contentVideo: string; // base64 encoded video
+  contentVideo?: string; // base64 encoded video
   contentThumbnail: string; // base64 encoded thumbnail
-  createdDT: string;
+  createdDT?: string;
+  updatedDT?: string;
+  isPublic?: boolean;
 }
 
 // Component
@@ -77,7 +80,7 @@ const ContentManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedContent, setSelectedContent] = useState<Content | null>(null);
   const [newContent, setNewContent] = useState<Partial<Content>>({
-    contentTitle: "",
+    contentName: "",
     contentDescription: "",
     contentCategory: "",
     contentVideo: "",
@@ -85,12 +88,15 @@ const ContentManagement = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [categories] = useState([
-    { id: "1", name: "VIDEO" },
-    { id: "2", name: "DOCUMENT" },
-    { id: "3", name: "AUDIO" },
-    { id: "4", name: "OTHER" },
+    { id: "1", name: "cybersecurity" },
+    { id: "2", name: "frontend_development" },
+    { id: "3", name: "backend_development" },
+    { id: "4", name: "fullstack_development" },
+    { id: "5", name: "food" },
+    { id: "6", name: "fashion" },
+    { id: "7", name: "language" },
   ]);
-  
+
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const editThumbnailInputRef = useRef<HTMLInputElement>(null);
@@ -98,57 +104,24 @@ const ContentManagement = () => {
 
   const itemsPerPage = 5;
 
-  // Dummy data for development
+  const fetchContents = async () => {
+    setIsLoading(true);
+    try {
+      const response = await contentService.getAllContents();
+      if (response) {
+        setContents([...response]);
+      } else {
+        console.error("Failed to fetch contents:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching contents:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  // Fetch real content from API
   useEffect(() => {
-    const dummyContents: Content[] = [
-      {
-        id: "1",
-        contentTitle: "Python in 4 hours",
-        contentDescription: "Learn Python basics in just 4 hours",
-        contentCategory: "VIDEO",
-        contentVideo: "",
-        contentThumbnail: "",
-        createdDT: "2025-03-15T00:00:00Z",
-      },
-      {
-        id: "2",
-        contentTitle: "Calculus 2",
-        contentDescription: "Advanced calculus concepts",
-        contentCategory: "DOCUMENT",
-        contentVideo: "",
-        contentThumbnail: "",
-        createdDT: "2025-03-10T00:00:00Z",
-      },
-      {
-        id: "3",
-        contentTitle: "Microsoft Excel",
-        contentDescription: "Master Microsoft Excel for business",
-        contentCategory: "VIDEO",
-        contentVideo: "",
-        contentThumbnail: "",
-        createdDT: "2025-03-05T00:00:00Z",
-      },
-      {
-        id: "4",
-        contentTitle: "Web Development Fundamentals",
-        contentDescription: "Learn HTML, CSS, and JavaScript basics",
-        contentCategory: "VIDEO",
-        contentVideo: "",
-        contentThumbnail: "",
-        createdDT: "2025-02-28T00:00:00Z",
-      },
-      {
-        id: "5",
-        contentTitle: "Machine Learning Introduction",
-        contentDescription: "Basic concepts of machine learning",
-        contentCategory: "DOCUMENT",
-        contentVideo: "",
-        contentThumbnail: "",
-        createdDT: "2025-02-20T00:00:00Z",
-      },
-    ];
-
-    setContents(dummyContents);
+    fetchContents();
   }, []);
 
   // ฟังก์ชันสำหรับการอัปโหลดรูปภาพ thumbnail
@@ -209,7 +182,9 @@ const ContentManagement = () => {
 
   // Filter contents based on search query
   const filteredContents = contents.filter((content) => {
-    return content.contentTitle.toLowerCase().includes(searchQuery.toLowerCase());
+    return content.contentName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
   });
 
   // Pagination logic
@@ -220,64 +195,95 @@ const ContentManagement = () => {
   );
 
   // Handlers
-  const handleCreateContent = () => {
+  const handleCreateContent = async () => {
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const newId = (contents.length + 1).toString();
-      const now = new Date().toISOString();
-      
-      const createdContent: Content = {
-        id: newId,
-        contentTitle: newContent.contentTitle || "Untitled Content",
-        contentDescription: newContent.contentDescription || "",
-        contentCategory: newContent.contentCategory || "VIDEO",
-        contentVideo: newContent.contentVideo || "",
-        contentThumbnail: newContent.contentThumbnail || "",
-        createdDT: now,
-      };
-      
-      setContents([...contents, createdContent]);
-      setNewContent({
-        contentTitle: "",
-        contentDescription: "",
-        contentCategory: "",
-        contentVideo: "",
-        contentThumbnail: "",
-      });
+
+    if (
+      !newContent.contentName ||
+      !newContent.contentCategory ||
+      !newContent.contentDescription ||
+      !newContent.contentVideo ||
+      !newContent.contentThumbnail
+    ) {
       setIsLoading(false);
-    }, 500);
+      return;
+    }
+
+    const contentToCreate: Content = {
+      contentName: newContent.contentName as string,
+      contentDescription: newContent.contentDescription as string,
+      contentCategory: newContent.contentCategory as string,
+      contentVideo: newContent.contentVideo as string,
+      contentThumbnail: newContent.contentThumbnail as string,
+      isPublic: true,
+    };
+
+    try {
+      const response = await contentService.createNewContent(contentToCreate);
+
+      if (response) {
+        // Refresh the content list
+        await fetchContents();
+
+        // Reset form
+        setNewContent({
+          contentName: "",
+          contentDescription: "",
+          contentCategory: "",
+          contentVideo: "",
+          contentThumbnail: "",
+        });
+      } else {
+        console.error("Failed to create content:", response);
+      }
+    } catch (error) {
+      console.error("Error creating content:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleUpdateContent = () => {
+  const handleUpdateContent = async () => {
     if (!selectedContent) return;
-    
+
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const updatedContents = contents.map((content) =>
-        content.id === selectedContent.id
-          ? { ...selectedContent }
-          : content
-      );
-      
-      setContents(updatedContents);
-      setSelectedContent(null);
+
+    try {
+      // Assuming there's an updateContent method in the API service
+      const response = await contentService.updateContent(selectedContent);
+
+      if (response) {
+        // Refresh the content list
+        await fetchContents();
+        setSelectedContent(null);
+      } else {
+        console.error("Failed to update content:", response);
+      }
+    } catch (error) {
+      console.error("Error updating content:", error);
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
-  const handleDeleteContent = (id: string) => {
+  const handleDeleteContent = async (id: string) => {
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      const updatedContents = contents.filter((content) => content.id !== id);
-      setContents(updatedContents);
+
+    try {
+      // Assuming there's a deleteContent method in the API service
+      const response = await contentService.deleteContent(id);
+
+      if (response) {
+        // Refresh the content list
+        await fetchContents();
+      } else {
+        console.error("Failed to delete content:", response);
+      }
+    } catch (error) {
+      console.error("Error deleting content:", error);
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   const handleEditClick = (content: Content) => {
@@ -288,7 +294,9 @@ const ContentManagement = () => {
     <div className="container mx-auto p-6">
       <Card className="border-none shadow-md py-0">
         <CardHeader className="bg-[#606A9B] text-white rounded-t-lg">
-          <CardTitle className="text-2xl font-bold font-prompt">คอร์สเรียน</CardTitle>
+          <CardTitle className="text-2xl font-bold font-prompt">
+            คอร์สเรียน
+          </CardTitle>
           <CardDescription className="text-white/80 font-prompt">
             จัดการคอร์สเรียนทั้งหมดในระบบ
           </CardDescription>
@@ -297,7 +305,10 @@ const ContentManagement = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-4 w-1/2">
               <div className="relative w-full">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={18}
+                />
                 <Input
                   placeholder="ค้นหาคอร์สเรียน..."
                   value={searchQuery}
@@ -315,27 +326,38 @@ const ContentManagement = () => {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[550px] font-prompt">
                 <DialogHeader>
-                  <DialogTitle className="font-prompt">สร้างคอร์สใหม่</DialogTitle>
+                  <DialogTitle className="font-prompt">
+                    สร้างคอร์สใหม่
+                  </DialogTitle>
                   <DialogDescription className="font-prompt">
                     กรอกข้อมูลเพื่อสร้างคอร์สเรียนใหม่ในระบบ
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="contentTitle" className="text-right font-prompt">
+                    <Label
+                      htmlFor="contentName"
+                      className="text-right font-prompt"
+                    >
                       ชื่อคอร์ส
                     </Label>
                     <Input
-                      id="contentTitle"
-                      value={newContent.contentTitle}
+                      id="contentName"
+                      value={newContent.contentName}
                       onChange={(e) =>
-                        setNewContent({ ...newContent, contentTitle: e.target.value })
+                        setNewContent({
+                          ...newContent,
+                          contentName: e.target.value,
+                        })
                       }
                       className="col-span-3 font-prompt"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="contentCategory" className="text-right font-prompt">
+                    <Label
+                      htmlFor="contentCategory"
+                      className="text-right font-prompt"
+                    >
                       หมวดหมู่
                     </Label>
                     <Select
@@ -348,7 +370,7 @@ const ContentManagement = () => {
                         <SelectValue placeholder="เลือกหมวดหมู่" />
                       </SelectTrigger>
                       <SelectContent className="font-prompt">
-                        {categories.map(category => (
+                        {categories.map((category) => (
                           <SelectItem key={category.id} value={category.name}>
                             {category.name}
                           </SelectItem>
@@ -357,7 +379,10 @@ const ContentManagement = () => {
                     </Select>
                   </div>
                   <div className="grid grid-cols-4 items-start gap-4">
-                    <Label htmlFor="contentDescription" className="text-right pt-2 font-prompt">
+                    <Label
+                      htmlFor="contentDescription"
+                      className="text-right pt-2 font-prompt"
+                    >
                       รายละเอียด
                     </Label>
                     <Textarea
@@ -374,7 +399,10 @@ const ContentManagement = () => {
                     />
                   </div>
                   <div className="grid grid-cols-4 items-start gap-4">
-                    <Label htmlFor="contentThumbnail" className="text-right pt-2 font-prompt">
+                    <Label
+                      htmlFor="contentThumbnail"
+                      className="text-right pt-2 font-prompt"
+                    >
                       รูปภาพปก
                     </Label>
                     <div className="col-span-3">
@@ -413,7 +441,10 @@ const ContentManagement = () => {
                     </div>
                   </div>
                   <div className="grid grid-cols-4 items-start gap-4">
-                    <Label htmlFor="contentVideo" className="text-right pt-2 font-prompt">
+                    <Label
+                      htmlFor="contentVideo"
+                      className="text-right pt-2 font-prompt"
+                    >
                       ไฟล์วิดีโอ
                     </Label>
                     <div className="col-span-3">
@@ -448,11 +479,13 @@ const ContentManagement = () => {
                 </div>
                 <DialogFooter>
                   <DialogClose asChild>
-                    <Button variant="outline" className="font-prompt">ยกเลิก</Button>
+                    <Button variant="outline" className="font-prompt">
+                      ยกเลิก
+                    </Button>
                   </DialogClose>
                   <DialogClose asChild>
-                    <Button 
-                      onClick={handleCreateContent} 
+                    <Button
+                      onClick={handleCreateContent}
                       className="bg-[#606A9B] hover:bg-[#4a547b] font-prompt"
                       disabled={isLoading}
                     >
@@ -477,12 +510,18 @@ const ContentManagement = () => {
             <TableBody>
               {paginatedContents.length > 0 ? (
                 paginatedContents.map((content) => (
-                  <TableRow key={content.id}>
-                    <TableCell className="font-medium font-prompt">{content.id}</TableCell>
-                    <TableCell className="font-prompt">{content.contentTitle}</TableCell>
-                    <TableCell className="font-prompt">{content.contentCategory}</TableCell>
+                  <TableRow key={content.contentId}>
+                    <TableCell className="font-medium font-prompt">
+                      {content.contentId}
+                    </TableCell>
                     <TableCell className="font-prompt">
-                      {new Date(content.createdDT).toLocaleDateString('th-TH')}
+                      {content.contentName}
+                    </TableCell>
+                    <TableCell className="font-prompt">
+                      {content.contentCategory}
+                    </TableCell>
+                    <TableCell className="font-prompt">
+                      {new Date(content.createdDT!).toLocaleDateString("th-TH")}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end space-x-2">
@@ -498,31 +537,40 @@ const ContentManagement = () => {
                           </DialogTrigger>
                           <DialogContent className="sm:max-w-[550px]">
                             <DialogHeader>
-                              <DialogTitle className="font-prompt">แก้ไขคอร์ส</DialogTitle>
+                              <DialogTitle className="font-prompt">
+                                แก้ไขคอร์ส
+                              </DialogTitle>
                               <DialogDescription className="font-prompt">
-                                แก้ไขข้อมูลคอร์สเรียน {selectedContent?.contentTitle}
+                                แก้ไขข้อมูลคอร์สเรียน{" "}
+                                {selectedContent?.contentName}
                               </DialogDescription>
                             </DialogHeader>
                             {selectedContent && (
                               <div className="grid gap-4 py-4">
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="edit-contentTitle" className="text-right font-prompt">
+                                  <Label
+                                    htmlFor="edit-contentName"
+                                    className="text-right font-prompt"
+                                  >
                                     ชื่อคอร์ส
                                   </Label>
                                   <Input
-                                    id="edit-contentTitle"
-                                    value={selectedContent.contentTitle}
+                                    id="edit-contentName"
+                                    value={selectedContent.contentName}
                                     onChange={(e) =>
                                       setSelectedContent({
                                         ...selectedContent,
-                                        contentTitle: e.target.value,
+                                        contentName: e.target.value,
                                       })
                                     }
                                     className="col-span-3 font-prompt"
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                  <Label htmlFor="edit-contentCategory" className="text-right font-prompt">
+                                  <Label
+                                    htmlFor="edit-contentCategory"
+                                    className="text-right font-prompt"
+                                  >
                                     หมวดหมู่
                                   </Label>
                                   <Select
@@ -538,8 +586,11 @@ const ContentManagement = () => {
                                       <SelectValue placeholder="เลือกหมวดหมู่" />
                                     </SelectTrigger>
                                     <SelectContent className="font-prompt">
-                                      {categories.map(category => (
-                                        <SelectItem key={category.id} value={category.name}>
+                                      {categories.map((category) => (
+                                        <SelectItem
+                                          key={category.id}
+                                          value={category.name}
+                                        >
                                           {category.name}
                                         </SelectItem>
                                       ))}
@@ -547,7 +598,10 @@ const ContentManagement = () => {
                                   </Select>
                                 </div>
                                 <div className="grid grid-cols-4 items-start gap-4">
-                                  <Label htmlFor="edit-contentDescription" className="text-right pt-2 font-prompt">
+                                  <Label
+                                    htmlFor="edit-contentDescription"
+                                    className="text-right pt-2 font-prompt"
+                                  >
                                     รายละเอียด
                                   </Label>
                                   <Textarea
@@ -564,7 +618,10 @@ const ContentManagement = () => {
                                   />
                                 </div>
                                 <div className="grid grid-cols-4 items-start gap-4">
-                                  <Label htmlFor="edit-contentThumbnail" className="text-right pt-2 font-prompt">
+                                  <Label
+                                    htmlFor="edit-contentThumbnail"
+                                    className="text-right pt-2 font-prompt"
+                                  >
                                     รูปภาพปก
                                   </Label>
                                   <div className="col-span-3">
@@ -575,8 +632,13 @@ const ContentManagement = () => {
                                       className="hidden"
                                       accept="image/*"
                                       onChange={(e) => {
-                                        if (e.target.files && e.target.files[0]) {
-                                          handleEditThumbnailUpload(e.target.files[0]);
+                                        if (
+                                          e.target.files &&
+                                          e.target.files[0]
+                                        ) {
+                                          handleEditThumbnailUpload(
+                                            e.target.files[0]
+                                          );
                                         }
                                       }}
                                     />
@@ -584,7 +646,9 @@ const ContentManagement = () => {
                                       <Button
                                         type="button"
                                         variant="outline"
-                                        onClick={() => editThumbnailInputRef.current?.click()}
+                                        onClick={() =>
+                                          editThumbnailInputRef.current?.click()
+                                        }
                                         className="font-prompt w-full"
                                       >
                                         <Upload className="mr-2 h-4 w-4" />
@@ -593,7 +657,9 @@ const ContentManagement = () => {
                                       {selectedContent.contentThumbnail && (
                                         <div className="mt-2">
                                           <img
-                                            src={selectedContent.contentThumbnail}
+                                            src={
+                                              selectedContent.contentThumbnail
+                                            }
                                             alt="Thumbnail preview"
                                             className="max-h-40 rounded-md object-cover"
                                           />
@@ -603,7 +669,10 @@ const ContentManagement = () => {
                                   </div>
                                 </div>
                                 <div className="grid grid-cols-4 items-start gap-4">
-                                  <Label htmlFor="edit-contentVideo" className="text-right pt-2 font-prompt">
+                                  <Label
+                                    htmlFor="edit-contentVideo"
+                                    className="text-right pt-2 font-prompt"
+                                  >
                                     ไฟล์วิดีโอ
                                   </Label>
                                   <div className="col-span-3">
@@ -614,15 +683,22 @@ const ContentManagement = () => {
                                       className="hidden"
                                       accept="video/*"
                                       onChange={(e) => {
-                                        if (e.target.files && e.target.files[0]) {
-                                          handleEditVideoUpload(e.target.files[0]);
+                                        if (
+                                          e.target.files &&
+                                          e.target.files[0]
+                                        ) {
+                                          handleEditVideoUpload(
+                                            e.target.files[0]
+                                          );
                                         }
                                       }}
                                     />
                                     <Button
                                       type="button"
                                       variant="outline"
-                                      onClick={() => editVideoInputRef.current?.click()}
+                                      onClick={() =>
+                                        editVideoInputRef.current?.click()
+                                      }
                                       className="font-prompt w-full"
                                     >
                                       <Upload className="mr-2 h-4 w-4" />
@@ -639,15 +715,22 @@ const ContentManagement = () => {
                             )}
                             <DialogFooter>
                               <DialogClose asChild>
-                                <Button variant="outline" className="font-prompt">ยกเลิก</Button>
+                                <Button
+                                  variant="outline"
+                                  className="font-prompt"
+                                >
+                                  ยกเลิก
+                                </Button>
                               </DialogClose>
                               <DialogClose asChild>
-                                <Button 
-                                  onClick={handleUpdateContent} 
+                                <Button
+                                  onClick={handleUpdateContent}
                                   className="bg-[#606A9B] hover:bg-[#4a547b] font-prompt"
                                   disabled={isLoading}
                                 >
-                                  {isLoading ? "กำลังบันทึก..." : "บันทึกการแก้ไข"}
+                                  {isLoading
+                                    ? "กำลังบันทึก..."
+                                    : "บันทึกการแก้ไข"}
                                 </Button>
                               </DialogClose>
                             </DialogFooter>
@@ -666,17 +749,23 @@ const ContentManagement = () => {
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle className="font-prompt">ยืนยันการลบคอร์ส</AlertDialogTitle>
+                              <AlertDialogTitle className="font-prompt">
+                                ยืนยันการลบคอร์ส
+                              </AlertDialogTitle>
                               <AlertDialogDescription className="font-prompt">
-                                คุณต้องการลบคอร์ส "{content.contentTitle}" ใช่หรือไม่? 
-                                การดำเนินการนี้ไม่สามารถเรียกคืนได้
+                                คุณต้องการลบคอร์ส "{content.contentName}"
+                                ใช่หรือไม่? การดำเนินการนี้ไม่สามารถเรียกคืนได้
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel className="font-prompt">ยกเลิก</AlertDialogCancel>
+                              <AlertDialogCancel className="font-prompt">
+                                ยกเลิก
+                              </AlertDialogCancel>
                               <AlertDialogAction
                                 className="bg-red-500 hover:bg-red-600 font-prompt"
-                                onClick={() => handleDeleteContent(content.id)}
+                                onClick={() =>
+                                  handleDeleteContent(content.contentId!)
+                                }
                               >
                                 ลบคอร์ส
                               </AlertDialogAction>
@@ -689,7 +778,10 @@ const ContentManagement = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-gray-500 font-prompt">
+                  <TableCell
+                    colSpan={5}
+                    className="text-center py-8 text-gray-500 font-prompt"
+                  >
                     ไม่พบข้อมูลคอร์สที่ตรงกับเงื่อนไข
                   </TableCell>
                 </TableRow>
@@ -707,13 +799,15 @@ const ContentManagement = () => {
                 <PaginationItem>
                   <PaginationPrevious
                     onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                    className={
+                      currentPage === 1 ? "pointer-events-none opacity-50" : ""
+                    }
                   />
                 </PaginationItem>
-                
+
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNumber;
-                  
+
                   if (totalPages <= 5) {
                     pageNumber = i + 1;
                   } else if (currentPage <= 3) {
@@ -723,30 +817,38 @@ const ContentManagement = () => {
                   } else {
                     pageNumber = currentPage - 2 + i;
                   }
-                  
+
                   return (
                     <PaginationItem key={pageNumber}>
                       <PaginationLink
                         isActive={currentPage === pageNumber}
                         onClick={() => setCurrentPage(pageNumber)}
-                        className={currentPage === pageNumber ? "bg-[#606A9B]" : ""}
+                        className={
+                          currentPage === pageNumber ? "bg-[#606A9B]" : ""
+                        }
                       >
                         {pageNumber}
                       </PaginationLink>
                     </PaginationItem>
                   );
                 })}
-                
+
                 {totalPages > 5 && currentPage < totalPages - 2 && (
                   <PaginationItem>
                     <PaginationEllipsis />
                   </PaginationItem>
                 )}
-                
+
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    onClick={() =>
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
+                    }
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>

@@ -80,7 +80,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       setIsAuthenticated(true);
 
-      navigate(getRouteByRole(userData.role));
+      // Don't automatically redirect - let the ProtectedRoute component handle navigation
+      // navigate(getRouteByRole(userData.role));
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
