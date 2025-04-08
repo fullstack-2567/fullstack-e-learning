@@ -1,9 +1,11 @@
 import AdminSidebar from "@/components/admin/AdminSidebar"; // Assuming this path is correct
 import { useState } from "react";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { pdf } from '@react-pdf/renderer';
 import MyReport from "./ReportDocument";
 import "./ReportComponent.css"; // Make sure this CSS file exists and contains the styles
 import { Button } from "@/components/ui/button";
+import ReportDocument from "./ReportDocument";
 
 // Define the structure for the course data
 interface CourseData {
@@ -274,12 +276,34 @@ const ReportComponent: React.FC = () => {
     projectData: activeMainTab === "project" ? projectData : [],
   });
 
+  const handleGenerateReport = async () => {
+    const blob = await pdf(
+      <ReportDocument
+        courseData={courseData ?? []}
+        userData={userData ?? []}
+        projectData={projectData ?? []}
+      />
+    ).toBlob();
+  
+    const url = URL.createObjectURL(blob);
+  
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'report.pdf';
+    link.click();
+  
+    // Optional: clean up
+    URL.revokeObjectURL(url);
+  };
+  
+
   const renderPDF = () => {
     if (activeSubTab === "courses") {
       return (
         <MyReport courseData={courseData} userData={[]} projectData={[]} />
       );
     } else if (activeSubTab === "users") {
+      console.log("user used")
       return <MyReport courseData={[]} userData={userData} projectData={[]} />;
     } else if (activeMainTab === "project") {
       return (
@@ -305,15 +329,7 @@ const ReportComponent: React.FC = () => {
             <h1 className="title text-2xl font-bold text-gray-700">
               รายงานสถิติ
             </h1>
-            <PDFDownloadLink document={renderPDF()} fileName={getFileName()}>
-              {({ loading }) =>
-                loading ? (
-                  <Button disabled>กำลังโหลด...</Button>
-                ) : (
-                  <Button>ออกรายงาน</Button>
-                )
-              }
-            </PDFDownloadLink>
+            <Button onClick={handleGenerateReport}>ออกรายงาน</Button>
           </div>
           {/* Main Tabs */}
           <div className="mainTabs flex border-b-2 border-gray-300 mb-6 relative">

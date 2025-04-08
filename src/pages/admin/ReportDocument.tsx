@@ -1,15 +1,31 @@
 import {
-    Document,
-    Page,
-    Text as PDFText,
-    StyleSheet,
-  } from "@react-pdf/renderer";
-  
+  Document,
+  Font,
+  Page,
+  Text as PDFText,
+  StyleSheet,
+} from "@react-pdf/renderer";
+import NotoSansThai from '../../assets/IBM_Plex_Sans_Thai_Looped/IBMPlexSansThaiLooped-Regular.ttf'
+
+// Register the font
+Font.register({
+  family: 'NotoSansThai',
+  src: NotoSansThai,
+});
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
-  heading: { fontSize: 18, marginBottom: 10, fontWeight: "bold" },
-  text: { fontSize: 12, marginBottom: 5 },
+  heading: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontFamily: 'NotoSansThai',
+    fontWeight: 'bold',
+  },
+  text: {
+    fontSize: 12,
+    marginBottom: 5,
+    fontFamily: 'NotoSansThai',
+  },
 });
 
 const MyReport = ({ courseData, userData, projectData }: any) => (
@@ -51,9 +67,7 @@ const MyReport = ({ courseData, userData, projectData }: any) => (
         </>
       )}
 
-      {(courseData.length === 0 &&
-        userData.length === 0 &&
-        projectData.length === 0) && (
+      {!courseData?.length && !userData?.length && !projectData?.length && (
         <PDFText style={styles.text}>ไม่มีข้อมูลในรายงานนี้</PDFText>
       )}
     </Page>
