@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
@@ -8,7 +8,7 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
-// เพิ่มการ import หน้าจัดการคอร์ส
+import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 
 export default function App() {
@@ -26,6 +26,7 @@ export default function App() {
         <Route path="/contents" element={<ContentMenu />} />
         <Route path="/video" element={<ContentVideo />} />
         <Route path="/submit-project" element={<SubmitProject />} />
+        <Route path="/submitsuccess" element= {<SubmitSuccess/>}></Route>
 
         {/* Role Approver */}
         <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
