@@ -1,0 +1,191 @@
+ .listContainer {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .sectionTitle {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .toolbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 0.8rem;
+  }
+  
+  .filterButton {
+    background: none;
+    border: 1px solid #d1d5db;
+    padding: 0.4rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+  }
+  
+  .filterButton:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  
+  .searchContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .searchIcon {
+    position: absolute;
+    left: 0.7rem;
+    width: 1rem;
+    height: 1rem;
+    color: #9ca3af;
+    pointer-events: none;
+  }
+  
+  .searchInput {
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 250px;
+  }
+  
+  .searchInput:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+  
+  .tableWrapper {
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+  }
+  
+  .projectTable {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  
+  .projectTable th,
+  .projectTable td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+  }
+  
+  .projectTable th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #4b5563;
+    white-space: nowrap;
+  }
+  
+  .projectTable th:first-child,
+  .projectTable td:first-child {
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+  }
+  
+  .projectTable th:last-child,
+  .projectTable td:last-child {
+    padding-right: 1rem;
+  }
+  
+  .projectTable tbody tr:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .selectedRow {
+    background-color: #e0e7ff !important;
+  }
+  
+  .checkboxCol {
+    width: 3%;
+    text-align: center;
+  }
+  
+  .idCol {
+    width: 5%;
+  }
+  
+  .statusTag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  
+  .loading,
+  .noResults {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+  }
+  
+  /* Pagination Styles */
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 0.9rem;
+    color: #4b5563;
+    gap: 0.8rem;
+  }
+  
+  .rowCount {
+    margin-right: auto;
+  }
+  
+  .rowsPerPageLabel {
+    white-space: nowrap;
+  }
+  
+  .rowsPerPageSelect {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+  }
+  
+  .pageButton {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    color: #4b5563;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .pageButton:hover:not(:disabled) {
+    background-color: #f3f4f6;
+  }
+  
+  .pageButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
