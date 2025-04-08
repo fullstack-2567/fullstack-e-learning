@@ -13,8 +13,15 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
+
+// เพิ่มการ import หน้าจัดการคอร์ส
 import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
+
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
+import AdminCourses from "./pages/admin/AdminCourses";
+import AdminPM from "./pages/admin/AdminPM";
+import AdminNewCourses from "./pages/admin/AdminNewCourse"
+
 
 // ใช้ค่าจาก .env 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
