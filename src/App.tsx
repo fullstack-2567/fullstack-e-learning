@@ -1,9 +1,9 @@
+
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-
-// Pages
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";
@@ -13,7 +13,7 @@ import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
-// เพิ่มการ import หน้าจัดการคอร์ส
+import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 
 // ใช้ค่าจาก .env 
@@ -75,6 +75,12 @@ export default function App() {
                 </ProtectedRoute>
               } 
             />
+
+        {/* Role Learner + Project Submiter */}
+        <Route path="/contents" element={<ContentMenu />} />
+        <Route path="/video" element={<ContentVideo />} />
+        <Route path="/submit-project" element={<SubmitProject />} />
+        <Route path="/submitsuccess" element= {<SubmitSuccess/>}></Route>
 
             {/* Protected Routes for Approver */}
             <Route 
