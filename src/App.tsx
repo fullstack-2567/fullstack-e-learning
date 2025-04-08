@@ -10,6 +10,8 @@ import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 
 // เพิ่มการ import หน้าจัดการคอร์ส
+import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
+
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 import AdminCourses from "./pages/admin/AdminCourses";
 import AdminPM from "./pages/admin/AdminPM";
@@ -31,6 +33,7 @@ export default function App() {
         <Route path="/contents" element={<ContentMenu />} />
         <Route path="/video" element={<ContentVideo />} />
         <Route path="/submit-project" element={<SubmitProject />} />
+        <Route path="/submitsuccess" element= {<SubmitSuccess/>}></Route>
 
         {/* Role Approver */}
         <Route path="/approver/project-menu" element={<ApproveProjectMenu />} />
