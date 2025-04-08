@@ -109,7 +109,7 @@ export default function ContentTable() {
 
   const fetchContents = async () => {
     try {
-      const response = await contentService.getAllContents();
+      const response = await contentService.getAllContents(true);
       if (response) {
         setContents([...response]);
       } else {

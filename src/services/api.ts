@@ -83,11 +83,11 @@ export const contentService = {
   createNewContent: (content: Content): Promise<ApiResponse> => {
     return apiRequest("/content/create", "POST", content);
   },
-  getAllContents: (): Promise<any> => {
-    return apiRequest("/content", "GET");
+  getAllContents: (thumbnail: boolean = false): Promise<any> => {
+    return apiRequest(`/content?thumbnail=${thumbnail}`, "GET");
   },
   updateContent: (content: Content): Promise<ApiResponse> => {
-    return apiRequest(`/content/${content.contentId}`, "PUT", content);
+    return apiRequest(`/content/${content.contentId}/update`, "PATCH", content);
   },
   deleteContent: (id: string): Promise<ApiResponse> => {
     return apiRequest(`/content/${id}`, "DELETE");
