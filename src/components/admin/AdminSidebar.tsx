@@ -1,5 +1,7 @@
-import React from "react";
-import { Link, useLocation } from "react-router";
+
+import * as React from 'react';
+import { Link } from "react-router";
+import {  useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +9,7 @@ import {
   LayoutDashboard,
   BarChart3,
   LogOut,
+  FileText
 } from "lucide-react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -17,7 +20,10 @@ export default function AdminSidebar({ className }: SidebarProps) {
 
   const menuItems = [
     { path: "/admin/dashboard/e-learning", icon: <LayoutDashboard size={18} />, label: "Dashboard" },
+    { path: "/admin/courses", icon: <LayoutDashboard size={18} />, label: "คอร์สเรียน" },
+    { path: "/admin/projectmanagement", icon: <LayoutDashboard size={18} />, label: "จัดการโครงการ" },
     { path: "/admin/report", icon: <BarChart3 size={18} />, label: "รายงานสถิติ" },
+    { path: "/approver/project-menu", icon: <FileText size={18} />, label: "จัดการโครงการ" },
   ];
 
   return (
