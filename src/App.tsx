@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
 import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
 import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
 import Login from "./pages/Login";

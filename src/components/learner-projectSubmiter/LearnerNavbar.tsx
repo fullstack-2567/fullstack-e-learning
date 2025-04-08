@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { useLocation } from "react-router";
-import { Link } from "react-router";
 import { Link, useLocation } from "react-router";
 
 export default function LearningNavbar() {
