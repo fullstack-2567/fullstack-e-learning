@@ -1,7 +1,13 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { authService } from '../services/api';
-import { User } from '../types';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useNavigate } from "react-router-dom";
+import { authService } from "../services/api";
+import { User } from "../types";
 
 interface AuthContextType {
   user: User | null;
@@ -16,7 +22,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
 
@@ -25,9 +31,9 @@ interface AuthProviderProps {
 }
 
 export const getRouteByRole = (role?: string): string => {
-  if (role === 'admin') return '/admin/dashboard/project';
-  if (role === 'approver') return '/approver/project-menu';
-  return '/contents'; // default learner
+  if (role === "admin") return "/admin/dashboard/project";
+  if (role === "project-approver") return "/approver/project-menu";
+  return "/contents"; // default learner
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -41,11 +47,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let interval: number | undefined;
 
     if (isAuthenticated) {
-      interval = window.setInterval(() => {
-        refreshToken().catch(() => {
-          setTokenExpired(true);
-        });
-      }, 14 * 60 * 1000); // refresh every 14 mins
+      interval = window.setInterval(
+        () => {
+          refreshToken().catch(() => {
+            setTokenExpired(true);
+          });
+        },
+        14 * 60 * 1000
+      ); // refresh every 14 mins
     }
 
     return () => {
@@ -70,8 +79,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       setUser(userData);
       setIsAuthenticated(true);
+
+      if (userData.role === "user") {
+        navigate(getRouteByRole(userData.role));
+      }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error("Auth check failed:", error);
       setUser(null);
       setIsAuthenticated(false);
     } finally {
@@ -86,7 +99,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await checkAuth(); // fetch user
       navigate(getRouteByRole(user?.role));
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -98,13 +111,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await authService.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       setUser(null);
       setIsAuthenticated(false);
       setTokenExpired(false);
       setIsLoading(false);
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -113,7 +126,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await authService.refreshToken(); // refresh via cookie
       return true;
     } catch (error) {
-      console.error('Refresh token failed:', error);
+      console.error("Refresh token failed:", error);
       setUser(null);
       setIsAuthenticated(false);
       return false;
@@ -128,7 +141,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         isLoading,
         login,
         logout,
-        refreshToken
+        refreshToken,
       }}
     >
       {children}
