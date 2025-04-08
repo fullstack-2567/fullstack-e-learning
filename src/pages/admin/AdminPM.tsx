@@ -1,5 +1,5 @@
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import "./AdminPM.css";
 
 // Data Structure 
@@ -94,6 +94,7 @@ const ProjectManagementPage: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(
     ROWS_PER_PAGE_OPTIONS[0]
   );
+  const projectsCheckbox = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -144,6 +145,15 @@ const ProjectManagementPage: React.FC = () => {
   const isAllSelectedOnPage =
     paginatedProjects.length > 0 &&
     paginatedProjects.every((p) => selectedProjectIds.has(p.id));
+  
+  useEffect(() => {
+    if (projectsCheckbox.current) {
+      if (selectedProjectIds.size > 0 && !isAllSelectedOnPage) {
+        projectsCheckbox.current.indeterminate = true;
+      }
+    }
+  }
+  , [isAllSelectedOnPage, selectedProjectIds]);
 
   return (
     <div className="flex">
@@ -215,10 +225,8 @@ const ProjectManagementPage: React.FC = () => {
                       <input
                         type="checkbox"
                         checked={isAllSelectedOnPage}
-                        onChange={handleSelectAllClick}
-                        indeterminate={
-                          selectedProjectIds.size > 0 && !isAllSelectedOnPage
-                        }
+                          onChange={handleSelectAllClick}
+                        ref={projectsCheckbox}
                       />
                     </th>
                     <th className="idCol">#</th>
