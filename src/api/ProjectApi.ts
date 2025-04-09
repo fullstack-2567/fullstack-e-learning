@@ -48,14 +48,13 @@ export const getUserProjects = async () => {
 
 export const updateProjectStatus = async (
   projectId: string,
-  action:"approve" | "reject",
-  approveId:string) => {
+  action: "approve" | "reject"
+) => {
   try {
     const response = await client.patch<Project>(
       `/projects/${projectId}/status`,
       {
         action: action,
-        approveId: approveId,
       }
     );
     return response.data;
