@@ -218,12 +218,21 @@ export default function ApproveProjectDetails() {
     return `${day} ${month} ${year}`;
   };
 
+  const currentUserId = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("userId="))
+        ?.split("=")[1];
+
+      if (!currentUserId) {
+        throw new Error("User ID not found in cookies");
+      }
+
   const handleApprove = async () => {
     if (!project || !projectId) return;
 
     try {
       setIsSubmitting(true);
-      await updateProjectStatus(project.projectId);
+      await updateProjectStatus(project.projectId, "approve", currentUserId);
       setActiveStep(Math.min(activeStep + 1, 4));
       setShowApproveDialog(false);
       setActionCompleted("อนุมัติ");
@@ -240,7 +249,9 @@ export default function ApproveProjectDetails() {
     if (!project || !projectId) return;
 
     try {
+      
       setIsSubmitting(true);
+      await updateProjectStatus(project.projectId, "reject", currentUserId);
       setShowRejectDialog(false);
       setActionCompleted("ตีกลับ");
       setShowSuccessDialog(true);

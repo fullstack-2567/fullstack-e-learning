@@ -7,7 +7,7 @@ import { CreateUserForm } from "@/components/learner-projectSubmiter/projectSubm
 import { CreateProjectForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateProjectForm";
 import { ReviewForm } from "@/components/learner-projectSubmiter/projectSubmit/ReviewForm";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Project, SubmitProjectDto, User } from "@/utils/backend-openapi";
+import { SubmitProjectDto, User } from "@/utils/backend-openapi";
 import { Label } from "@radix-ui/react-label";
 import {  useFormik } from "formik";
 import { useEffect, useState } from "react";

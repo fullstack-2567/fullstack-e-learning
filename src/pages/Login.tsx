@@ -18,6 +18,8 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
+      console.log(user);
+      document.cookie = `userId=${user.userId}; path=/;`;
       navigate(getRouteByRole(user.role));
     }
   }, [user]);
