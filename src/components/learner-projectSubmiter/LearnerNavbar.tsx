@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LearningNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,25 +61,9 @@ export default function LearningNavbar() {
           >
             เข้าสู่คอร์สเรียน
           </Link>
-          <Link to="/login">
-            <Button
-              variant="ghost"
-              className={`text-white/90 hover:text-white hover:bg-[#606A9B]/80 px-3 font-prompt ${
-                isActive("/login") ? "border-b-2 border-white text-white" : ""
-              }`}
-            >
-              Sign in
-            </Button>
-          </Link>
-          <Link to="/signup">
-            <Button
-              className={`bg-white text-[#606A9B] hover:bg-white/90 px-4 rounded-md shadow-sm font-prompt ${
-                isActive("/signup") ? "border-b border-[#606A9B]" : ""
-              }`}
-            >
-              Sign up
-            </Button>
-          </Link>
+          <Button variant="destructive" onClick={logout}>
+            Logout
+          </Button>
         </div>
       </div>
     </nav>

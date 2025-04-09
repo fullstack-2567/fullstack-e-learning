@@ -14,31 +14,21 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export default function AdminSidebar({ className }: SidebarProps) {
+export default function ApproverSidebar({ className }: SidebarProps) {
   const location = useLocation();
   const { logout } = useAuth();
   const currentPath = location.pathname;
 
   const menuItems = [
     {
-      path: "/admin/dashboard",
+      path: "/approver/dashboard",
       icon: <LayoutDashboard size={18} />,
       label: "Dashboard",
     },
     {
-      path: "/admin/courses",
-      icon: <LayoutDashboard size={18} />,
-      label: "คอร์สเรียน",
-    },
-    {
-      path: "/admin/projectmanagement",
-      icon: <LayoutDashboard size={18} />,
+      path: "/approver/project-menu",
+      icon: <FileText size={18} />,
       label: "จัดการโครงการ",
-    },
-    {
-      path: "/admin/report",
-      icon: <BarChart3 size={18} />,
-      label: "รายงานสถิติ",
     },
   ];
 

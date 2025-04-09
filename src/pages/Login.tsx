@@ -20,6 +20,7 @@ export default function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
+      console.log(isAuthenticated);
       const userData = localStorage.getItem("user_data");
       if (userData) {
         const user = JSON.parse(userData);

@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import SubmitProject from "./pages/learner-projectSubmiter/SubmitProject";
 import ApproveProjectMenu from "./pages/approver/ApproveProjectMenu";
 import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
-import AdminDashboardProject from "./pages/admin/AdminDashboardProject";
+import AdminDashboardProject from "./pages/approver/ApproverDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 
@@ -19,6 +19,8 @@ import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 import AdminCourses from "./pages/admin/AdminCourses";
 import AdminPM from "./pages/admin/AdminPM";
 import AdminNewCourses from "./pages/admin/AdminNewCourse";
+import { useEffect } from "react";
+import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -34,14 +36,15 @@ const ROUTES = {
   SUBMIT_PROJECT: "/submit-project",
 
   // Approver Routes
+  APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
   APPROVER_PROJECT_MENU: "/approver/project-menu",
   APPROVER_PROJECT_DETAILS: "/approver/project-details",
 
   // Admin Routes
-  ADMIN_DASHBOARD_PROJECT: "/admin/dashboard/project",
-  ADMIN_DASHBOARD_ELEARNING: "/admin/dashboard/e-learning",
+  ADMIN_DASHBOARD_ELEARNING: "/admin/dashboard",
   ADMIN_REPORT: "/admin/report",
   ADMIN_COURSE_MANAGEMENT: "/admin/course-management",
+  ADMIN_PROJECT_MANAGEMENT: "admin/projectmanagement",
   ADMIN_COURSES: "/admin/courses",
 };
 
@@ -85,13 +88,21 @@ export default function App() {
             <Route path="/contents" element={<ContentMenu />} />
             <Route path="/video" element={<ContentVideo />} />
             <Route path="/submit-project" element={<SubmitProject />} />
-            <Route path="/submitsuccess" element={<SubmitSuccess />}></Route>
+            <Route path="/submitsuccess" element={<SubmitSuccess />} />
 
             {/* Protected Routes for Approver */}
             <Route
+              path={ROUTES.APPROVER_DASHBOARD_PROJECT}
+              element={
+                <ProtectedRoute allowedRoles={["project-approver"]}>
+                  <ApproverDashboardProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path={ROUTES.APPROVER_PROJECT_MENU}
               element={
-                <ProtectedRoute allowedRoles={["approver"]}>
+                <ProtectedRoute allowedRoles={["project-approver"]}>
                   <ApproveProjectMenu />
                 </ProtectedRoute>
               }
@@ -99,21 +110,13 @@ export default function App() {
             <Route
               path={ROUTES.APPROVER_PROJECT_DETAILS}
               element={
-                <ProtectedRoute allowedRoles={["approver"]}>
+                <ProtectedRoute allowedRoles={["project-approver"]}>
                   <ApproveProjectDetails />
                 </ProtectedRoute>
               }
             />
 
             {/* Protected Routes for Admin */}
-            <Route
-              path={ROUTES.ADMIN_DASHBOARD_PROJECT}
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminDashboardProject />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path={ROUTES.ADMIN_DASHBOARD_ELEARNING}
               element={
@@ -144,6 +147,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminCourses />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.ADMIN_PROJECT_MANAGEMENT}
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <AdminPM />
                 </ProtectedRoute>
               }
             />

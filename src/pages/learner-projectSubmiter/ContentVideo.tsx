@@ -1,9 +1,10 @@
-import { Content } from "@/components/admin/ContentManagement";
+// import { Content } from "@/components/admin/ContentManagement";
 import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
 import Player from "@/components/learner-projectSubmiter/contentVideo/Player";
 import { contentService } from "@/services/api";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Content } from "@/utils/backend-openapi";
 
 export default function ContentVideo() {
   const location = useLocation();

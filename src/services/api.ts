@@ -1,5 +1,6 @@
 import { Content } from "@/components/admin/ContentManagement";
-import { ApiResponse, ErrorResponse, TokenResponse, User } from "../types";
+import { ApiResponse, ErrorResponse, TokenResponse } from "../types";
+import { User } from "@/utils/backend-openapi";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

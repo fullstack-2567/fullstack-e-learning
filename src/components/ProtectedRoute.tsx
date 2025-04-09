@@ -1,15 +1,17 @@
-import { ReactNode, useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth, getRouteByRole } from '../contexts/AuthContext';
+import { ReactNode, useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth, getRouteByRole } from "../contexts/AuthContext";
+
+type Role = "user" | "admin" | "project-approver";
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  allowedRoles?: string[];
+  allowedRoles?: Role[];
 }
 
-export const ProtectedRoute = ({ 
-  children, 
-  allowedRoles = [] 
+export const ProtectedRoute = ({
+  children,
+  allowedRoles = [],
 }: ProtectedRouteProps) => {
   const { isAuthenticated, user, isLoading, refreshToken } = useAuth();
   const location = useLocation();
@@ -24,7 +26,7 @@ export const ProtectedRoute = ({
         await refreshToken();
       }
     };
-    
+
     checkAndRefreshToken();
   }, [isAuthenticated, user, refreshToken, location.pathname]);
 
@@ -33,7 +35,9 @@ export const ProtectedRoute = ({
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        <p className="mt-4 text-gray-600 font-prompt">กำลังตรวจสอบการเข้าสู่ระบบ...</p>
+        <p className="mt-4 text-gray-600 font-prompt">
+          กำลังตรวจสอบการเข้าสู่ระบบ...
+        </p>
       </div>
     );
   }
@@ -45,14 +49,20 @@ export const ProtectedRoute = ({
   }
 
   // Check role restrictions (if any)
-  if (allowedRoles.length > 0 && user?.role && !allowedRoles.includes(user.role)) {
+  if (
+    allowedRoles.length > 0 &&
+    user?.role &&
+    !allowedRoles.includes(user.role)
+  ) {
     // Redirect to appropriate dashboard based on role using centralized function
     return <Navigate to={getRouteByRole(user.role)} replace />;
   }
 
   // Add an extra layer of security - if we don't have a user object, something is wrong
   if (!user) {
-    console.error('Protected route accessed with isAuthenticated=true but no user data');
+    console.error(
+      "Protected route accessed with isAuthenticated=true but no user data"
+    );
     return <Navigate to="/login" replace />;
   }
 

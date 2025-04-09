@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/api";
-import { User } from "../types";
+import { User } from "@/utils/backend-openapi";
 
 interface AuthContextType {
   user: User | null;
@@ -80,8 +80,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(userData);
       setIsAuthenticated(true);
 
-      // Don't automatically redirect - let the ProtectedRoute component handle navigation
-      // navigate(getRouteByRole(userData.role));
+      // // Don't automatically redirect - let the ProtectedRoute component handle navigation
+      navigate(getRouteByRole(userData.role));
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
