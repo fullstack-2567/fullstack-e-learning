@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
 import { useState } from "react";
@@ -17,22 +12,15 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-
-interface ContentData {
-  contentID: string;
-  contentName: string;
-  category: string;
-  contentThumbnail?: string;
-  description?: string;
-}
+import { Content } from "@/components/admin/ContentManagement";
 
 const ContentCard = ({
-  contentID,
+  contentId,
   contentName,
-  category,
+  contentCategory,
   contentThumbnail,
-  description = "...",
-}: ContentData) => {
+  contentDescription = "...",
+}: Content) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -64,7 +52,7 @@ const ContentCard = ({
             variant="outline"
             className="absolute top-3 left-3 bg-slate-50 text-xs font-medium px-2 py-1 rounded-full"
           >
-            {category}
+            {contentCategory}
           </Badge>
 
           <div
@@ -80,15 +68,15 @@ const ContentCard = ({
           <CardTitle className="text-lg mb-2 line-clamp-2 transition-colors duration-200 font-prompt">
             {contentName}
           </CardTitle>
-          {description && (
+          {contentDescription && (
             <p className="text-sm text-gray-600 line-clamp-2 font-prompt">
-              {description}
+              {contentDescription}
             </p>
           )}
         </CardContent>
 
         <CardFooter className=" px-4 pb-4 text-xs text-gray-500 border-t border-gray-100 mt-2 font-prompt">
-          <span>ID: {contentID}</span>
+          <span>ID: {contentId}</span>
         </CardFooter>
       </Card>
 
@@ -120,14 +108,14 @@ const ContentCard = ({
                   variant="outline"
                   className="w-fit mt-2 font-medium text-xs px-3 py-1"
                 >
-                  {category}
+                  {contentCategory}
                 </Badge>
               </DialogHeader>
 
               {/* Scrollable content area with flexible height but limited */}
               <ScrollArea className="fixed h-70 border border-gray-200 rounded-lg p-4">
                 <DialogDescription className="text-gray-600 font-prompt leading-relaxed">
-                  {description || "No description available."}
+                  {contentDescription || "No description available."}
                 </DialogDescription>
               </ScrollArea>
 
@@ -137,7 +125,7 @@ const ContentCard = ({
                   className="w-full py-6 text-lg font-prompt font-medium transition-all hover:shadow-md"
                   onClick={() => {
                     console.log(`Registering for ${contentName}`);
-                    window.location.href = "/video";
+                    window.location.href = `/video?videoId=${contentId}`;
                   }}
                 >
                   ลงทะเบียนเรียน

@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-import React from "react";
-import { Link, useLocation } from "react-router";
-=======
 import * as React from "react";
 import { Link } from "react-router";
 import { useLocation } from "react-router";
->>>>>>> ebc10efb38fa1de4268850cabd146b4015481e1c
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,46 +8,28 @@ import {
   LayoutDashboard,
   BarChart3,
   LogOut,
-<<<<<<< HEAD
-=======
   FileText,
->>>>>>> ebc10efb38fa1de4268850cabd146b4015481e1c
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export default function AdminSidebar({ className }: SidebarProps) {
+export default function ApproverSidebar({ className }: SidebarProps) {
   const location = useLocation();
   const { logout } = useAuth();
   const currentPath = location.pathname;
 
   const menuItems = [
-<<<<<<< HEAD
-    { path: "/admin/dashboard/e-learning", icon: <LayoutDashboard size={18} />, label: "Dashboard" },
-    { path: "/admin/report", icon: <BarChart3 size={18} />, label: "รายงานสถิติ" },
-=======
     {
-      path: "/admin/dashboard",
+      path: "/approver/dashboard",
       icon: <LayoutDashboard size={18} />,
       label: "Dashboard",
     },
     {
-      path: "/admin/courses",
-      icon: <LayoutDashboard size={18} />,
-      label: "คอร์สเรียน",
-    },
-    {
-      path: "/admin/projectmanagement",
-      icon: <LayoutDashboard size={18} />,
+      path: "/approver/project-menu",
+      icon: <FileText size={18} />,
       label: "จัดการโครงการ",
     },
-    {
-      path: "/admin/report",
-      icon: <BarChart3 size={18} />,
-      label: "รายงานสถิติ",
-    },
->>>>>>> ebc10efb38fa1de4268850cabd146b4015481e1c
   ];
 
   return (
