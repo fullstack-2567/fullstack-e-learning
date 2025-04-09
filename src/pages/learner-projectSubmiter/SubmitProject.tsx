@@ -1,32 +1,20 @@
 import {
   createProject,
-  getAllProject,
   getUserProjects,
 } from "@/api/ProjectApi";
 import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
 import { CreateUserForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateUserForm";
 import { CreateProjectForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateProjectForm";
 import { ReviewForm } from "@/components/learner-projectSubmiter/projectSubmit/ReviewForm";
-import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Project, SubmitProjectDto, User } from "@/utils/backend-openapi";
 import { Label } from "@radix-ui/react-label";
-import { FormikProps, useFormik } from "formik";
+import {  useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import * as yup from "yup";
-import SubmitSuccess from "@/components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
 
 export default function SubmitProject() {
-  const [project, setProject] = useState<Project>();
+  // const [project, setProject] = useState<Project>();
   const [user, setUser] = useState<User>();
   const [step, setStep] = useState<number>(1);
   const [projectNameAndIds, setProjectNameAndIds] = useState<
@@ -43,6 +31,7 @@ export default function SubmitProject() {
     };
     fetchProjects();
   }, []);
+
 
   const formikForCreateProject = useFormik<SubmitProjectDto>({
     initialValues: {
@@ -83,21 +72,21 @@ export default function SubmitProject() {
       projectDescriptionFile: yup.mixed().required("กรุณาเลือกไฟล์"),
       projectType: yup.string().required("Required"),
       parentProjectID: yup.string(),
-    }),
+    userInfo: yup.object().optional(),}),
     onSubmit: async (values) => {
-      // Handle form submission here
-      console.log("Form values:", values);
-
-      // Backend is not usable yet, so we will use local storage to store the data
-      localStorage.setItem("project", JSON.stringify(values));
-      // const res = await createProject(values);
-      // if (res.status === 200) {
-      //     alert("สร้างโครงการสำเร็จ");
-      // }
-      // else {
-      //     alert("สร้างโครงการไม่สำเร็จ");
-      // }
-      // redirect to /learner-projectSubmiter/submit-success via react-router-dom
+      createProject({...values,userInfo:{
+        prefix: user?.prefix,
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        birthDate: user?.birthDate,
+        education: user?.education,
+        tel: user?.tel,
+        sex:user?.sex,
+      }})
+      .then((response) => {
+        console.log("Project created:", response);
+      });
+      console.log(1);
     },
   });
 
@@ -116,7 +105,6 @@ export default function SubmitProject() {
       education: "bachelor",
       tel: "",
     },
-
     validationSchema: yup.object({
       email: yup.string().email("Invalid email").required("Required"),
       role: yup.string().required("Required"),
@@ -144,9 +132,7 @@ export default function SubmitProject() {
     }),
 
     onSubmit: async (values) => {
-      // Handle form submission here
-      console.log("Form values:", values);
-      localStorage.setItem("user", JSON.stringify(values));
+      setUser(values);
     },
   });
 
@@ -165,10 +151,11 @@ export default function SubmitProject() {
       <LearningNavbar />
       <div className="min-h-screen bg-gray-100 font-inter p-8 flex flex-col  gap-4">
         <form
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            formikForCreateProject.handleSubmit();
-            formikForCreatingUser.handleSubmit();
+            await formikForCreatingUser.handleSubmit();
+            await formikForCreateProject.handleSubmit();
+            console.log("submit project");
           }}
         >
           <div>
@@ -260,11 +247,12 @@ export default function SubmitProject() {
                 ถัดไป
               </button>
               <button
+              type="submit"
                 className={`bg-emerald-500 text-white px-4 py-2 rounded ${step === 3 ? "" : "hidden"}`}
-                onClick={() => {
-                  formikForCreateProject.handleSubmit();
-                  formikForCreatingUser.handleSubmit();
-                }}
+                // onClick={() => {
+                //   formikForCreatingUser.handleSubmit();
+                //   console.log("submit user");
+                // }}
               >
                 ส่งข้อมูล
               </button>

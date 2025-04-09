@@ -11,6 +11,18 @@ import { useEffect, useState } from "react";
 export const CreateProjectForm = ({ formik, projectNameAndIds, readonly }: { formik: FormikProps<SubmitProjectDto>, projectNameAndIds: { name: string; id: string }[], readonly: boolean })  => {
     const [hasParentProject, setHasParentProject] = useState(false);
     const inputBgClass = readonly ? 'bg-gray-200' : '';
+    const convertToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+          fileReader.readAsDataURL(file);
+          fileReader.onload = () => {
+            resolve(fileReader.result);
+          };
+          fileReader.onerror = (error) => {
+            reject(error);
+          };
+        });
+      };
 
     return (
         <section>
@@ -120,10 +132,21 @@ export const CreateProjectForm = ({ formik, projectNameAndIds, readonly }: { for
                     <Input
                         type="file"
                         id="projectDescriptionFile"
-                        {...formik.getFieldProps("projectDescriptionFile")}
+                        // {...formik.getFieldProps("projectDescriptionFile")}
                         readOnly={readonly}
                         className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 h-20 ${inputBgClass} ${formik.touched.projectDescriptionFile && formik.errors.projectDescriptionFile ? 'border-red-500' : ''}`}
                         accept=".pdf"
+                        onChange={async (e) => {
+                            const file = e.target.files[0];
+                               //check the size of image 
+                            if (file?.size/1024/1024 < 5) {
+                              const base64 = await convertToBase64(file);
+                              formik.setFieldValue('projectDescriptionFile', base64);
+                            }
+                            else {
+                                console.error('File size must be 5MB or less');
+                            };
+                          }}
                     />
                     {formik.touched.projectDescriptionFile && formik.errors.projectDescriptionFile ? (
                         <div className="text-red-500 text-sm">{formik.errors.projectDescriptionFile}</div>
