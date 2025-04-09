@@ -76,7 +76,7 @@ export const authService = {
   },
 
   googleLogin: (): Promise<ApiResponse<any>> => {
-    return apiRequest("/auth/google/login", "GET"); // หรือเปลี่ยนชื่อ method ได้ตาม backend
+    return apiRequest("/auth/google", "GET"); // หรือเปลี่ยนชื่อ method ได้ตาม backend
   },
 };
 

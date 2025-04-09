@@ -31,8 +31,8 @@ interface AuthProviderProps {
 }
 
 export const getRouteByRole = (role?: string): string => {
-  if (role === "admin") return "/admin/dashboard/project";
-  if (role === "project-approver") return "/approver/project-menu";
+  if (role === "admin") return "/admin/dashboard";
+  if (role === "project-approver") return "/approver/dashboard";
   return "/contents"; // default learner
 };
 
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsAuthenticated(true);
 
       // // Don't automatically redirect - let the ProtectedRoute component handle navigation
-      navigate(getRouteByRole(userData.role));
+      return userData.role;
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
@@ -95,8 +95,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setIsLoading(true);
     try {
       await authService.googleLogin(); // trigger server-side OAuth login
-      await checkAuth(); // fetch user
-      navigate(getRouteByRole(user?.role));
+      const role = await checkAuth(); // fetch user
+      if (role) {
+        console.log(`role: ${role}`);
+        navigate(getRouteByRole(role));
+      }
     } catch (error) {
       console.error("Login error:", error);
       throw error;

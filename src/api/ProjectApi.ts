@@ -1,5 +1,4 @@
 import { Project, SubmitProjectDto } from "@/utils/backend-openapi";
-import axios from "axios";
 import client from "@/utils/api-client";
 
 export const createProject = async (projectData: SubmitProjectDto) => {
@@ -24,6 +23,17 @@ export const getAllProject = async () => {
   }
 };
 
+export const getProject = async (id: string) => {
+  try {
+    const response = await client.get<Project>(`projects/${id}`);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error;
+  }
+};
+
 export const getUserProjects = async () => {
   try {
     const response = await client.get<Project[]>(`projects/user-projects`);
@@ -36,7 +46,7 @@ export const getUserProjects = async () => {
   }
 };
 
-export const updateProjectStatus = async (projectId: number) => {
+export const updateProjectStatus = async (projectId: string) => {
   try {
     const response = await client.post<Project>(
       `/projects/${projectId}/update-status`,

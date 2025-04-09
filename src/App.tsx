@@ -84,12 +84,6 @@ export default function App() {
               }
             />
 
-            {/* Role Learner + Project Submiter */}
-            <Route path="/contents" element={<ContentMenu />} />
-            <Route path="/video" element={<ContentVideo />} />
-            <Route path="/submit-project" element={<SubmitProject />} />
-            <Route path="/submitsuccess" element={<SubmitSuccess />} />
-
             {/* Protected Routes for Approver */}
             <Route
               path={ROUTES.APPROVER_DASHBOARD_PROJECT}
@@ -108,7 +102,7 @@ export default function App() {
               }
             />
             <Route
-              path={ROUTES.APPROVER_PROJECT_DETAILS}
+              path={`${ROUTES.APPROVER_PROJECT_DETAILS}/:projectId`}
               element={
                 <ProtectedRoute allowedRoles={["project-approver"]}>
                   <ApproveProjectDetails />
