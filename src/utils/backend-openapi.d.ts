@@ -153,6 +153,32 @@ declare namespace Components {
              */
             updatedDT: string; // date-time
         }
+        export interface ContentsReportDto {
+            /**
+             * The unique identifier of the content/course
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            id: string;
+            /**
+             * The title of the content/course
+             * example:
+             * Introduction to Web Development
+             */
+            title: string;
+            /**
+             * Number of students enrolled in the course
+             * example:
+             * 50
+             */
+            studentsEnrolled: number;
+            /**
+             * Number of students who have completed the course
+             * example:
+             * 30
+             */
+            studentsCompleted: number;
+        }
         export interface CreateContentDto {
             /**
              * Content name
@@ -1208,6 +1234,32 @@ declare namespace Components {
                 tel: string; // ^[0-9]{10}$
             };
         }
+        export interface ProjectsReportDto {
+            /**
+             * The unique identifier of the project
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            id: string;
+            /**
+             * The name of the project in English
+             * example:
+             * Smart Home Automation System
+             */
+            projectName: string;
+            /**
+             * The full name of the person who submitted the project
+             * example:
+             * John Doe
+             */
+            submitter: string;
+            /**
+             * The current status of the project
+             * example:
+             * α╕üα╕│α╕Ñα╕▒α╕çα╕úα╕¡α╕üα╕▓α╕úα╕òα╕úα╕ºα╕êα╕¬α╕¡α╕Ü
+             */
+            status: "\u0E01\u0E33\u0E25\u0E31\u0E07\u0E23\u0E2D\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 1" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 2" | "\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E2A\u0E33\u0E40\u0E23\u0E47\u0E08" | "\u0E16\u0E39\u0E01\u0E1B\u0E0F\u0E34\u0E40\u0E2A\u0E18";
+        }
         export interface SubmitProjectDto {
             /**
              * Thai name of the project
@@ -1406,6 +1458,32 @@ declare namespace Components {
              */
             tel: string; // ^[0-9]{10}$
         }
+        export interface UsersReportDto {
+            /**
+             * The unique identifier of the user
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            id: string;
+            /**
+             * The full name of the user
+             * example:
+             * John Doe
+             */
+            name: string;
+            /**
+             * Total number of courses the user has enrolled in
+             * example:
+             * 5
+             */
+            coursesTaken: number;
+            /**
+             * Number of courses the user has completed
+             * example:
+             * 3
+             */
+            coursesCompleted: number;
+        }
         export interface VerifyTokenDto {
         }
     }
@@ -1539,6 +1617,11 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Content;
         }
     }
+    namespace GetContentsReport {
+        namespace Responses {
+            export type $200 = Components.Schemas.ContentsReportDto[];
+        }
+    }
     namespace GetProjectById {
         namespace Parameters {
             export type ProjectId = string;
@@ -1552,6 +1635,11 @@ declare namespace Paths {
             }
         }
     }
+    namespace GetProjectsReport {
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectsReportDto[];
+        }
+    }
     namespace GetUserProjects {
         namespace Responses {
             export type $200 = Components.Schemas.Project[];
@@ -1559,22 +1647,9 @@ declare namespace Paths {
             }
         }
     }
-    namespace ReportsControllerGetContentsReport {
+    namespace GetUsersReport {
         namespace Responses {
-            export interface $200 {
-            }
-        }
-    }
-    namespace ReportsControllerGetProjectsReport {
-        namespace Responses {
-            export interface $200 {
-            }
-        }
-    }
-    namespace ReportsControllerGetUsersReport {
-        namespace Responses {
-            export interface $200 {
-            }
+            export type $200 = Components.Schemas.UsersReportDto[];
         }
     }
     namespace SubmitProject {
@@ -1633,14 +1708,6 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.GetAllProjects.Responses.$200>
   /**
-   * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
-   */
-  'getProjectById'(
-    parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
-    data?: any,
-    config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.GetProjectById.Responses.$200>
-  /**
    * getUserProjects - Get projects by user ID
    */
   'getUserProjects'(
@@ -1648,6 +1715,14 @@ export interface OperationMethods {
     data?: any,
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.GetUserProjects.Responses.$200>
+  /**
+   * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
+   */
+  'getProjectById'(
+    parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetProjectById.Responses.$200>
   /**
    * updateProjectStatus - Update project status
    */
@@ -1785,29 +1860,29 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.ContentControllerCompleteContent.Responses.$200>
   /**
-   * ReportsController_getUsersReport
+   * getUsersReport - Get users report
    */
-  'ReportsController_getUsersReport'(
+  'getUsersReport'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ReportsControllerGetUsersReport.Responses.$200>
+  ): OperationResponse<Paths.GetUsersReport.Responses.$200>
   /**
-   * ReportsController_getContentsReport
+   * getContentsReport - Get contents report
    */
-  'ReportsController_getContentsReport'(
+  'getContentsReport'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ReportsControllerGetContentsReport.Responses.$200>
+  ): OperationResponse<Paths.GetContentsReport.Responses.$200>
   /**
-   * ReportsController_getProjectsReport
+   * getProjectsReport - Get projects report
    */
-  'ReportsController_getProjectsReport'(
+  'getProjectsReport'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ReportsControllerGetProjectsReport.Responses.$200>
+  ): OperationResponse<Paths.GetProjectsReport.Responses.$200>
 }
 
 export interface PathsDictionary {
@@ -1831,16 +1906,6 @@ export interface PathsDictionary {
       config?: AxiosRequestConfig  
     ): OperationResponse<Paths.GetAllProjects.Responses.$200>
   }
-  ['/api/projects/{projectId}']: {
-    /**
-     * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
-     */
-    'get'(
-      parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
-      data?: any,
-      config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.GetProjectById.Responses.$200>
-  }
   ['/api/projects/me']: {
     /**
      * getUserProjects - Get projects by user ID
@@ -1850,6 +1915,16 @@ export interface PathsDictionary {
       data?: any,
       config?: AxiosRequestConfig  
     ): OperationResponse<Paths.GetUserProjects.Responses.$200>
+  }
+  ['/api/projects/{projectId}']: {
+    /**
+     * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetProjectById.Responses.$200>
   }
   ['/api/projects/{projectId}/status']: {
     /**
@@ -2021,43 +2096,46 @@ export interface PathsDictionary {
   }
   ['/api/reports/users']: {
     /**
-     * ReportsController_getUsersReport
+     * getUsersReport - Get users report
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ReportsControllerGetUsersReport.Responses.$200>
+    ): OperationResponse<Paths.GetUsersReport.Responses.$200>
   }
   ['/api/reports/contents']: {
     /**
-     * ReportsController_getContentsReport
+     * getContentsReport - Get contents report
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ReportsControllerGetContentsReport.Responses.$200>
+    ): OperationResponse<Paths.GetContentsReport.Responses.$200>
   }
   ['/api/reports/projects']: {
     /**
-     * ReportsController_getProjectsReport
+     * getProjectsReport - Get projects report
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ReportsControllerGetProjectsReport.Responses.$200>
+    ): OperationResponse<Paths.GetProjectsReport.Responses.$200>
   }
 }
 
 export type Client = OpenAPIClient<OperationMethods, PathsDictionary>
 
 export type Content = Components.Schemas.Content;
+export type ContentsReportDto = Components.Schemas.ContentsReportDto;
 export type CreateContentDto = Components.Schemas.CreateContentDto;
 export type Project = Components.Schemas.Project;
+export type ProjectsReportDto = Components.Schemas.ProjectsReportDto;
 export type SubmitProjectDto = Components.Schemas.SubmitProjectDto;
 export type UpdateContentDto = Components.Schemas.UpdateContentDto;
 export type UpdateProjectStatusDto = Components.Schemas.UpdateProjectStatusDto;
 export type User = Components.Schemas.User;
+export type UsersReportDto = Components.Schemas.UsersReportDto;
 export type VerifyTokenDto = Components.Schemas.VerifyTokenDto;

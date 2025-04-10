@@ -1,248 +1,17 @@
 import AdminSidebar from "@/components/admin/AdminSidebar"; // Assuming this path is correct
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import { pdf } from '@react-pdf/renderer';
+import { pdf } from "@react-pdf/renderer";
 import MyReport from "./ReportDocument";
 import "./ReportComponent.css"; // Make sure this CSS file exists and contains the styles
 import { Button } from "@/components/ui/button";
 import ReportDocument from "./ReportDocument";
-
-// Define the structure for the course data
-interface CourseData {
-  id: number;
-  title: string;
-  instructor: string;
-  studentsEnrolled: string | number;
-  studentsCompleted: string | number;
-}
-
-// Define the structure for the user data
-interface UserData {
-  id: number;
-  username: string;
-  coursesTaken: string | number;
-  coursesCompleted: string | number;
-}
-
-// --- NEW: Define the structure for the project data ---
-interface ProjectData {
-  id: number;
-  projectName: string;
-  submitter: string; // Assuming 'ผู้ส่งโปรเจกต์' is the submitter name/ID
-  status: string;
-}
-
-// Sample data for courses
-const sampleCourseData: CourseData[] = [
-  // ... (course data remains the same)
-  {
-    id: 1,
-    title: "Python in 4 hours",
-    instructor: "James Mars",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-  {
-    id: 2,
-    title: "Calculus 2",
-    instructor: "Harvard University",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-  {
-    id: 3,
-    title: "Microsoft Excel",
-    instructor: "Microsoft",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-  {
-    id: 4,
-    title: "Machine learning for every one",
-    instructor: "Sindy Yung",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-  {
-    id: 5,
-    title: "Harvard CS50",
-    instructor: "Harvard University",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-  {
-    id: 6,
-    title: "Linux for ethical hackers",
-    instructor: "Harvard University",
-    studentsEnrolled: "XXX",
-    studentsCompleted: "YYY",
-  },
-];
-
-// Sample data for users
-const sampleUserData: UserData[] = [
-  // ... (user data remains the same)
-  {
-    id: 1,
-    username: "Gachimuchi",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 2,
-    username: "Billy Herrington",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 3,
-    username: "Van Darkholme",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 4,
-    username: "Mark Wolff",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 5,
-    username: "Danny Lee",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 6,
-    username: "Terebi-Chan",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 7,
-    username: "Terebi-Duncan MillsChan",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 8,
-    username: "Anthony Stone",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 9,
-    username: "Alexander Vishnevsky",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 10,
-    username: "Steve Rambo",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 11,
-    username: "Lynn Ross",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 12,
-    username: "Chi Chi LaRue",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-  {
-    id: 13,
-    username: "Ricardo Milos",
-    coursesTaken: "XXX",
-    coursesCompleted: "YYY",
-  },
-];
-
-// --- NEW: Sample data for projects based on the third image ---
-const sampleProjectData: ProjectData[] = [
-  {
-    id: 1,
-    projectName: "Gachimuchi",
-    submitter: "XXX",
-    status: "ลงทะเบียนเสร็จสิ้น",
-  }, // Registration Complete
-  {
-    id: 2,
-    projectName: "Billy Herrington",
-    submitter: "XXX",
-    status: "ลงทะเบียนเสร็จสิ้น",
-  }, // Registration Complete
-  {
-    id: 3,
-    projectName: "Van Darkholme",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 1",
-  }, // Passed Review Round 1
-  {
-    id: 4,
-    projectName: "Mark Wolff",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 1",
-  }, // Passed Review Round 1
-  {
-    id: 5,
-    projectName: "Danny Lee",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 1",
-  }, // Passed Review Round 1
-  {
-    id: 6,
-    projectName: "Terebi-Chan",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 2",
-  }, // Passed Review Round 2
-  {
-    id: 7,
-    projectName: "Terebi-Duncan MillsChan",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 2",
-  }, // Passed Review Round 2
-  {
-    id: 8,
-    projectName: "Anthony Stone",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 2",
-  }, // Passed Review Round 2
-  {
-    id: 9,
-    projectName: "Alexander Vishnevsky",
-    submitter: "XXX",
-    status: "ผ่านการตรวจสอบรอบที่ 3",
-  }, // Passed Review Round 3
-  {
-    id: 10,
-    projectName: "Steve Rambo",
-    submitter: "XXX",
-    status: "ตรวจสอบสำเร็จ",
-  }, // Review Successful
-  {
-    id: 11,
-    projectName: "Lynn Ross",
-    submitter: "XXX",
-    status: "ตรวจสอบสำเร็จ",
-  }, // Review Successful
-  {
-    id: 12,
-    projectName: "Chi Chi LaRue",
-    submitter: "XXX",
-    status: "ตรวจสอบสำเร็จ",
-  }, // Review Successful
-  {
-    id: 13,
-    projectName: "Ricardo Milos",
-    submitter: "XXX",
-    status: "ตรวจสอบสำเร็จ",
-  }, // Review Successful
-];
+import {
+  ContentsReportDto,
+  ProjectsReportDto,
+  UsersReportDto,
+} from "@/utils/backend-openapi";
+import { openApiclient } from "@/utils/api-client";
 
 // Define types for the tabs
 type MainTab = "e-learning" | "project";
@@ -251,11 +20,35 @@ type SubTab = "courses" | "users";
 const ReportComponent: React.FC = () => {
   const [activeMainTab, setActiveMainTab] = useState<MainTab>("e-learning");
   const [activeSubTab, setActiveSubTab] = useState<SubTab>("courses");
+  const [contentsReport, setContentsReport] = useState<ContentsReportDto[]>([]);
+  const [usersReport, setUsersReport] = useState<UsersReportDto[]>([]);
+  const [projectsReport, setProjectsReport] = useState<ProjectsReportDto[]>([]);
 
-  // Data states
-  const [courseData] = useState<CourseData[]>(sampleCourseData);
-  const [userData] = useState<UserData[]>(sampleUserData);
-  const [projectData] = useState<ProjectData[]>(sampleProjectData); // Add project data state
+  const fetchData = async () => {
+    try {
+      const contentReponse = await openApiclient.getContentsReport();
+      const userReponse = await openApiclient.getUsersReport();
+      const projectReponse = await openApiclient.getProjectsReport();
+
+      if (
+        contentReponse.status === 200 &&
+        userReponse.status === 200 &&
+        projectReponse.status === 200
+      ) {
+        setContentsReport(contentReponse.data);
+        setUsersReport(userReponse.data);
+        setProjectsReport(projectReponse.data);
+      } else {
+        console.error("Error fetching data");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const getFileName = () => {
     if (activeSubTab === "courses") return "courses-report.pdf";
@@ -267,47 +60,48 @@ const ReportComponent: React.FC = () => {
   console.log("Exporting PDF with:", {
     courseData:
       activeMainTab === "e-learning" && activeSubTab === "courses"
-        ? courseData
+        ? contentsReport
         : [],
     userData:
       activeMainTab === "e-learning" && activeSubTab === "users"
-        ? userData
+        ? usersReport
         : [],
-    projectData: activeMainTab === "project" ? projectData : [],
+    projectData: activeMainTab === "project" ? projectsReport : [],
   });
 
   const handleGenerateReport = async () => {
     const blob = await pdf(
       <ReportDocument
-        courseData={courseData ?? []}
-        userData={userData ?? []}
-        projectData={projectData ?? []}
+        courseData={contentsReport}
+        userData={usersReport}
+        projectData={projectsReport}
       />
     ).toBlob();
-  
+
     const url = URL.createObjectURL(blob);
-  
-    const link = document.createElement('a');
+
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'report.pdf';
+    link.download = "report.pdf";
     link.click();
-  
+
     // Optional: clean up
     URL.revokeObjectURL(url);
   };
-  
 
   const renderPDF = () => {
     if (activeSubTab === "courses") {
       return (
-        <MyReport courseData={courseData} userData={[]} projectData={[]} />
+        <MyReport courseData={contentsReport} userData={[]} projectData={[]} />
       );
     } else if (activeSubTab === "users") {
-      console.log("user used")
-      return <MyReport courseData={[]} userData={userData} projectData={[]} />;
+      console.log("user used");
+      return (
+        <MyReport courseData={[]} userData={usersReport} projectData={[]} />
+      );
     } else if (activeMainTab === "project") {
       return (
-        <MyReport courseData={[]} userData={[]} projectData={projectData} />
+        <MyReport courseData={[]} userData={[]} projectData={projectsReport} />
       );
     } else {
       return <MyReport courseData={[]} userData={[]} projectData={[]} />;
@@ -397,7 +191,6 @@ const ReportComponent: React.FC = () => {
                         <tr>
                           <th className="py-3 px-4 w-[5%]">No.</th>
                           <th className="py-3 px-4 w-[35%]">Title</th>
-                          <th className="py-3 px-4 w-[25%]">Instructor</th>
                           <th className="py-3 px-4 w-[15%]">
                             จำนวนผู้เข้าเรียน
                           </th>
@@ -407,14 +200,13 @@ const ReportComponent: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {courseData.map((course) => (
+                        {contentsReport.map((course) => (
                           <tr
                             key={course.id}
                             className="bg-white border-b hover:bg-gray-50"
                           >
                             <td className="py-3 px-4">{course.id}.</td>
                             <td className="py-3 px-4">{course.title}</td>
-                            <td className="py-3 px-4">{course.instructor}</td>
                             <td className="py-3 px-4">
                               {course.studentsEnrolled}
                             </td>
@@ -443,13 +235,13 @@ const ReportComponent: React.FC = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {userData.map((user) => (
+                        {usersReport.map((user) => (
                           <tr
                             key={user.id}
                             className="bg-white border-b hover:bg-gray-50"
                           >
                             <td className="py-3 px-4">{user.id}.</td>
-                            <td className="py-3 px-4">{user.username}</td>
+                            <td className="py-3 px-4">{user.name}</td>
                             <td className="py-3 px-4">{user.coursesTaken}</td>
                             <td className="py-3 px-4">
                               {user.coursesCompleted}
@@ -468,7 +260,7 @@ const ReportComponent: React.FC = () => {
               <div className="tableContainer overflow-x-auto">
                 <table className="reportTable w-full text-sm text-left text-gray-600">
                   <tbody>
-                    {projectData.map((project) => (
+                    {projectsReport.map((project) => (
                       <tr
                         key={project.id}
                         className="bg-white border-b hover:bg-gray-50"
