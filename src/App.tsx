@@ -38,7 +38,7 @@ const ROUTES = {
   // Approver Routes
   APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
   APPROVER_PROJECT_MENU: "/approver/project-menu",
-  APPROVER_PROJECT_DETAILS: "/approver/project-details",
+  APPROVER_PROJECT_DETAILS: "/approver/project-details/:projectId",
 
   // Admin Routes
   ADMIN_DASHBOARD_ELEARNING: "/admin/dashboard",

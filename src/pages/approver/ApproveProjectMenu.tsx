@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AdminSidebar from "@/components/admin/AdminSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { getAllProject } from "@/api/ProjectApi";
 import { Project } from "@/utils/backend-openapi";
-import ApproverNavbar from "@/components/approver/ApproverNavbar";
 import ApproverSidebar from "@/components/approver/ApproverSidebar";
 
 export default function ApproveProjectMenu() {
@@ -32,6 +30,7 @@ export default function ApproveProjectMenu() {
         setLoading(true);
         const data = await getAllProject();
         setProjects(data);
+        setFilteredProjects(data); 
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch projects");
@@ -64,6 +63,7 @@ export default function ApproveProjectMenu() {
       );
       setFilteredProjects(filtered);
     }
+    setCurrentPage(1);
   }, [searchTerm, projects]);
 
   const getProjectStatus = (project: Project): string => {
@@ -77,6 +77,16 @@ export default function ApproveProjectMenu() {
       return "ไม่อนุมัติ";
     } else {
       return "รอการตรวจสอบครั้งที่ 1";
+    }
+  };
+
+  const getStatusBadgeColor = (project: Project): string => {
+    if (project.thirdApprovedDT) {
+      return "text-green-700 bg-green-100";
+    } else if (project.rejectedDT) {
+      return "text-red-700 bg-red-100";
+    } else {
+      return "text-[#606A9B] bg-[#606A9B]/15";
     }
   };
 
@@ -109,6 +119,7 @@ export default function ApproveProjectMenu() {
         <div className="min-h-screen bg-gray-100 p-6">
           <div className="mb-6">
             <h1 className="text-4xl font-bold mb-2">จัดการโครงการ</h1>
+            <p className="text-gray-600">รายการโครงการทั้งหมดที่รอการอนุมัติ</p>
           </div>
 
           <Card className="w-full">
@@ -117,6 +128,7 @@ export default function ApproveProjectMenu() {
             </CardHeader>
 
             <CardContent className="p-0">
+              {/* Search bar */}
               <div className="p-4 bg-gray-50">
                 <div className="flex items-center gap-4">
                   <div className="relative flex-1">
@@ -148,6 +160,7 @@ export default function ApproveProjectMenu() {
                 </div>
               </div>
 
+              {/* Loading and error states */}
               {loading ? (
                 <div className="p-8 text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto"></div>
@@ -166,6 +179,7 @@ export default function ApproveProjectMenu() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
+                  {/* Project table */}
                   <table className="w-full">
                     <thead>
                       <tr className="border-b text-left">
@@ -213,24 +227,29 @@ export default function ApproveProjectMenu() {
                               {startIndex + index + 1}
                             </td>
                             <td className="p-4 font-medium align-top">
-                              {project.projectThaiName}
+                              <div>{project.projectThaiName}</div>
+                              <div className="text-sm text-gray-500">
+                                {project.projectEngName}
+                              </div>
                             </td>
                             <td className="p-4 text-sm align-top">
-                              {project.projectSummary}
+                              <div className="line-clamp-2">{project.projectSummary}</div>
                             </td>
                             <td className="p-4 align-top">
                               <Badge
                                 variant="secondary"
-                                className="text-[#606A9B] bg-[#606A9B]/15"
+                                className={getStatusBadgeColor(project)}
                               >
                                 {getProjectStatus(project)}
                               </Badge>
                             </td>
-                            <td className="p-4 text-sm align-top">
+                            <td className="p-4 text-sm align-top text-center">
                               <Link
                                 to={`/approver/project-details/${project.projectId}`}
                               >
-                                <Button className="bg-[#606A9B]">จัดการ</Button>
+                                <Button className="bg-[#606A9B] hover:bg-[#4A5179]">
+                                  จัดการ
+                                </Button>
                               </Link>
                             </td>
                           </tr>
@@ -250,6 +269,7 @@ export default function ApproveProjectMenu() {
                 </div>
               )}
 
+              {/* Pagination controls */}
               <div className="p-4 flex items-center justify-between bg-gray-50">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-500">Rows per page:</span>

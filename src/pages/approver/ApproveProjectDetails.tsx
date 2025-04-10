@@ -22,7 +22,6 @@ import {
 import ApproverNavbar from "@/components/approver/ApproverNavbar";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  getAllProject,
   getProject,
   updateProjectStatus,
 } from "@/api/ProjectApi";
@@ -44,7 +43,7 @@ export default function ApproveProjectDetails() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchProjectFromAllProjects = async () => {
+    const fetchProjectData = async () => {
       if (projectId) {
         try {
           setLoading(true);
@@ -66,7 +65,7 @@ export default function ApproveProjectDetails() {
       }
     };
 
-    fetchProjectFromAllProjects();
+    fetchProjectData();
   }, [projectId]);
 
   const calculateApprovalStep = (project: Project): number => {
@@ -108,7 +107,6 @@ export default function ApproveProjectDetails() {
         "ธันวาคม",
       ];
       const month = thaiMonths[date.getMonth()];
-      // แปลงเป็นปี พ.ศ.
       const year = date.getFullYear() + 543;
 
       return `${day} ${month} ${year}`;
@@ -266,6 +264,13 @@ export default function ApproveProjectDetails() {
     { label: "ตรวจสอบสำเร็จ", icon: <CheckIcon className="size-5" /> },
   ];
 
+  const getFileNameFromPresignedURL = (presignedURL: string) => {
+    const url = new URL(presignedURL);
+    const pathParts = url.pathname.split("/");
+    const fileName = pathParts[pathParts.length - 1];
+    return fileName;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 flex flex-col font-prompt">
@@ -332,13 +337,6 @@ export default function ApproveProjectDetails() {
   const submitterEmail = project.submittedByUser
     ? project.submittedByUser.email
     : "ไม่ระบุ";
-
-  const getFileNameFromPresignedURL = (presignedURL: string) => {
-    const url = new URL(presignedURL);
-    const pathParts = url.pathname.split("/");
-    const fileName = pathParts[pathParts.length - 1];
-    return fileName;
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col font-prompt">
@@ -421,9 +419,7 @@ export default function ApproveProjectDetails() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="projectNameEn">
-                    ชื่อโครงการ (ภาษาอังกฤษ)
-                  </Label>
+                  <Label htmlFor="projectNameEn">ชื่อโครงการ (ภาษาอังกฤษ)</Label>
                   <Input
                     id="projectNameEn"
                     className="mt-3"
