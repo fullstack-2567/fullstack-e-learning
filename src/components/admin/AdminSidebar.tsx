@@ -33,12 +33,12 @@ export default function AdminSidebar({ className }: SidebarProps) {
     {
       path: "/admin/projectmanagement",
       icon: <LayoutDashboard size={18} />,
-      label: "จัดการโครงการ",
+      label: "รายการโครงการ",
     },
     {
       path: "/admin/report",
       icon: <BarChart3 size={18} />,
-      label: "รายงานสถิติ",
+      label: "รายงาน",
     },
   ];
 
