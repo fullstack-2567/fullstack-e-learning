@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { toast } from "sonner";
 import { openApiclient } from "@/utils/api-client";
+import { useNavigate } from "react-router";
 
 export default function SubmitProject() {
   // const [project, setProject] = useState<Project>();
@@ -19,6 +20,8 @@ export default function SubmitProject() {
   const [projectNameAndIds, setProjectNameAndIds] = useState<
     { name: string; id: string }[]
   >([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchProjects = async () => {
       const response = await openApiclient.getUserProjects();
@@ -73,21 +76,24 @@ export default function SubmitProject() {
       userInfo: yup.object().optional(),
     }),
     onSubmit: async (values) => {
-      createProject({
-        ...values,
-        userInfo: {
-          prefix: user?.prefix,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          birthDate: user?.birthDate,
-          education: user?.education,
-          tel: user?.tel,
-          sex: user?.sex,
-        },
-      }).then((response) => {
-        console.log("Project created:", response);
-      });
-      console.log(1);
+      try {
+        const response = await openApiclient.submitProject(null, {
+          ...values,
+          userInfo: {
+            prefix: user?.prefix,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
+            birthDate: user?.birthDate,
+            education: user?.education,
+            tel: user?.tel,
+            sex: user?.sex,
+          },
+        });
+        const data = response.data;
+        navigate(`/submit-success/${data.projectId}`);
+      } catch (error) {
+        toast.error("เกิดข้อผิดพลาดในการส่งข้อมูล");
+      }
     },
   });
 

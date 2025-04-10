@@ -34,6 +34,7 @@ const ROUTES = {
   CONTENT_MENU: "/contents",
   CONTENT_VIDEO: "/video",
   SUBMIT_PROJECT: "/submit-project",
+  SUBMIT_SUCCESS: "/submit-success/:projectId",
 
   // Approver Routes
   APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
@@ -80,6 +81,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <SubmitProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.SUBMIT_SUCCESS}
+              element={
+                <ProtectedRoute>
+                  <SubmitSuccess />
                 </ProtectedRoute>
               }
             />

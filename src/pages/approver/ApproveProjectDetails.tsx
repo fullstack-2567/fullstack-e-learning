@@ -23,6 +23,7 @@ import ApproverNavbar from "@/components/approver/ApproverNavbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { Project } from "@/utils/backend-openapi";
 import { openApiclient } from "@/utils/api-client";
+import { formatDate } from "@/utils/dateUtils";
 
 export default function ApproveProjectDetails() {
   const navigate = useNavigate();
@@ -100,29 +101,7 @@ export default function ApproveProjectDetails() {
       typeof startDate === "string" ? new Date(startDate) : startDate;
     const end = typeof endDate === "string" ? new Date(endDate) : endDate;
 
-    const formatDate = (date: Date) => {
-      const day = date.getDate();
-      const thaiMonths = [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤศจิกายน",
-        "ธันวาคม",
-      ];
-      const month = thaiMonths[date.getMonth()];
-      const year = date.getFullYear() + 543;
-
-      return `${day} ${month} ${year}`;
-    };
-
-    return `${formatDate(start)} ถึง ${formatDate(end)}`;
+    return `${formatDate(start, false)} ถึง ${formatDate(end, false)}`;
   };
 
   const getSdgDescription = (sdgType: string): string[] => {
