@@ -67,14 +67,14 @@ export default function ApproveProjectMenu() {
   }, [searchTerm, projects]);
 
   const getProjectStatus = (project: Project): string => {
-    if (project.thirdApprovedDT) {
+    if (project.rejectedDT) {
+      return "ไม่อนุมัติ";
+    } else if (project.thirdApprovedDT) {
       return "อนุมัติแล้ว";
     } else if (project.secondApprovedDT) {
       return "รอการตรวจสอบครั้งที่ 3";
     } else if (project.firstApprovedDT) {
       return "รอการตรวจสอบครั้งที่ 2";
-    } else if (project.rejectedDT) {
-      return "ไม่อนุมัติ";
     } else {
       return "รอการตรวจสอบครั้งที่ 1";
     }

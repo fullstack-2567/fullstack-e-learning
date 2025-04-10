@@ -36,9 +36,9 @@ export default function ApproveProjectDetails() {
   const [error, setError] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState(1);
   const [showApproveDialog, setShowApproveDialog] = useState(false);
-  const [showRejectDialog, setShowRejectDialog] = useState(false);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
+  const [cancelReason, setCancelReason] = useState("");
   const [actionCompleted, setActionCompleted] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -80,6 +80,14 @@ export default function ApproveProjectDetails() {
     } else {
       return 1;
     }
+  };
+  
+  const isProjectCancelled = (project: Project): boolean => {
+    return project.rejectedDT !== null && project.rejectedDT !== undefined;
+  };
+  
+  const isProjectFullyApproved = (project: Project): boolean => {
+    return project.thirdApprovedDT !== null && project.thirdApprovedDT !== undefined;
   };
 
   const formatDateRange = (
@@ -156,14 +164,20 @@ export default function ApproveProjectDetails() {
 
   const getProjectTypeInThai = (type: string): string => {
     const typeMap: Record<string, string> = {
+      energy_and_environment: "พลังงานและสิ่งแวดล้อม",
+      construction_and_infrastructure: "การก่อสร้างและโครงสร้าง",
+      agriculture_and_food: "การเกษตรและอาหาร",
+      materials_and_minerals: "วัสดุและแร่ธาตุ",
+      finance_and_investment: "การเงินและการลงทุน",
       technology_and_innovation: "เทคโนโลยีและนวัตกรรม",
-      social_development: "พัฒนาสังคม",
-      environment: "สิ่งแวดล้อม",
-      education: "การศึกษา",
-      healthcare: "สาธารณสุข",
-      agriculture: "เกษตรกรรม",
-      energy: "พลังงาน",
-      infrastructure: "โครงสร้างพื้นฐาน",
+      medicine_and_health: "การแพทย์และสุขภาพ",
+      human_resources_development: "การศึกษาและพัฒนาทรัพยากรมนุษย์",
+      manufacturing_and_automotive: "อุตสาหกรรมการผลิตและหุ่นยนต์",
+      electronics_and_retail: "พาณิชย์อิเล็กทรอนิกส์และค้าปลีก",
+      real_estate_and_urban_development: "อสังหาริมทรัพย์และการพัฒนาเมือง",
+      media_and_entertainment: "สื่อและบันเทิง",
+      tourism_and_services: "การท่องเที่ยวและบริการ",
+      society_and_community: "สังคมและชุมชน",
     };
 
     return typeMap[type] || type || "";
@@ -234,18 +248,18 @@ export default function ApproveProjectDetails() {
     }
   };
 
-  const handleReject = async () => {
+  const handleCancel = async () => {
     if (!project || !projectId) return;
 
     try {
       setIsSubmitting(true);
       await updateProjectStatus(project.projectId, "reject");
-      setShowRejectDialog(false);
-      setActionCompleted("ตีกลับ");
+      setShowCancelDialog(false);
+      setActionCompleted("ยกเลิก");
       setShowSuccessDialog(true);
     } catch (err) {
-      console.error("Error rejecting project:", err);
-      alert("เกิดข้อผิดพลาดในการตีกลับโครงการ กรุณาลองใหม่อีกครั้ง");
+      console.error("Error canceling project:", err);
+      alert("เกิดข้อผิดพลาดในการยกเลิกโครงการ กรุณาลองใหม่อีกครั้ง");
     } finally {
       setIsSubmitting(false);
     }
@@ -263,6 +277,24 @@ export default function ApproveProjectDetails() {
     { label: "การตรวจสอบครั้งที่ 3", icon: <CheckIcon className="size-5" /> },
     { label: "ตรวจสอบสำเร็จ", icon: <CheckIcon className="size-5" /> },
   ];
+
+  const getStepColor = (index: number, activeStep: number, isCancelled: boolean): string => {
+    if (isCancelled) {
+      return index <= activeStep ? "bg-red-500" : "bg-white border border-[#A3A3A3]";
+    }
+    return index <= activeStep ? "bg-[#606A9B]" : "bg-white border border-[#A3A3A3]";
+  };
+
+  const getDotColor = (index: number, activeStep: number, isCancelled: boolean): string => {
+    if (isCancelled) {
+      return index <= activeStep ? "bg-white" : "bg-[#A3A3A3]";
+    }
+    return index <= activeStep ? "bg-white" : "bg-[#A3A3A3]";
+  };
+
+  const getProgressBarColor = (isCancelled: boolean): string => {
+    return isCancelled ? "bg-red-500" : "bg-[#606A9B]";
+  };
 
   const getFileNameFromPresignedURL = (presignedURL: string) => {
     const url = new URL(presignedURL);
@@ -349,7 +381,7 @@ export default function ApproveProjectDetails() {
             <div className="absolute top-[14px] left-0 right-0">
               <div className="h-1 w-full bg-[#A3A3A3]"></div>
               <div
-                className="h-1 bg-[#606A9B] absolute top-0 left-0"
+                className={`h-1 absolute top-0 left-0 ${getProgressBarColor(isProjectCancelled(project))}`}
                 style={{
                   width: `${(activeStep / (steps.length - 1)) * 100}%`,
                 }}
@@ -371,14 +403,12 @@ export default function ApproveProjectDetails() {
                   >
                     <div
                       className={`rounded-full w-9 h-9 flex items-center justify-center ${
-                        index <= activeStep
-                          ? "bg-[#606A9B]"
-                          : "bg-white border border-[#A3A3A3]"
+                        getStepColor(index, activeStep, isProjectCancelled(project))
                       }`}
                     >
                       <div
                         className={`rounded-full w-4 h-4 ${
-                          index <= activeStep ? "bg-white" : "bg-[#A3A3A3]"
+                          getDotColor(index, activeStep, isProjectCancelled(project))
                         }`}
                       ></div>
                     </div>
@@ -395,13 +425,31 @@ export default function ApproveProjectDetails() {
 
       <main className="flex-grow container mx-auto py-6 px-4">
         <div className="max-w-5xl mx-auto">
-          <Alert className="mb-6">
-            <FileTextIcon className="size-5" />
-            <AlertTitle>ตรวจสอบรายละเอียดโครงการ</AlertTitle>
-            <AlertDescription>
-              กรุณาตรวจสอบข้อมูลโครงการให้ละเอียดก่อนทำการอนุมัติหรือปฏิเสธโครงการ
-            </AlertDescription>
-          </Alert>
+          {isProjectCancelled(project) ? (
+            <Alert className="mb-6 border-red-500 bg-red-50">
+              <AlertCircleIcon className="size-5 text-red-500" />
+              <AlertTitle className="text-red-500">โครงการถูกยกเลิก</AlertTitle>
+              <AlertDescription>
+                โครงการนี้ได้ถูกยกเลิกแล้ว ไม่สามารถดำเนินการเพิ่มเติมได้
+              </AlertDescription>
+            </Alert>
+          ) : isProjectFullyApproved(project) ? (
+            <Alert className="mb-6 border-green-500 bg-green-50">
+              <CheckIcon className="size-5 text-green-500" />
+              <AlertTitle className="text-green-500">ตรวจสอบสำเร็จ</AlertTitle>
+              <AlertDescription>
+                โครงการนี้ได้ผ่านการตรวจสอบและอนุมัติครบทุกขั้นตอนแล้ว
+              </AlertDescription>
+            </Alert>
+          ) : (
+            <Alert className="mb-6">
+              <FileTextIcon className="size-5" />
+              <AlertTitle>ตรวจสอบรายละเอียดโครงการ</AlertTitle>
+              <AlertDescription>
+                กรุณาตรวจสอบข้อมูลโครงการให้ละเอียดก่อนทำการอนุมัติหรือปฏิเสธโครงการ
+              </AlertDescription>
+            </Alert>
+          )}
 
           <Card className="mb-6">
             <CardHeader>
@@ -586,23 +634,25 @@ export default function ApproveProjectDetails() {
               <span className="font-medium">รหัสโครงการ:</span>{" "}
               {project.projectId}
             </div>
-            <div className="space-x-4">
-              <Button
-                variant="outline"
-                className="bg-white text-amber-600 border-amber-600 hover:bg-amber-50"
-                onClick={() => setShowRejectDialog(true)}
-                disabled={isSubmitting}
-              >
-                ตีกลับ
-              </Button>
-              <Button
-                onClick={() => setShowApproveDialog(true)}
-                className="bg-green-600 hover:bg-green-700"
-                disabled={isSubmitting}
-              >
-                อนุมัติ
-              </Button>
-            </div>
+            {!isProjectCancelled(project) && !isProjectFullyApproved(project) && (
+              <div className="space-x-4">
+                <Button
+                  variant="outline"
+                  className="bg-white text-amber-600 border-amber-600 hover:bg-amber-50"
+                  onClick={() => setShowCancelDialog(true)}
+                  disabled={isSubmitting}
+                >
+                  ยกเลิก
+                </Button>
+                <Button
+                  onClick={() => setShowApproveDialog(true)}
+                  className="bg-green-600 hover:bg-green-700"
+                  disabled={isSubmitting}
+                >
+                  อนุมัติ
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </main>
@@ -634,38 +684,38 @@ export default function ApproveProjectDetails() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
+      <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>ยืนยันการตีกลับโครงการ</DialogTitle>
+            <DialogTitle>ยืนยันการยกเลิกโครงการ</DialogTitle>
             <DialogDescription>
-              คุณต้องการตีกลับโครงการ "{project.projectThaiName}" ใช่หรือไม่?
+              คุณต้องการยกเลิกโครงการ "{project.projectThaiName}" ใช่หรือไม่?
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Label htmlFor="rejectReason">เหตุผลในการตีกลับ</Label>
+            <Label htmlFor="cancelReason">เหตุผลในการยกเลิก</Label>
             <Input
-              id="rejectReason"
-              placeholder="กรุณาระบุเหตุผลในการตีกลับโครงการ"
+              id="cancelReason"
+              placeholder="กรุณาระบุเหตุผลในการยกเลิกโครงการ"
               className="mt-2"
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
+              value={cancelReason}
+              onChange={(e) => setCancelReason(e.target.value)}
             />
           </div>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => setShowRejectDialog(false)}
+              onClick={() => setShowCancelDialog(false)}
               disabled={isSubmitting}
             >
               ยกเลิก
             </Button>
             <Button
               variant="destructive"
-              onClick={handleReject}
-              disabled={!rejectReason.trim() || isSubmitting}
+              onClick={handleCancel}
+              disabled={!cancelReason.trim() || isSubmitting}
             >
-              {isSubmitting ? "กำลังดำเนินการ..." : "ยืนยันการตีกลับ"}
+              {isSubmitting ? "กำลังดำเนินการ..." : "ยืนยันการยกเลิก"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -686,7 +736,7 @@ export default function ApproveProjectDetails() {
                 {actionCompleted === "อนุมัติ" ? (
                   <span className="text-green-600 font-bold"> อนุมัติ </span>
                 ) : (
-                  <span className="text-red-600 font-bold"> ตีกลับ </span>
+                  <span className="text-red-600 font-bold"> ยกเลิก </span>
                 )}
                 โครงการ "{project.projectThaiName}" เรียบร้อยแล้ว
               </p>
