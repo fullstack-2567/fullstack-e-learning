@@ -11,9 +11,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getAllProject } from "@/api/ProjectApi";
 import { Project } from "@/utils/backend-openapi";
 import ApproverSidebar from "@/components/approver/ApproverSidebar";
+import { openApiclient } from "@/utils/api-client";
 
 export default function ApproveProjectMenu() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -28,9 +28,10 @@ export default function ApproveProjectMenu() {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const data = await getAllProject();
+        const res = await openApiclient.getAllProjects();
+        const data = res.data;
         setProjects(data);
-        setFilteredProjects(data); 
+        setFilteredProjects(data);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch projects");
@@ -233,7 +234,9 @@ export default function ApproveProjectMenu() {
                               </div>
                             </td>
                             <td className="p-4 text-sm align-top">
-                              <div className="line-clamp-2">{project.projectSummary}</div>
+                              <div className="line-clamp-2">
+                                {project.projectSummary}
+                              </div>
                             </td>
                             <td className="p-4 align-top">
                               <Badge

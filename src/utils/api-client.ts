@@ -1,18 +1,24 @@
 import OpenAPIClientAxios from "openapi-client-axios";
+import axios from "axios";
 import { Client } from "@/utils/backend-openapi";
 
-const API_URL = import.meta.env.VITE_END_POINT;
-const BACKEND_URL = import.meta.env.VITE_BACKEND_END_POINT;
+const BACKEND_URL = import.meta.env.VITE_END_POINT;
 
 const api = new OpenAPIClientAxios({
   definition: `${BACKEND_URL}/openapi.json`,
-  withServer: { url: API_URL },
+  withServer: { url: BACKEND_URL },
   axiosConfigDefaults: {
     withCredentials: true,
   },
 });
 
 await api.init();
-const client = await api.getClient<Client>();
+const openApiclient = await api.getClient<Client>();
 
-export default client;
+// TO DO: Get rid of this after convert all api fetching to use openapiClient
+const client = axios.create({
+  baseURL: `${BACKEND_URL}/api`,
+  withCredentials: true,
+});
+
+export { openApiclient, client };

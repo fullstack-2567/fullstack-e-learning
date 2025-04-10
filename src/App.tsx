@@ -102,7 +102,7 @@ export default function App() {
               }
             />
             <Route
-              path={`${ROUTES.APPROVER_PROJECT_DETAILS}`}
+              path={ROUTES.APPROVER_PROJECT_DETAILS}
               element={
                 <ProtectedRoute allowedRoles={["project-approver"]}>
                   <ApproveProjectDetails />

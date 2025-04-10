@@ -21,11 +21,8 @@ import {
 } from "lucide-react";
 import ApproverNavbar from "@/components/approver/ApproverNavbar";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  getProject,
-  updateProjectStatus,
-} from "@/api/ProjectApi";
 import { Project } from "@/utils/backend-openapi";
+import { openApiclient } from "@/utils/api-client";
 
 export default function ApproveProjectDetails() {
   const navigate = useNavigate();
@@ -47,7 +44,10 @@ export default function ApproveProjectDetails() {
       if (projectId) {
         try {
           setLoading(true);
-          const project = await getProject(projectId);
+          const res = await openApiclient.getProjectById({
+            projectId: projectId,
+          });
+          const project = res.data;
 
           if (project) {
             setProject(project);
@@ -81,13 +81,15 @@ export default function ApproveProjectDetails() {
       return 1;
     }
   };
-  
+
   const isProjectCancelled = (project: Project): boolean => {
     return project.rejectedDT !== null && project.rejectedDT !== undefined;
   };
-  
+
   const isProjectFullyApproved = (project: Project): boolean => {
-    return project.thirdApprovedDT !== null && project.thirdApprovedDT !== undefined;
+    return (
+      project.thirdApprovedDT !== null && project.thirdApprovedDT !== undefined
+    );
   };
 
   const formatDateRange = (
@@ -235,7 +237,10 @@ export default function ApproveProjectDetails() {
 
     try {
       setIsSubmitting(true);
-      await updateProjectStatus(project.projectId, "approve");
+      await openApiclient.updateProjectStatus(
+        { projectId: project.projectId },
+        { action: "approve" }
+      );
       setActiveStep(Math.min(activeStep + 1, 4));
       setShowApproveDialog(false);
       setActionCompleted("อนุมัติ");
@@ -253,7 +258,10 @@ export default function ApproveProjectDetails() {
 
     try {
       setIsSubmitting(true);
-      await updateProjectStatus(project.projectId, "reject");
+      await openApiclient.updateProjectStatus(
+        { projectId: project.projectId },
+        { action: "reject" }
+      );
       setShowCancelDialog(false);
       setActionCompleted("ยกเลิก");
       setShowSuccessDialog(true);
@@ -278,14 +286,26 @@ export default function ApproveProjectDetails() {
     { label: "ตรวจสอบสำเร็จ", icon: <CheckIcon className="size-5" /> },
   ];
 
-  const getStepColor = (index: number, activeStep: number, isCancelled: boolean): string => {
+  const getStepColor = (
+    index: number,
+    activeStep: number,
+    isCancelled: boolean
+  ): string => {
     if (isCancelled) {
-      return index <= activeStep ? "bg-red-500" : "bg-white border border-[#A3A3A3]";
+      return index <= activeStep
+        ? "bg-red-500"
+        : "bg-white border border-[#A3A3A3]";
     }
-    return index <= activeStep ? "bg-[#606A9B]" : "bg-white border border-[#A3A3A3]";
+    return index <= activeStep
+      ? "bg-[#606A9B]"
+      : "bg-white border border-[#A3A3A3]";
   };
 
-  const getDotColor = (index: number, activeStep: number, isCancelled: boolean): string => {
+  const getDotColor = (
+    index: number,
+    activeStep: number,
+    isCancelled: boolean
+  ): string => {
     if (isCancelled) {
       return index <= activeStep ? "bg-white" : "bg-[#A3A3A3]";
     }
@@ -402,14 +422,18 @@ export default function ApproveProjectDetails() {
                     }}
                   >
                     <div
-                      className={`rounded-full w-9 h-9 flex items-center justify-center ${
-                        getStepColor(index, activeStep, isProjectCancelled(project))
-                      }`}
+                      className={`rounded-full w-9 h-9 flex items-center justify-center ${getStepColor(
+                        index,
+                        activeStep,
+                        isProjectCancelled(project)
+                      )}`}
                     >
                       <div
-                        className={`rounded-full w-4 h-4 ${
-                          getDotColor(index, activeStep, isProjectCancelled(project))
-                        }`}
+                        className={`rounded-full w-4 h-4 ${getDotColor(
+                          index,
+                          activeStep,
+                          isProjectCancelled(project)
+                        )}`}
                       ></div>
                     </div>
                     <div className="text-sm mt-2 text-center whitespace-nowrap">
@@ -467,7 +491,9 @@ export default function ApproveProjectDetails() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="projectNameEn">ชื่อโครงการ (ภาษาอังกฤษ)</Label>
+                  <Label htmlFor="projectNameEn">
+                    ชื่อโครงการ (ภาษาอังกฤษ)
+                  </Label>
                   <Input
                     id="projectNameEn"
                     className="mt-3"
@@ -634,25 +660,26 @@ export default function ApproveProjectDetails() {
               <span className="font-medium">รหัสโครงการ:</span>{" "}
               {project.projectId}
             </div>
-            {!isProjectCancelled(project) && !isProjectFullyApproved(project) && (
-              <div className="space-x-4">
-                <Button
-                  variant="outline"
-                  className="bg-white text-amber-600 border-amber-600 hover:bg-amber-50"
-                  onClick={() => setShowCancelDialog(true)}
-                  disabled={isSubmitting}
-                >
-                  ยกเลิก
-                </Button>
-                <Button
-                  onClick={() => setShowApproveDialog(true)}
-                  className="bg-green-600 hover:bg-green-700"
-                  disabled={isSubmitting}
-                >
-                  อนุมัติ
-                </Button>
-              </div>
-            )}
+            {!isProjectCancelled(project) &&
+              !isProjectFullyApproved(project) && (
+                <div className="space-x-4">
+                  <Button
+                    variant="outline"
+                    className="bg-white text-amber-600 border-amber-600 hover:bg-amber-50"
+                    onClick={() => setShowCancelDialog(true)}
+                    disabled={isSubmitting}
+                  >
+                    ยกเลิก
+                  </Button>
+                  <Button
+                    onClick={() => setShowApproveDialog(true)}
+                    className="bg-green-600 hover:bg-green-700"
+                    disabled={isSubmitting}
+                  >
+                    อนุมัติ
+                  </Button>
+                </div>
+              )}
           </div>
         </div>
       </main>

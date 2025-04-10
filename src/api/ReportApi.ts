@@ -1,4 +1,4 @@
-import client from "@/utils/api-client";
+import { client } from "@/utils/api-client";
 
 export const getUsersReport = async () => {
   const response = await client.get("/reports/users");

@@ -1478,17 +1478,6 @@ declare namespace Paths {
             export type $201 = Components.Schemas.Content;
         }
     }
-    namespace ContentControllerDeleteContent {
-        namespace Parameters {
-            export type ContentId = string;
-        }
-        export interface PathParameters {
-            contentId: Parameters.ContentId;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.Content;
-        }
-    }
     namespace ContentControllerEnrollContent {
         namespace Parameters {
             export type ContentId = string;
@@ -1499,17 +1488,6 @@ declare namespace Paths {
         namespace Responses {
             export interface $201 {
             }
-        }
-    }
-    namespace ContentControllerFilterContentByCategory {
-        namespace Parameters {
-            export type Category = "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
-        }
-        export interface PathParameters {
-            category: Parameters.Category;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.Content[];
         }
     }
     namespace ContentControllerGetAllContents {
@@ -1523,7 +1501,7 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Content[];
         }
     }
-    namespace ContentControllerGetContentById {
+    namespace DeleteContent {
         namespace Parameters {
             export type ContentId = string;
         }
@@ -1534,24 +1512,34 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Content;
         }
     }
-    namespace ContentControllerUpdateContent {
+    namespace FilterContentByCategory {
         namespace Parameters {
-            export type ContentId = string;
+            export type Category = "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
         }
         export interface PathParameters {
-            contentId: Parameters.ContentId;
+            category: Parameters.Category;
         }
-        export type RequestBody = Components.Schemas.UpdateContentDto;
         namespace Responses {
-            export type $200 = Components.Schemas.Content;
+            export type $200 = Components.Schemas.Content[];
         }
     }
-    namespace ProjectsControllerGetAllProjects {
+    namespace GetAllProjects {
         namespace Responses {
             export type $200 = Components.Schemas.Project[];
         }
     }
-    namespace ProjectsControllerGetProjectById {
+    namespace GetContentById {
+        namespace Parameters {
+            export type ContentId = string;
+        }
+        export interface PathParameters {
+            contentId: Parameters.ContentId;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Content;
+        }
+    }
+    namespace GetProjectById {
         namespace Parameters {
             export type ProjectId = string;
         }
@@ -1564,33 +1552,9 @@ declare namespace Paths {
             }
         }
     }
-    namespace ProjectsControllerGetUserProjects {
+    namespace GetUserProjects {
         namespace Responses {
             export type $200 = Components.Schemas.Project[];
-            export interface $404 {
-            }
-        }
-    }
-    namespace ProjectsControllerSubmitProject {
-        export type RequestBody = Components.Schemas.SubmitProjectDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.Project;
-            export interface $400 {
-            }
-        }
-    }
-    namespace ProjectsControllerUpdateProjectStatus {
-        namespace Parameters {
-            export type ProjectId = string;
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId;
-        }
-        export type RequestBody = Components.Schemas.UpdateProjectStatusDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.Project;
-            export interface $400 {
-            }
             export interface $404 {
             }
         }
@@ -1613,6 +1577,42 @@ declare namespace Paths {
             }
         }
     }
+    namespace SubmitProject {
+        export type RequestBody = Components.Schemas.SubmitProjectDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.Project;
+            export interface $400 {
+            }
+        }
+    }
+    namespace UpdateContent {
+        namespace Parameters {
+            export type ContentId = string;
+        }
+        export interface PathParameters {
+            contentId: Parameters.ContentId;
+        }
+        export type RequestBody = Components.Schemas.UpdateContentDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.Content;
+        }
+    }
+    namespace UpdateProjectStatus {
+        namespace Parameters {
+            export type ProjectId = string;
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId;
+        }
+        export type RequestBody = Components.Schemas.UpdateProjectStatusDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.Project;
+            export interface $400 {
+            }
+            export interface $404 {
+            }
+        }
+    }
 }
 
 export interface OperationMethods {
@@ -1625,45 +1625,45 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.AppControllerGetHello.Responses.$200>
   /**
-   * ProjectsController_getAllProjects - Get all projects
+   * getAllProjects - Get all projects
    */
-  'ProjectsController_getAllProjects'(
+  'getAllProjects'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ProjectsControllerGetAllProjects.Responses.$200>
+  ): OperationResponse<Paths.GetAllProjects.Responses.$200>
   /**
-   * ProjectsController_getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
+   * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
    */
-  'ProjectsController_getProjectById'(
-    parameters?: Parameters<Paths.ProjectsControllerGetProjectById.PathParameters> | null,
+  'getProjectById'(
+    parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ProjectsControllerGetProjectById.Responses.$200>
+  ): OperationResponse<Paths.GetProjectById.Responses.$200>
   /**
-   * ProjectsController_getUserProjects - Get projects by user ID
+   * getUserProjects - Get projects by user ID
    */
-  'ProjectsController_getUserProjects'(
+  'getUserProjects'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ProjectsControllerGetUserProjects.Responses.$200>
+  ): OperationResponse<Paths.GetUserProjects.Responses.$200>
   /**
-   * ProjectsController_updateProjectStatus - Update project status
+   * updateProjectStatus - Update project status
    */
-  'ProjectsController_updateProjectStatus'(
-    parameters?: Parameters<Paths.ProjectsControllerUpdateProjectStatus.PathParameters> | null,
-    data?: Paths.ProjectsControllerUpdateProjectStatus.RequestBody,
+  'updateProjectStatus'(
+    parameters?: Parameters<Paths.UpdateProjectStatus.PathParameters> | null,
+    data?: Paths.UpdateProjectStatus.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ProjectsControllerUpdateProjectStatus.Responses.$200>
+  ): OperationResponse<Paths.UpdateProjectStatus.Responses.$200>
   /**
-   * ProjectsController_submitProject - Submit a project, returns projectDescriptionFile as accessible url.
+   * submitProject - Submit a project, returns projectDescriptionFile as accessible url.
    */
-  'ProjectsController_submitProject'(
+  'submitProject'(
     parameters?: Parameters<UnknownParamsObject> | null,
-    data?: Paths.ProjectsControllerSubmitProject.RequestBody,
+    data?: Paths.SubmitProject.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ProjectsControllerSubmitProject.Responses.$200>
+  ): OperationResponse<Paths.SubmitProject.Responses.$200>
   /**
    * AuthController_test - Test endpoint
    */
@@ -1737,37 +1737,37 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.ContentControllerCreateContent.Responses.$201>
   /**
-   * ContentController_updateContent - Update content
+   * updateContent - Update content
    */
-  'ContentController_updateContent'(
-    parameters?: Parameters<Paths.ContentControllerUpdateContent.PathParameters> | null,
-    data?: Paths.ContentControllerUpdateContent.RequestBody,
+  'updateContent'(
+    parameters?: Parameters<Paths.UpdateContent.PathParameters> | null,
+    data?: Paths.UpdateContent.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerUpdateContent.Responses.$200>
+  ): OperationResponse<Paths.UpdateContent.Responses.$200>
   /**
-   * ContentController_filterContentByCategory - Filter content by category
+   * filterContentByCategory - Filter content by category
    */
-  'ContentController_filterContentByCategory'(
-    parameters?: Parameters<Paths.ContentControllerFilterContentByCategory.PathParameters> | null,
+  'filterContentByCategory'(
+    parameters?: Parameters<Paths.FilterContentByCategory.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerFilterContentByCategory.Responses.$200>
+  ): OperationResponse<Paths.FilterContentByCategory.Responses.$200>
   /**
-   * ContentController_getContentById - Get content by Id
+   * getContentById - Get content by Id
    */
-  'ContentController_getContentById'(
-    parameters?: Parameters<Paths.ContentControllerGetContentById.PathParameters> | null,
+  'getContentById'(
+    parameters?: Parameters<Paths.GetContentById.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerGetContentById.Responses.$200>
+  ): OperationResponse<Paths.GetContentById.Responses.$200>
   /**
-   * ContentController_deleteContent - Delete content
+   * deleteContent - Delete content
    */
-  'ContentController_deleteContent'(
-    parameters?: Parameters<Paths.ContentControllerDeleteContent.PathParameters> | null,
+  'deleteContent'(
+    parameters?: Parameters<Paths.DeleteContent.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerDeleteContent.Responses.$200>
+  ): OperationResponse<Paths.DeleteContent.Responses.$200>
   /**
    * ContentController_enrollContent
    */
@@ -1823,53 +1823,53 @@ export interface PathsDictionary {
   }
   ['/api/projects']: {
     /**
-     * ProjectsController_getAllProjects - Get all projects
+     * getAllProjects - Get all projects
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ProjectsControllerGetAllProjects.Responses.$200>
+    ): OperationResponse<Paths.GetAllProjects.Responses.$200>
   }
   ['/api/projects/{projectId}']: {
     /**
-     * ProjectsController_getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
+     * getProjectById - Get project by ID, returns projectDescriptionFile as accessible url.
      */
     'get'(
-      parameters?: Parameters<Paths.ProjectsControllerGetProjectById.PathParameters> | null,
+      parameters?: Parameters<Paths.GetProjectById.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ProjectsControllerGetProjectById.Responses.$200>
+    ): OperationResponse<Paths.GetProjectById.Responses.$200>
   }
-  ['/api/projects/user-projects']: {
+  ['/api/projects/me']: {
     /**
-     * ProjectsController_getUserProjects - Get projects by user ID
+     * getUserProjects - Get projects by user ID
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ProjectsControllerGetUserProjects.Responses.$200>
+    ): OperationResponse<Paths.GetUserProjects.Responses.$200>
   }
   ['/api/projects/{projectId}/status']: {
     /**
-     * ProjectsController_updateProjectStatus - Update project status
+     * updateProjectStatus - Update project status
      */
     'patch'(
-      parameters?: Parameters<Paths.ProjectsControllerUpdateProjectStatus.PathParameters> | null,
-      data?: Paths.ProjectsControllerUpdateProjectStatus.RequestBody,
+      parameters?: Parameters<Paths.UpdateProjectStatus.PathParameters> | null,
+      data?: Paths.UpdateProjectStatus.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ProjectsControllerUpdateProjectStatus.Responses.$200>
+    ): OperationResponse<Paths.UpdateProjectStatus.Responses.$200>
   }
   ['/api/projects/submit']: {
     /**
-     * ProjectsController_submitProject - Submit a project, returns projectDescriptionFile as accessible url.
+     * submitProject - Submit a project, returns projectDescriptionFile as accessible url.
      */
     'post'(
       parameters?: Parameters<UnknownParamsObject> | null,
-      data?: Paths.ProjectsControllerSubmitProject.RequestBody,
+      data?: Paths.SubmitProject.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ProjectsControllerSubmitProject.Responses.$200>
+    ): OperationResponse<Paths.SubmitProject.Responses.$200>
   }
   ['/api/auth/test']: {
     /**
@@ -1963,41 +1963,41 @@ export interface PathsDictionary {
   }
   ['/api/content/{contentId}/update']: {
     /**
-     * ContentController_updateContent - Update content
+     * updateContent - Update content
      */
     'patch'(
-      parameters?: Parameters<Paths.ContentControllerUpdateContent.PathParameters> | null,
-      data?: Paths.ContentControllerUpdateContent.RequestBody,
+      parameters?: Parameters<Paths.UpdateContent.PathParameters> | null,
+      data?: Paths.UpdateContent.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerUpdateContent.Responses.$200>
+    ): OperationResponse<Paths.UpdateContent.Responses.$200>
   }
   ['/api/content/filter/{category}']: {
     /**
-     * ContentController_filterContentByCategory - Filter content by category
+     * filterContentByCategory - Filter content by category
      */
     'get'(
-      parameters?: Parameters<Paths.ContentControllerFilterContentByCategory.PathParameters> | null,
+      parameters?: Parameters<Paths.FilterContentByCategory.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerFilterContentByCategory.Responses.$200>
+    ): OperationResponse<Paths.FilterContentByCategory.Responses.$200>
   }
   ['/api/content/{contentId}']: {
     /**
-     * ContentController_deleteContent - Delete content
+     * deleteContent - Delete content
      */
     'delete'(
-      parameters?: Parameters<Paths.ContentControllerDeleteContent.PathParameters> | null,
+      parameters?: Parameters<Paths.DeleteContent.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerDeleteContent.Responses.$200>
+    ): OperationResponse<Paths.DeleteContent.Responses.$200>
     /**
-     * ContentController_getContentById - Get content by Id
+     * getContentById - Get content by Id
      */
     'get'(
-      parameters?: Parameters<Paths.ContentControllerGetContentById.PathParameters> | null,
+      parameters?: Parameters<Paths.GetContentById.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerGetContentById.Responses.$200>
+    ): OperationResponse<Paths.GetContentById.Responses.$200>
   }
   ['/api/content/enroll/{contentId}']: {
     /**

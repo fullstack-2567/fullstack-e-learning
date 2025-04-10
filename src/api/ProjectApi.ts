@@ -1,5 +1,5 @@
 import { Project, SubmitProjectDto } from "@/utils/backend-openapi";
-import client from "@/utils/api-client";
+import { client } from "@/utils/api-client";
 
 export const createProject = async (projectData: SubmitProjectDto) => {
   try {

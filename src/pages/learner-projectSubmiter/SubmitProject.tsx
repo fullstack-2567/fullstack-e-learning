@@ -1,7 +1,4 @@
-import {
-  createProject,
-  getUserProjects,
-} from "@/api/ProjectApi";
+import { createProject, getUserProjects } from "@/api/ProjectApi";
 import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
 import { CreateUserForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateUserForm";
 import { CreateProjectForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateProjectForm";
@@ -9,9 +6,11 @@ import { ReviewForm } from "@/components/learner-projectSubmiter/projectSubmit/R
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { SubmitProjectDto, User } from "@/utils/backend-openapi";
 import { Label } from "@radix-ui/react-label";
-import {  useFormik } from "formik";
+import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
+import { toast } from "sonner";
+import { openApiclient } from "@/utils/api-client";
 
 export default function SubmitProject() {
   // const [project, setProject] = useState<Project>();
@@ -22,8 +21,8 @@ export default function SubmitProject() {
   >([]);
   useEffect(() => {
     const fetchProjects = async () => {
-      const response = await getUserProjects();
-      const projectData = response.map((project) => ({
+      const response = await openApiclient.getUserProjects();
+      const projectData = response.data.map((project) => ({
         name: project.projectThaiName,
         id: project.projectId,
       }));
@@ -31,7 +30,6 @@ export default function SubmitProject() {
     };
     fetchProjects();
   }, []);
-
 
   const formikForCreateProject = useFormik<SubmitProjectDto>({
     initialValues: {
@@ -72,18 +70,21 @@ export default function SubmitProject() {
       projectDescriptionFile: yup.mixed().required("กรุณาเลือกไฟล์"),
       projectType: yup.string().required("Required"),
       parentProjectID: yup.string(),
-    userInfo: yup.object().optional(),}),
+      userInfo: yup.object().optional(),
+    }),
     onSubmit: async (values) => {
-      createProject({...values,userInfo:{
-        prefix: user?.prefix,
-        firstName: user?.firstName,
-        lastName: user?.lastName,
-        birthDate: user?.birthDate,
-        education: user?.education,
-        tel: user?.tel,
-        sex:user?.sex,
-      }})
-      .then((response) => {
+      createProject({
+        ...values,
+        userInfo: {
+          prefix: user?.prefix,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          birthDate: user?.birthDate,
+          education: user?.education,
+          tel: user?.tel,
+          sex: user?.sex,
+        },
+      }).then((response) => {
         console.log("Project created:", response);
       });
       console.log(1);
@@ -233,7 +234,12 @@ export default function SubmitProject() {
                     (step === 1 && !formikForCreateProject.isValid) ||
                     (step === 2 && !formikForCreatingUser.isValid)
                   ) {
-                    alert(
+                    console.log(
+                      step === 1
+                        ? formikForCreateProject.errors
+                        : formikForCreatingUser.errors
+                    );
+                    toast.error(
                       "กรุณากรอกข้อมูลให้ครบถ้วน ตอนนี้ยังขาดตรงที่ " +
                         (step === 1
                           ? formikForCreateProject.errors
@@ -247,7 +253,7 @@ export default function SubmitProject() {
                 ถัดไป
               </button>
               <button
-              type="submit"
+                type="submit"
                 className={`bg-emerald-500 text-white px-4 py-2 rounded ${step === 3 ? "" : "hidden"}`}
                 // onClick={() => {
                 //   formikForCreatingUser.handleSubmit();
