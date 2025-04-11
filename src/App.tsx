@@ -21,6 +21,7 @@ import AdminPM from "./pages/admin/AdminPM";
 import AdminNewCourses from "./pages/admin/AdminNewCourse";
 import { useEffect } from "react";
 import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
+import ApproverReport from "./pages/approver/ApproverReport";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -40,6 +41,7 @@ const ROUTES = {
   APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
   APPROVER_PROJECT_MENU: "/approver/project-menu",
   APPROVER_PROJECT_DETAILS: "/approver/project-details/:projectId",
+  APPROVER_REPORT: "/approver/report",
 
   // Admin Routes
   ADMIN_DASHBOARD_ELEARNING: "/admin/dashboard",
@@ -115,6 +117,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["project-approver"]}>
                   <ApproveProjectDetails />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.APPROVER_REPORT}
+              element={
+                <ProtectedRoute allowedRoles={["project-approver"]}>
+                  <ApproverReport />
                 </ProtectedRoute>
               }
             />

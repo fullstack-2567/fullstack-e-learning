@@ -30,6 +30,11 @@ export default function ApproverSidebar({ className }: SidebarProps) {
       icon: <FileText size={18} />,
       label: "จัดการโครงการ",
     },
+    {
+      path: "/approver/report",
+      icon: <BarChart3 size={18} />,
+      label: "รายงาน",
+    },
   ];
 
   return (
