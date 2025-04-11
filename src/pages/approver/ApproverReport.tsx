@@ -4,6 +4,7 @@ import "../admin/ReportComponent.css"; // Make sure this CSS file exists and con
 import { Button } from "@/components/ui/button";
 import { Project, ProjectsReportDto } from "@/utils/backend-openapi";
 import { openApiclient } from "@/utils/api-client";
+import ApproverSidebar from "@/components/approver/ApproverSidebar";
 
 const ApproverReport: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -32,7 +33,7 @@ const ApproverReport: React.FC = () => {
   return (
     <div className="flex">
       <div className="w-64 fixed h-screen">
-        <AdminSidebar />
+        <ApproverSidebar />
       </div>
       <div className="flex-1 min-h-screen bg-gray-100 p-8 ml-64">
         <div

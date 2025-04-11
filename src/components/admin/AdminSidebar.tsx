@@ -31,11 +31,6 @@ export default function AdminSidebar({ className }: SidebarProps) {
       label: "คอร์สเรียน",
     },
     {
-      path: "/admin/projectmanagement",
-      icon: <LayoutDashboard size={18} />,
-      label: "รายการโครงการ",
-    },
-    {
       path: "/admin/report",
       icon: <BarChart3 size={18} />,
       label: "รายงาน",
