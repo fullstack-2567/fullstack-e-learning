@@ -12,17 +12,77 @@ import {
   UsersReportDto,
 } from "@/utils/backend-openapi";
 import { openApiclient } from "@/utils/api-client";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 // Define types for the tabs
-type MainTab = "e-learning" | "project";
+type MainTab = "e-learning" | "project" | "summary";
 type SubTab = "courses" | "users";
 
 const ReportComponent: React.FC = () => {
-  const [activeMainTab, setActiveMainTab] = useState<MainTab>("e-learning");
+  const [activeMainTab, setActiveMainTab] = useState<MainTab>("summary");
   const [activeSubTab, setActiveSubTab] = useState<SubTab>("courses");
   const [contentsReport, setContentsReport] = useState<ContentsReportDto[]>([]);
   const [usersReport, setUsersReport] = useState<UsersReportDto[]>([]);
   const [projectsReport, setProjectsReport] = useState<ProjectsReportDto[]>([]);
+  const [usersThatSentProjectsCnt, setUsersThatSentProjectCnt] = useState<number>(0);
+  const [usersThatEnrollCoursesCnt, setUsersThatEnrollCoursesCnt] = useState<number>(0);
+
+  const mockUsersPerMonthData = [
+    {
+      month: "1/2568",
+      users: "0"
+    },
+    {
+      month: "2/2568",
+      users: "7"
+    },
+    {
+      month: "3/2568",
+      users: "8"
+    },
+    {
+      month: "4/2568",
+      users: "9"
+    },
+  ]
+
+  const mockProjectsPerMonthData = [
+    {
+      month: "1/2568",
+      projects: "20"
+    },
+    {
+      month: "2/2568",
+      projects: "48"
+    },
+    {
+      month: "3/2568",
+      projects: "50"
+    },
+    {
+      month: "4/2568",
+      projects: "60"
+    },
+  ]
+
+  const mockContentsPerMonthData = [
+    {
+      month: "1/2568",
+      contents: "2"
+    },
+    {
+      month: "2/2568",
+      contents: "7"
+    },
+    {
+      month: "3/2568",
+      contents: "45"
+    },
+    {
+      month: "4/2568",
+      contents: "88"
+    },
+  ]
 
   const fetchData = async () => {
     try {
@@ -35,6 +95,10 @@ const ReportComponent: React.FC = () => {
         userReponse.status === 200 &&
         projectReponse.status === 200
       ) {
+        console.log(contentReponse.data);
+        console.log(userReponse.data);
+        console.log(projectReponse.data)
+        
         setContentsReport(contentReponse.data);
         setUsersReport(userReponse.data);
         setProjectsReport(projectReponse.data);
@@ -46,8 +110,22 @@ const ReportComponent: React.FC = () => {
     }
   };
 
+  const calculateUserThatSentProjectCnt = () => {
+    const uniqueUsers = new Set(projectsReport.map((project) => project.submitter));
+    setUsersThatSentProjectCnt(uniqueUsers.size);
+    console.log(uniqueUsers);
+    
+  }
+
+  const calculateUserThatEnrollCoursesCnt = () => {
+    // const uniqueUsers = new Set(contentsReport.map((content) => content.))
+    setUsersThatEnrollCoursesCnt(999);
+  } 
+
   useEffect(() => {
     fetchData();
+    calculateUserThatSentProjectCnt();
+    calculateUserThatEnrollCoursesCnt();
   }, []);
 
   const getFileName = () => {
@@ -121,12 +199,22 @@ const ReportComponent: React.FC = () => {
           {/* Header */}
           <div className="header flex justify-between items-center pb-4 mb-4 border-b border-gray-200">
             <h1 className="title text-2xl font-bold text-gray-700">
-              รายงานสถิติ
+              รายงานโดยสรุป
             </h1>
             <Button onClick={handleGenerateReport}>ออกรายงาน</Button>
           </div>
           {/* Main Tabs */}
           <div className="mainTabs flex border-b-2 border-gray-300 mb-6 relative">
+            <button
+              className ={`tabButton py-3 px-5 mr-1 text-gray-600 hover:text-gray-900 focus:outline-none border-b-3 ${
+                activeMainTab === "summary"
+                  ? "activeTab text-blue-600 font-semibold border-blue-600"
+                  : "border-transparent"
+              }`}
+              onClick={() => setActiveMainTab("summary")}
+            >
+              Summary
+            </button>
             <button
               className={`tabButton py-3 px-5 mr-1 text-gray-600 hover:text-gray-900 focus:outline-none border-b-3 ${
                 activeMainTab === "e-learning"
@@ -156,6 +244,134 @@ const ReportComponent: React.FC = () => {
           </div>
           {/* Content Area */}
           <div className="contentArea">
+            {/* Summary */}
+            {activeMainTab === "summary" && (
+              <div className = "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 justify-between text-center gap-5">
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนผู้ใช้งานในปัจจุบัน (บัญชี)</p>
+                  <h1 className = "text-4xl">{usersReport.length}</h1>
+                </div>
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนผู้ใช้งานที่ลงทะเบียนเรียน (บัญชี)</p>
+                  <h1 className = "text-4xl text-green-400">{usersThatEnrollCoursesCnt} ({( usersThatEnrollCoursesCnt / usersReport.length * 100).toFixed(1)}%)</h1>
+                </div>
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนผู้ใช้งานที่ส่งโปรเจกต์ (บัญชี)</p>
+                  <h1 className = "text-4xl text-green-400">{usersThatSentProjectsCnt} ({( usersThatSentProjectsCnt / usersReport.length * 100).toFixed(1)}%)</h1>
+                </div>
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนโปรเจกต์ทั้งสิ้น (โปรเจกต์)</p>
+                  <h1 className = "text-4xl text-blue-400">{projectsReport.length}</h1>
+                </div>
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนคอร์สเรียนทั้งสิ้น (คอร์สเรียน)</p>
+                  <h1 className = "text-4xl text-blue-400">{contentsReport.length}</h1>
+                </div>
+                <div className = "bg-white flex gap-2 flex-col">
+                  <p className = "text-xl">จำนวนบัญชีที่ถูกแบน (บัญชี)</p>
+                  <h1 className = "text-4xl text-red-400">{999}</h1>
+                </div>
+                <div className = "xl:col-span-3 gap-2 flex flex-col">
+                  <p className = "text-xl">จำนวนของบัญชีในแต่ละเดือน</p>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={mockUsersPerMonthData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                      <Line type="monotone" dataKey="users" stroke="#8884d8" />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className = "xl:col-span-3 gap-2 flex flex-col">
+                  <p className = "text-xl">จำนวนโปรเจกต์ในแต่ละเดือน</p>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={mockProjectsPerMonthData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                      <Line type="monotone" dataKey="projects" stroke="#8884d8" />
+                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className = "xl:col-span-3 gap-2 flex flex-col">
+                <p className = "text-xl">คอร์สที่มีผู้เรียนจบมากที่สุด 5 อันดับแรก</p>
+                  <div className="tableContainer overflow-x-auto">
+                      <table className="reportTable w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                          <tr>
+                            <th className="py-3 px-4 w-[5%]">No.</th>
+                            <th className="py-3 px-4 w-[35%]">Title</th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้เข้าเรียน
+                            </th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้ที่จบคอร์ส
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {contentsReport.sort((a,b) => a.studentsCompleted - b.studentsCompleted).filter((content, idx)=> idx < 5).map((course) => (
+                            <tr
+                              key={course.id}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="py-3 px-4">{course.id}.</td>
+                              <td className="py-3 px-4">{course.title}</td>
+                              <td className="py-3 px-4">
+                                {course.studentsEnrolled}
+                              </td>
+                              <td className="py-3 px-4">
+                                {course.studentsCompleted}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                </div>
+                <div className = "xl:col-span-3 gap-2 flex flex-col">
+                <p className = "text-xl">คอร์สยอดนิยม 5 อันดับแรก</p>
+                  <div className="tableContainer overflow-x-auto">
+                      <table className="reportTable w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                          <tr>
+                            <th className="py-3 px-4 w-[5%]">No.</th>
+                            <th className="py-3 px-4 w-[35%]">Title</th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้เข้าเรียน
+                            </th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้ที่จบคอร์ส
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {contentsReport.sort((a,b) => a.studentsEnrolled - b.studentsEnrolled).filter((content, idx)=> idx < 5).map((course) => (
+                            <tr
+                              key={course.id}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="py-3 px-4">{course.id}.</td>
+                              <td className="py-3 px-4">{course.title}</td>
+                              <td className="py-3 px-4">
+                                {course.studentsEnrolled}
+                              </td>
+                              <td className="py-3 px-4">
+                                {course.studentsCompleted}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                </div>
+              </div>
+              
+            )
+
+            }
             {/* E-learning Content */}
             {activeMainTab === "e-learning" && (
               <>
@@ -195,7 +411,7 @@ const ReportComponent: React.FC = () => {
                             จำนวนผู้เข้าเรียน
                           </th>
                           <th className="py-3 px-4 w-[15%]">
-                            จำนวนผู้ที่จบครอส
+                            จำนวนผู้ที่จบคอร์ส
                           </th>
                         </tr>
                       </thead>
