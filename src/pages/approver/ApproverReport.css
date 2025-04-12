@@ -1,0 +1,82 @@
+
+.total-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.total-summary p {
+  font-size: 13px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.total-summary h2 {
+  font-size: 20px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.total-projects, .pass-projects, .fail-projects, .pending-projects{
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.filter, .apply-filter{
+  background-color: #4a5568;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+.clear-filter{
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-bottom: 10px;
+}
+
+.submit-button{
+    display: flex;
+    gap: 20px;
+}
+
+.filter-button{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+}
+
+.filter-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-group {
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+select , input{
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e0e0e0;
+    font-size: 12px;
+}
