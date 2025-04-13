@@ -1,6 +1,6 @@
 import AdminSidebar from "@/components/admin/AdminSidebar"; // Assuming this path is correct
 import { useEffect, useState } from "react";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+
 import { pdf } from "@react-pdf/renderer";
 import MyReport from "./ReportDocument";
 import "./ReportComponent.css"; // Make sure this CSS file exists and contains the styles
@@ -12,7 +12,6 @@ import {
   UsersReportDto,
 } from "@/utils/backend-openapi";
 import { openApiclient } from "@/utils/api-client";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 
 // Define types for the tabs
 type MainTab = "e-learning" | "project" | "summary";
@@ -26,63 +25,6 @@ const ReportComponent: React.FC = () => {
   const [projectsReport, setProjectsReport] = useState<ProjectsReportDto[]>([]);
   const [usersThatSentProjectsCnt, setUsersThatSentProjectCnt] = useState<number>(0);
   const [usersThatEnrollCoursesCnt, setUsersThatEnrollCoursesCnt] = useState<number>(0);
-
-  const mockUsersPerMonthData = [
-    {
-      month: "1/2568",
-      users: "0"
-    },
-    {
-      month: "2/2568",
-      users: "7"
-    },
-    {
-      month: "3/2568",
-      users: "8"
-    },
-    {
-      month: "4/2568",
-      users: "9"
-    },
-  ]
-
-  const mockProjectsPerMonthData = [
-    {
-      month: "1/2568",
-      projects: "20"
-    },
-    {
-      month: "2/2568",
-      projects: "48"
-    },
-    {
-      month: "3/2568",
-      projects: "50"
-    },
-    {
-      month: "4/2568",
-      projects: "60"
-    },
-  ]
-
-  const mockContentsPerMonthData = [
-    {
-      month: "1/2568",
-      contents: "2"
-    },
-    {
-      month: "2/2568",
-      contents: "7"
-    },
-    {
-      month: "3/2568",
-      contents: "45"
-    },
-    {
-      month: "4/2568",
-      contents: "88"
-    },
-  ]
 
   const fetchData = async () => {
     try {
@@ -118,8 +60,9 @@ const ReportComponent: React.FC = () => {
   }
 
   const calculateUserThatEnrollCoursesCnt = () => {
-    // const uniqueUsers = new Set(contentsReport.map((content) => content.))
-    setUsersThatEnrollCoursesCnt(999);
+    let cnt = 0;
+    contentsReport.forEach(content => cnt += content.studentsEnrolled)
+    setUsersThatEnrollCoursesCnt(cnt);
   } 
 
   useEffect(() => {
@@ -228,7 +171,7 @@ const ReportComponent: React.FC = () => {
                         <table className="reportTable w-full text-sm text-left text-gray-600">
                           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
-                              <th className="py-3 px-4 w-[5%]">No.</th>
+                              
                               <th className="py-3 px-4 w-[35%]">Title</th>
                               <th className="py-3 px-4 w-[15%]">
                                 จำนวนผู้เข้าเรียน
@@ -244,7 +187,6 @@ const ReportComponent: React.FC = () => {
                                 key={course.id}
                                 className="bg-white border-b hover:bg-gray-50"
                               >
-                                <td className="py-3 px-4">{course.id}.</td>
                                 <td className="py-3 px-4">{course.title}</td>
                                 <td className="py-3 px-4">
                                   {course.studentsEnrolled}
@@ -265,7 +207,7 @@ const ReportComponent: React.FC = () => {
                         <table className="reportTable w-full text-sm text-left text-gray-600">
                           <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
-                              <th className="py-3 px-4 w-[5%]">No.</th>
+                              
                               <th className="py-3 px-4 w-[35%]">Title</th>
                               <th className="py-3 px-4 w-[15%]">
                                 จำนวนผู้เข้าเรียน
@@ -281,7 +223,6 @@ const ReportComponent: React.FC = () => {
                                 key={course.id}
                                 className="bg-white border-b hover:bg-gray-50"
                               >
-                                <td className="py-3 px-4">{course.id}.</td>
                                 <td className="py-3 px-4">{course.title}</td>
                                 <td className="py-3 px-4">
                                   {course.studentsEnrolled}
@@ -306,7 +247,6 @@ const ReportComponent: React.FC = () => {
                       <table className="reportTable w-full text-sm text-left text-gray-600">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                           <tr>
-                            <th className="py-3 px-4 w-[5%]">No.</th>
                             <th className="py-3 px-4 w-[35%]">Title</th>
                             <th className="py-3 px-4 w-[15%]">
                               จำนวนผู้เข้าเรียน
@@ -322,7 +262,6 @@ const ReportComponent: React.FC = () => {
                               key={course.id}
                               className="bg-white border-b hover:bg-gray-50"
                             >
-                              <td className="py-3 px-4">{course.id}.</td>
                               <td className="py-3 px-4">{course.title}</td>
                               <td className="py-3 px-4">
                                 {course.studentsEnrolled}
