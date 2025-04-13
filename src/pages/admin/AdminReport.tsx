@@ -203,294 +203,144 @@ const ReportComponent: React.FC = () => {
             </h1>
             <Button onClick={handleGenerateReport}>ออกรายงาน</Button>
           </div>
-          {/* Main Tabs */}
-          <div className="mainTabs flex border-b-2 border-gray-300 mb-6 relative">
-            <button
-              className ={`tabButton py-3 px-5 mr-1 text-gray-600 hover:text-gray-900 focus:outline-none border-b-3 ${
-                activeMainTab === "summary"
-                  ? "activeTab text-blue-600 font-semibold border-blue-600"
-                  : "border-transparent"
-              }`}
-              onClick={() => setActiveMainTab("summary")}
-            >
-              Summary
-            </button>
-            <button
-              className={`tabButton py-3 px-5 mr-1 text-gray-600 hover:text-gray-900 focus:outline-none border-b-3 ${
-                activeMainTab === "e-learning"
-                  ? "activeTab text-blue-600 font-semibold border-blue-600"
-                  : "border-transparent"
-              }`}
-              onClick={() => setActiveMainTab("e-learning")}
-            >
-              E-learning
-            </button>
-            <button
-              className={`tabButton py-3 px-5 mr-1 text-gray-600 hover:text-gray-900 focus:outline-none border-b-3 ${
-                activeMainTab === "project"
-                  ? "activeTab text-blue-600 font-semibold border-blue-600"
-                  : "border-transparent"
-              }`}
-              onClick={() => setActiveMainTab("project")}
-            >
-              Project
-            </button>
-            {/* P Icon - may not be relevant for project tab? Hide/show conditionally if needed */}
-            {activeMainTab === "e-learning" && (
-              <span className="pIcon absolute right-0 top-0 -mt-2 mr-2 bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-sm">
-                P
-              </span>
-            )}
-          </div>
           {/* Content Area */}
           <div className="contentArea">
-            {/* Summary */}
-            {activeMainTab === "summary" && (
-              <div className = "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 justify-between text-center gap-5">
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนผู้ใช้งานในปัจจุบัน (บัญชี)</p>
-                  <h1 className = "text-4xl">{usersReport.length}</h1>
-                </div>
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนผู้ใช้งานที่ลงทะเบียนเรียน (บัญชี)</p>
-                  <h1 className = "text-4xl text-green-400">{usersThatEnrollCoursesCnt} ({( usersThatEnrollCoursesCnt / usersReport.length * 100).toFixed(1)}%)</h1>
-                </div>
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนผู้ใช้งานที่ส่งโปรเจกต์ (บัญชี)</p>
-                  <h1 className = "text-4xl text-green-400">{usersThatSentProjectsCnt} ({( usersThatSentProjectsCnt / usersReport.length * 100).toFixed(1)}%)</h1>
-                </div>
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนโปรเจกต์ทั้งสิ้น (โปรเจกต์)</p>
-                  <h1 className = "text-4xl text-blue-400">{projectsReport.length}</h1>
-                </div>
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนคอร์สเรียนทั้งสิ้น (คอร์สเรียน)</p>
-                  <h1 className = "text-4xl text-blue-400">{contentsReport.length}</h1>
-                </div>
-                <div className = "bg-white flex gap-2 flex-col">
-                  <p className = "text-xl">จำนวนบัญชีที่ถูกแบน (บัญชี)</p>
-                  <h1 className = "text-4xl text-red-400">{999}</h1>
-                </div>
-                <div className = "xl:col-span-3 gap-2 flex flex-col">
-                  <p className = "text-xl">จำนวนของบัญชีในแต่ละเดือน</p>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={mockUsersPerMonthData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                      <Line type="monotone" dataKey="users" stroke="#8884d8" />
-                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className = "xl:col-span-3 gap-2 flex flex-col">
-                  <p className = "text-xl">จำนวนโปรเจกต์ในแต่ละเดือน</p>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={mockProjectsPerMonthData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                      <Line type="monotone" dataKey="projects" stroke="#8884d8" />
-                      <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className = "xl:col-span-3 gap-2 flex flex-col">
-                <p className = "text-xl">คอร์สที่มีผู้เรียนจบมากที่สุด 5 อันดับแรก</p>
-                  <div className="tableContainer overflow-x-auto">
-                      <table className="reportTable w-full text-sm text-left text-gray-600">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 w-[5%]">No.</th>
-                            <th className="py-3 px-4 w-[35%]">Title</th>
-                            <th className="py-3 px-4 w-[15%]">
-                              จำนวนผู้เข้าเรียน
-                            </th>
-                            <th className="py-3 px-4 w-[15%]">
-                              จำนวนผู้ที่จบคอร์ส
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {contentsReport.sort((a,b) => a.studentsCompleted - b.studentsCompleted).filter((content, idx)=> idx < 5).map((course) => (
-                            <tr
-                              key={course.id}
-                              className="bg-white border-b hover:bg-gray-50"
-                            >
-                              <td className="py-3 px-4">{course.id}.</td>
-                              <td className="py-3 px-4">{course.title}</td>
-                              <td className="py-3 px-4">
-                                {course.studentsEnrolled}
-                              </td>
-                              <td className="py-3 px-4">
-                                {course.studentsCompleted}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                </div>
-                <div className = "xl:col-span-3 gap-2 flex flex-col">
-                <p className = "text-xl">คอร์สยอดนิยม 5 อันดับแรก</p>
-                  <div className="tableContainer overflow-x-auto">
-                      <table className="reportTable w-full text-sm text-left text-gray-600">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                          <tr>
-                            <th className="py-3 px-4 w-[5%]">No.</th>
-                            <th className="py-3 px-4 w-[35%]">Title</th>
-                            <th className="py-3 px-4 w-[15%]">
-                              จำนวนผู้เข้าเรียน
-                            </th>
-                            <th className="py-3 px-4 w-[15%]">
-                              จำนวนผู้ที่จบคอร์ส
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {contentsReport.sort((a,b) => a.studentsEnrolled - b.studentsEnrolled).filter((content, idx)=> idx < 5).map((course) => (
-                            <tr
-                              key={course.id}
-                              className="bg-white border-b hover:bg-gray-50"
-                            >
-                              <td className="py-3 px-4">{course.id}.</td>
-                              <td className="py-3 px-4">{course.title}</td>
-                              <td className="py-3 px-4">
-                                {course.studentsEnrolled}
-                              </td>
-                              <td className="py-3 px-4">
-                                {course.studentsCompleted}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                </div>
-              </div>
-              
-            )
-
-            }
-            {/* E-learning Content */}
-            {activeMainTab === "e-learning" && (
+            
               <>
-                {/* Sub Tabs */}
-                <div className="subTabs mb-6 flex">
-                  <button
-                    className={`subTabButton text-sm px-4 py-2 mr-2 rounded-full transition duration-200 focus:outline-none ${
-                      activeSubTab === "courses"
-                        ? "activeSubTab bg-gray-700 text-white font-semibold"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    }`}
-                    onClick={() => setActiveSubTab("courses")}
-                  >
-                    คอร์สเรียน
-                  </button>
-                  <button
-                    className={`subTabButton text-sm px-4 py-2 rounded-full transition duration-200 focus:outline-none ${
-                      activeSubTab === "users"
-                        ? "activeSubTab bg-gray-700 text-white font-semibold"
-                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    }`}
-                    onClick={() => setActiveSubTab("users")}
-                  >
-                    ผู้ใช้
-                  </button>
+
+                <div className = "grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 justify-between text-center gap-5">
+                  <div className = "bg-white flex gap-2 flex-col">
+                    <p className = "text-xl">จำนวนผู้ใช้งานในปัจจุบัน (บัญชี)</p>
+                    <h1 className = "text-4xl">{usersReport.length}</h1>
+                  </div>
+                  <div className = "bg-white flex gap-2 flex-col">
+                    <p className = "text-xl">จำนวนผู้ใช้งานที่ลงทะเบียนเรียน (บัญชี)</p>
+                    <h1 className = "text-4xl text-green-400">{usersThatEnrollCoursesCnt} ({( usersThatEnrollCoursesCnt / usersReport.length * 100).toFixed(1)}%)</h1>
+                  </div>
+                  <div className = "bg-white flex gap-2 flex-col">
+                    <p className = "text-xl">จำนวนคอร์สเรียนทั้งสิ้น (คอร์สเรียน)</p>
+                    <h1 className = "text-4xl text-blue-400">{contentsReport.length}</h1>
+                  </div>
+                  
+                  <div className = "xl:col-span-3 gap-2 flex flex-col">
+                  <p className = "text-xl">คอร์สที่มีผู้เรียนจบมากที่สุด 5 อันดับแรก</p>
+                    <div className="tableContainer overflow-x-auto">
+                        <table className="reportTable w-full text-sm text-left text-gray-600">
+                          <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                              <th className="py-3 px-4 w-[5%]">No.</th>
+                              <th className="py-3 px-4 w-[35%]">Title</th>
+                              <th className="py-3 px-4 w-[15%]">
+                                จำนวนผู้เข้าเรียน
+                              </th>
+                              <th className="py-3 px-4 w-[15%]">
+                                จำนวนผู้ที่จบคอร์ส
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {contentsReport.sort((a,b) => a.studentsCompleted - b.studentsCompleted).filter((content, idx)=> idx < 5).map((course) => (
+                              <tr
+                                key={course.id}
+                                className="bg-white border-b hover:bg-gray-50"
+                              >
+                                <td className="py-3 px-4">{course.id}.</td>
+                                <td className="py-3 px-4">{course.title}</td>
+                                <td className="py-3 px-4">
+                                  {course.studentsEnrolled}
+                                </td>
+                                <td className="py-3 px-4">
+                                  {course.studentsCompleted}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                  </div>
+                  <div className = "xl:col-span-3 gap-2 flex flex-col">
+                  <p className = "text-xl">คอร์สยอดนิยม 5 อันดับแรก</p>
+                    <div className="tableContainer overflow-x-auto">
+                        <table className="reportTable w-full text-sm text-left text-gray-600">
+                          <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                              <th className="py-3 px-4 w-[5%]">No.</th>
+                              <th className="py-3 px-4 w-[35%]">Title</th>
+                              <th className="py-3 px-4 w-[15%]">
+                                จำนวนผู้เข้าเรียน
+                              </th>
+                              <th className="py-3 px-4 w-[15%]">
+                                จำนวนผู้ที่จบคอร์ส
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {contentsReport.sort((a,b) => a.studentsEnrolled - b.studentsEnrolled).filter((content, idx)=> idx < 5).map((course) => (
+                              <tr
+                                key={course.id}
+                                className="bg-white border-b hover:bg-gray-50"
+                              >
+                                <td className="py-3 px-4">{course.id}.</td>
+                                <td className="py-3 px-4">{course.title}</td>
+                                <td className="py-3 px-4">
+                                  {course.studentsEnrolled}
+                                </td>
+                                <td className="py-3 px-4">
+                                  {course.studentsCompleted}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                  </div>
+                
+
+                  {/* Courses Table */}
+                  
+                  <div className = "xl:col-span-3 gap-2 flex flex-col">
+                  <p className = "text-xl">คอร์สเรียนทั้งหมด</p>
+                    <div className="tableContainer overflow-x-auto">
+                      <table className="reportTable w-full text-sm text-left text-gray-600">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                          <tr>
+                            <th className="py-3 px-4 w-[5%]">No.</th>
+                            <th className="py-3 px-4 w-[35%]">Title</th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้เข้าเรียน
+                            </th>
+                            <th className="py-3 px-4 w-[15%]">
+                              จำนวนผู้ที่จบคอร์ส
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {contentsReport.map((course) => (
+                            <tr
+                              key={course.id}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="py-3 px-4">{course.id}.</td>
+                              <td className="py-3 px-4">{course.title}</td>
+                              <td className="py-3 px-4">
+                                {course.studentsEnrolled}
+                              </td>
+                              <td className="py-3 px-4">
+                                {course.studentsCompleted}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Courses Table */}
-                {activeSubTab === "courses" && (
-                  <div className="tableContainer overflow-x-auto">
-                    <table className="reportTable w-full text-sm text-left text-gray-600">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                        <tr>
-                          <th className="py-3 px-4 w-[5%]">No.</th>
-                          <th className="py-3 px-4 w-[35%]">Title</th>
-                          <th className="py-3 px-4 w-[15%]">
-                            จำนวนผู้เข้าเรียน
-                          </th>
-                          <th className="py-3 px-4 w-[15%]">
-                            จำนวนผู้ที่จบคอร์ส
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {contentsReport.map((course) => (
-                          <tr
-                            key={course.id}
-                            className="bg-white border-b hover:bg-gray-50"
-                          >
-                            <td className="py-3 px-4">{course.id}.</td>
-                            <td className="py-3 px-4">{course.title}</td>
-                            <td className="py-3 px-4">
-                              {course.studentsEnrolled}
-                            </td>
-                            <td className="py-3 px-4">
-                              {course.studentsCompleted}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-
-                {/* Users Table */}
-                {activeSubTab === "users" && (
-                  <div className="tableContainer overflow-x-auto">
-                    <table className="reportTable w-full text-sm text-left text-gray-600">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                        <tr>
-                          <th className="py-3 px-4 w-[5%]">No.</th>
-                          <th className="py-3 px-4 w-[40%]">ชื่อผู้ใช้</th>
-                          <th className="py-3 px-4 w-[25%]">
-                            จำนวนคอร์สที่เรียน
-                          </th>
-                          <th className="py-3 px-4 w-[25%]">จำนวนที่จบคอร์ส</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {usersReport.map((user) => (
-                          <tr
-                            key={user.id}
-                            className="bg-white border-b hover:bg-gray-50"
-                          >
-                            <td className="py-3 px-4">{user.id}.</td>
-                            <td className="py-3 px-4">{user.name}</td>
-                            <td className="py-3 px-4">{user.coursesTaken}</td>
-                            <td className="py-3 px-4">
-                              {user.coursesCompleted}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
               </>
-            )}
 
-            {/*Project Content*/}
-            {activeMainTab === "project" && (
-              <div className="tableContainer overflow-x-auto">
-                <table className="reportTable w-full text-sm text-left text-gray-600">
-                  <tbody>
-                    {projectsReport.map((project) => (
-                      <tr
-                        key={project.id}
-                        className="bg-white border-b hover:bg-gray-50"
-                      >
-                        <td className="py-3 px-4">{project.id}.</td>
-                        <td className="py-3 px-4">{project.projectName}</td>
-                        <td className="py-3 px-4">{project.submitter}</td>
-                        <td className="py-3 px-4">{project.status}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            
           </div>
           {/* End Content Area */}
         </div>
