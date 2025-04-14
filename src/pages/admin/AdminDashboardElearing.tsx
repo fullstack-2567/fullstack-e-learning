@@ -1,4 +1,5 @@
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 
 export default function AdminDashboardElearning() {
   return (
@@ -7,7 +8,7 @@ export default function AdminDashboardElearning() {
         <AdminSidebar />
       </div>
       <div className="flex-1 min-h-screen bg-gray-100 p-8 ml-64">
-        //เนื้อหา
+      <AdminDashboard />
       </div>
     </div>
   );
