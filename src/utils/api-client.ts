@@ -17,7 +17,7 @@ const openApiclient = await api.getClient<Client>();
 
 // TO DO: Get rid of this after convert all api fetching to use openapiClient
 const client = axios.create({
-  baseURL: `${BACKEND_URL}/api`,
+  baseURL: `${BACKEND_URL}`,
   withCredentials: true,
 });
 
