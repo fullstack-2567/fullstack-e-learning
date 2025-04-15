@@ -5,7 +5,7 @@ import { Client } from "@/utils/backend-openapi";
 const BACKEND_URL = import.meta.env.VITE_END_POINT;
 
 const api = new OpenAPIClientAxios({
-  definition: `${BACKEND_URL}/openapi.json`,
+  definition: `${BACKEND_URL}/api/openapi.json`,
   withServer: { url: BACKEND_URL },
   axiosConfigDefaults: {
     withCredentials: true,
