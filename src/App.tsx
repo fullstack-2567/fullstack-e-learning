@@ -22,6 +22,7 @@ import AdminNewCourses from "./pages/admin/AdminNewCourse";
 import { useEffect } from "react";
 import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
 import ApproverReport from "./pages/approver/ApproverReport";
+import UsersManagement from "./pages/admin/UsersManagement";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -49,6 +50,7 @@ const ROUTES = {
   ADMIN_COURSE_MANAGEMENT: "/admin/course-management",
   ADMIN_PROJECT_MANAGEMENT: "admin/projectmanagement",
   ADMIN_COURSES: "/admin/courses",
+  ADMIN_USER_MANAGEMENT: "/admin/users-management",
 };
 
 export default function App() {
@@ -143,6 +145,14 @@ export default function App() {
               element={
                 <ProtectedRoute allowedRoles={["admin"]}>
                   <AdminReport />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.ADMIN_USER_MANAGEMENT}
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <UsersManagement />
                 </ProtectedRoute>
               }
             />
