@@ -50,8 +50,8 @@ export default function ApproverSidebar({ className }: SidebarProps) {
             <User size={24} className="text-indigo-700" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-white">Admin123</span>
-            <span className="text-xs text-indigo-200">Administrator</span>
+            <span className="text-lg font-bold text-white">Approver123</span>
+            <span className="text-xs text-indigo-200">Approver</span>
           </div>
         </div>
       </div>
