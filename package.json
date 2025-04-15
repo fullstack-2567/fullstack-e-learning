@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "openapi:generate": "npx openapicmd typegen https://fullstack-b.vishsiri.dev/api/openapi.json > src/utils/backend-openapi.d.ts"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",

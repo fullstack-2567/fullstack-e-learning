@@ -1,0 +1,295 @@
+/* Toast Animation - Improved for smoother transitions */
+@keyframes toast-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 0.3s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.animate-toast-out {
+  animation: toast-out 0.3s cubic-bezier(0.06, 0.71, 0.55, 1) forwards;
+  will-change: opacity, transform;
+}
+
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none; /* Allow clicking through the container */
+}
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  max-width: 24rem;
+  width: 100%;
+  backdrop-filter: blur(8px);
+  pointer-events: auto; /* Make toast clickable */
+  transform-origin: top right;
+  transition: transform 0.3s cubic-bezier(0.21, 1.02, 0.73, 1),
+              opacity 0.3s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.toast-success {
+  background-color: rgba(209, 250, 229, 0.95);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+  
+.toast-error {
+  background-color: rgba(254, 226, 226, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+  
+.toast-info {
+  background-color: rgba(219, 234, 254, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+  
+.toast-icon {
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+  
+.toast-close {
+  margin-left: 1rem;
+  color: rgb(156, 163, 175);
+  transition: color 0.2s, background-color 0.2s;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+  
+.toast-close:hover {
+  color: rgb(107, 114, 128);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+  
+.toast-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-toast-in {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .animate-toast-out {
+    animation: none;
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  
+  .luxury-dialog {
+    animation: none;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .luxury-overlay {
+    animation: none;
+    backdrop-filter: blur(12px);
+    opacity: 1;
+  }
+}
+  
+.toast-error {
+  background-color: rgba(254, 226, 226, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+  
+.toast-info {
+  background-color: rgba(219, 234, 254, 0.95);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+  
+.toast-icon {
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+  
+.toast-message {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(31, 41, 55);
+}
+  
+.toast-close {
+  margin-left: 1rem;
+  color: rgb(156, 163, 175);
+  transition: color 0.2s;
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+  
+.toast-close:hover {
+  color: rgb(107, 114, 128);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+  
+.toast-close:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+  .animate-toast-in {
+    animation: none;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .luxury-dialog {
+    animation: none;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .luxury-overlay {
+    animation: none;
+    backdrop-filter: blur(12px);
+    opacity: 1;
+  }
+
+
+/* Performance optimizations for EditUserDialog.css */
+
+/* Entrance animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* Exit animation for overlay */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
+/* Entrance animation for dialog */
+@keyframes slideIn {
+  from {
+    transform: translate3d(0, 20px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+/* Exit animation for dialog */
+@keyframes slideOut {
+  from {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(0, 20px, 0);
+    opacity: 0;
+  }
+}
+
+.luxury-overlay {
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.3s ease-out;
+  will-change: opacity, backdrop-filter;
+}
+
+.overlay-exit {
+  animation: fadeOut 0.4s ease-in forwards;
+}
+
+/* Add hardware acceleration for better performance */
+.luxury-dialog {
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateZ(0); /* Hardware acceleration */
+  will-change: transform, opacity;
+}
+
+.dialog-exit {
+  animation: slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Optimize form elements focus states */
+select:focus,
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* Add clear hover/focus styles for buttons */
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Add responsive sizing for mobile views */
+@media (max-width: 640px) {
+  .luxury-dialog {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  .toolbar {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .searchInput {
+    width: 100% !important;
+  }
+}

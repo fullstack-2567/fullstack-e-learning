@@ -8,7 +8,7 @@ import {
   LayoutDashboard,
   BarChart3,
   LogOut,
-  FileText,
+  Users,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -34,6 +34,11 @@ export default function AdminSidebar({ className }: SidebarProps) {
       path: "/admin/report",
       icon: <BarChart3 size={18} />,
       label: "รายงาน",
+    },
+    {
+      path: "/admin/users-management",
+      icon: <Users size={18} />,
+      label: "จัดการผู้ใช้",
     },
   ];
 

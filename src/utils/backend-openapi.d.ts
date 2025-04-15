@@ -8,6 +8,16 @@ import type {
 
 declare namespace Components {
     namespace Schemas {
+        export interface ChildProjectsDto {
+            /**
+             * Number of normal projects
+             */
+            normal: number;
+            /**
+             * Number of child projects
+             */
+            child: number;
+        }
         export interface Content {
             /**
              * Unique identifier of the content
@@ -139,6 +149,10 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
             /**
              * Creation date of the content
@@ -152,6 +166,26 @@ declare namespace Components {
              * 2024-01-15T12:00:00Z
              */
             updatedDT: string; // date-time
+        }
+        export interface ContentCategoriesDataDto {
+            categories: ContentCategoryDto[];
+        }
+        export interface ContentCategoriesResponseDto {
+            /**
+             * Status of the response
+             */
+            status: string;
+            data: ContentCategoriesDataDto;
+        }
+        export interface ContentCategoryDto {
+            /**
+             * Name of the content category
+             */
+            category: string;
+            /**
+             * Number of contents in this category
+             */
+            contentCount: number;
         }
         export interface ContentsReportDto {
             /**
@@ -208,6 +242,129 @@ declare namespace Components {
              * Video duration (in seconds)
              */
             video_duration?: number;
+        }
+        export interface DailyTrafficDto {
+            /**
+             * Day of the month
+             */
+            day: number;
+            /**
+             * Number of logins for this day
+             */
+            loginCount: number;
+            /**
+             * Number of enrollments for this day
+             */
+            enrollmentCount: number;
+        }
+        export interface DashboardSummaryDataDto {
+            loginCount: LoginCountDto;
+            enrollCount: EnrollCountDto;
+        }
+        export interface DashboardSummaryResponseDto {
+            /**
+             * Status of the response
+             */
+            status: string;
+            data: DashboardSummaryDataDto;
+        }
+        export interface EnrollCountDto {
+            /**
+             * Number of enrollments in the last month
+             */
+            lastMonth: number;
+            /**
+             * Number of enrollments in the current month
+             */
+            thisMonth: number;
+        }
+        export interface LoginCountDto {
+            /**
+             * Number of logins in the last month
+             */
+            lastMonth: number;
+            /**
+             * Number of logins in the current month
+             */
+            thisMonth: number;
+        }
+        export interface MonthlyTrafficDataDto {
+            days: DailyTrafficDto[];
+        }
+        export interface MonthlyTrafficResponseDto {
+            /**
+             * Status of the response
+             */
+            status: string;
+            data: MonthlyTrafficDataDto;
+        }
+        export interface PatchUserByIdDto {
+            /**
+             * Gender of the user
+             * example:
+             * male
+             */
+            sex?: "male" | "female" | "other";
+            /**
+             * First name of the user
+             * example:
+             * John
+             */
+            firstName?: string;
+            /**
+             * First name of the user
+             * example:
+             * Doe
+             */
+            lastName?: string;
+            /**
+             * Birthdate of the user
+             * example:
+             * John
+             */
+            birthDate?: string;
+            /**
+             * Title prefix of the user
+             * example:
+             * mr
+             */
+            prefix?: "master" | "miss" | "mr" | "mrs" | "ms";
+            /**
+             * Education level of the user
+             * example:
+             * bachelor
+             */
+            education?: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
+            /**
+             * Telephone number of the user
+             * example:
+             * 0812345678
+             */
+            tel?: string; // ^[0-9]{10}$
+        }
+        export interface PopularContentDto {
+            /**
+             * Unique identifier of the content
+             */
+            contentId: string;
+            /**
+             * Name of the content
+             */
+            contentName: string;
+            /**
+             * Number of enrollments for this content
+             */
+            enrollmentCount: number;
+        }
+        export interface PopularContentsDataDto {
+            courses: PopularContentDto[];
+        }
+        export interface PopularContentsResponseDto {
+            /**
+             * Status of the response
+             */
+            status: string;
+            data: PopularContentsDataDto;
         }
         export interface Project {
             /**
@@ -298,6 +455,10 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
             /**
              * Date and time when the project was submitted
@@ -308,7 +469,7 @@ declare namespace Components {
             /**
              * Thai name of the project
              * example:
-             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
+             * โครงการพัฒนาระบบจัดการข้อมูล
              */
             projectThaiName: string;
             /**
@@ -449,6 +610,10 @@ declare namespace Components {
                      * 0812345678
                      */
                     tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
                 };
                 /**
                  * Date and time when the project was submitted
@@ -459,7 +624,7 @@ declare namespace Components {
                 /**
                  * Thai name of the project
                  * example:
-                 * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
+                 * โครงการพัฒนาระบบจัดการข้อมูล
                  */
                 projectThaiName: string;
                 /**
@@ -604,6 +769,10 @@ declare namespace Components {
                      * 0812345678
                      */
                     tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
                 };
                 /**
                  * Second approval date
@@ -693,6 +862,10 @@ declare namespace Components {
                      * 0812345678
                      */
                     tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
                 };
                 /**
                  * Third approval date
@@ -782,6 +955,10 @@ declare namespace Components {
                      * 0812345678
                      */
                     tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
                 };
                 /**
                  * Third approval date
@@ -871,6 +1048,10 @@ declare namespace Components {
                      * 0812345678
                      */
                     tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
                 };
             };
             /**
@@ -965,6 +1146,10 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
             /**
              * Second approval date
@@ -1054,6 +1239,10 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
             /**
              * Third approval date
@@ -1143,6 +1332,10 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
             /**
              * Third approval date
@@ -1232,7 +1425,72 @@ declare namespace Components {
                  * 0812345678
                  */
                 tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
             };
+        }
+        export interface ProjectCountDto {
+            /**
+             * Count from last month
+             */
+            lastMonth: number;
+            /**
+             * Count from current month
+             */
+            thisMonth: number;
+        }
+        export interface ProjectStatusDto {
+            /**
+             * Number of projects pending first approval
+             */
+            pending_first_approval: number;
+            /**
+             * Number of projects with first approval
+             */
+            first_approved: number;
+            /**
+             * Number of projects with second approval
+             */
+            second_approved: number;
+            /**
+             * Number of projects with third approval
+             */
+            third_approved: number;
+            /**
+             * Number of rejected projects
+             */
+            rejected: number;
+        }
+        export interface ProjectSummaryDto {
+            pending_projects: ProjectCountDto;
+            total_projects: ProjectCountDto;
+            rejected_projects: ProjectCountDto;
+        }
+        export interface ProjectTypeDto {
+            /**
+             * Type of project
+             */
+            type: string;
+            /**
+             * Number of projects of this type
+             */
+            count: number;
+        }
+        export interface ProjectsDashboardDataDto {
+            summary: ProjectSummaryDto;
+            popular_project_types: ProjectTypeDto[];
+            project_status: ProjectStatusDto;
+            popular_sdg_types: SdgTypeDto[];
+            child_projects: ChildProjectsDto;
+        }
+        export interface ProjectsDashboardResponseDto {
+            /**
+             * Status of the response
+             */
+            status: string;
+            data: ProjectsDashboardDataDto;
         }
         export interface ProjectsReportDto {
             /**
@@ -1256,15 +1514,25 @@ declare namespace Components {
             /**
              * The current status of the project
              * example:
-             * α╕üα╕│α╕Ñα╕▒α╕çα╕úα╕¡α╕üα╕▓α╕úα╕òα╕úα╕ºα╕êα╕¬α╕¡α╕Ü
+             * กำลังรอการตรวจสอบ
              */
             status: "\u0E01\u0E33\u0E25\u0E31\u0E07\u0E23\u0E2D\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 1" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 2" | "\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E2A\u0E33\u0E40\u0E23\u0E47\u0E08" | "\u0E16\u0E39\u0E01\u0E1B\u0E0F\u0E34\u0E40\u0E2A\u0E18";
+        }
+        export interface SdgTypeDto {
+            /**
+             * SDG type
+             */
+            sdg: string;
+            /**
+             * Number of projects with this SDG type
+             */
+            count: number;
         }
         export interface SubmitProjectDto {
             /**
              * Thai name of the project
              * example:
-             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
+             * โครงการพัฒนาระบบจัดการข้อมูล
              */
             projectThaiName: string;
             /**
@@ -1314,9 +1582,7 @@ declare namespace Components {
              * example:
              * 123e4567-e89b-12d3-a456-426614174000
              */
-            parentProjectID?: {
-                [key: string]: any;
-            }; // uuid
+            parentProjectID?: string | null; // uuid
             userInfo?: {
                 /**
                  * Title prefix of the user
@@ -1366,15 +1632,15 @@ declare namespace Components {
             /**
              * Content name
              */
-            contentName: string;
+            contentName?: string;
             /**
              * Content category
              */
-            contentCategory: string;
+            contentCategory?: string;
             /**
              * Content is public
              */
-            isPublic: boolean;
+            isPublic?: boolean;
         }
         export interface UpdateProjectStatusDto {
             /**
@@ -1383,6 +1649,14 @@ declare namespace Components {
              * approve
              */
             action: "approve" | "reject";
+        }
+        export interface UpdateUserRoleDto {
+            /**
+             * New role for the user
+             * example:
+             * admin
+             */
+            role: "admin" | "user" | "project-approver";
         }
         export interface User {
             /**
@@ -1457,6 +1731,269 @@ declare namespace Components {
              * 0812345678
              */
             tel: string; // ^[0-9]{10}$
+            picture: string;
+            googleId: string;
+            refreshToken: string | null;
+            contentReports: UserContentMaps[];
+        }
+        export interface UserContentMaps {
+            /**
+             * ID of the user who enrolled in the content
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            userId: string; // uuid
+            /**
+             * User who enrolled in the content
+             */
+            user: {
+                /**
+                 * Unique identifier of the user
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                userId: string; // uuid
+                /**
+                 * Email address of the user
+                 * example:
+                 * user@example.com
+                 */
+                email: string; // email
+                /**
+                 * Date when the user was created
+                 * example:
+                 * 2024-01-01T00:00:00Z
+                 */
+                createdDT: string; // date-time
+                /**
+                 * Date when the user was last updated
+                 * example:
+                 * 2024-01-01T00:00:00Z
+                 */
+                updatedDT: string; // date-time
+                /**
+                 * Role of the user
+                 * example:
+                 * user
+                 */
+                role: "admin" | "user" | "project-approver";
+                /**
+                 * Gender of the user
+                 * example:
+                 * male
+                 */
+                sex: "male" | "female" | "other";
+                /**
+                 * First name of the user
+                 * example:
+                 * John
+                 */
+                firstName: string;
+                /**
+                 * Last name of the user
+                 * example:
+                 * Doe
+                 */
+                lastName: string;
+                /**
+                 * Birth date of the user
+                 * example:
+                 * 1990-01-01
+                 */
+                birthDate: string; // date
+                /**
+                 * Title prefix of the user
+                 * example:
+                 * mr
+                 */
+                prefix: "master" | "miss" | "mr" | "mrs" | "ms";
+                /**
+                 * Education level of the user
+                 * example:
+                 * bachelor
+                 */
+                education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
+                /**
+                 * Telephone number of the user
+                 * example:
+                 * 0812345678
+                 */
+                tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: UserContentMaps[];
+            };
+            /**
+             * ID of the content in which the user enrolled
+             * example:
+             * 987e6543-a21c-43d3-a999-426614174999
+             */
+            contentId: string; // uuid
+            /**
+             * Content that the user enrolled in
+             */
+            content: {
+                /**
+                 * Unique identifier of the content
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                contentId: string; // uuid
+                /**
+                 * Name of the content
+                 * example:
+                 * Funny Cat Video
+                 */
+                contentName: string;
+                /**
+                 * Description of the content
+                 * example:
+                 * A video showing funny moments of cats
+                 */
+                contentDescription: string;
+                /**
+                 * Category of the content
+                 * example:
+                 * Comedy
+                 */
+                contentCategory: "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
+                /**
+                 * Thumbnail image file name in storage
+                 * example:
+                 * 1232f565-a106-4160-b6d0-9c859877ce9a.jpg
+                 */
+                contentThumbnail: string;
+                /**
+                 * Video file name in storage
+                 * example:
+                 * 1232f565-a106-4160-b6d0-9c859877ce9a.mp4
+                 */
+                contentVideo: string;
+                /**
+                 * Video duration in seconds
+                 * example:
+                 * 60
+                 */
+                videoDuration: number;
+                /**
+                 * Is the content publicly available
+                 * example:
+                 * true
+                 */
+                isPublic: boolean;
+                /**
+                 * ID of the user who created the content
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                createdByUserId: string; // uuid
+                /**
+                 * User who created the content
+                 */
+                createdByUser: {
+                    /**
+                     * Unique identifier of the user
+                     * example:
+                     * 123e4567-e89b-12d3-a456-426614174000
+                     */
+                    userId: string; // uuid
+                    /**
+                     * Email address of the user
+                     * example:
+                     * user@example.com
+                     */
+                    email: string; // email
+                    /**
+                     * Date when the user was created
+                     * example:
+                     * 2024-01-01T00:00:00Z
+                     */
+                    createdDT: string; // date-time
+                    /**
+                     * Date when the user was last updated
+                     * example:
+                     * 2024-01-01T00:00:00Z
+                     */
+                    updatedDT: string; // date-time
+                    /**
+                     * Role of the user
+                     * example:
+                     * user
+                     */
+                    role: "admin" | "user" | "project-approver";
+                    /**
+                     * Gender of the user
+                     * example:
+                     * male
+                     */
+                    sex: "male" | "female" | "other";
+                    /**
+                     * First name of the user
+                     * example:
+                     * John
+                     */
+                    firstName: string;
+                    /**
+                     * Last name of the user
+                     * example:
+                     * Doe
+                     */
+                    lastName: string;
+                    /**
+                     * Birth date of the user
+                     * example:
+                     * 1990-01-01
+                     */
+                    birthDate: string; // date
+                    /**
+                     * Title prefix of the user
+                     * example:
+                     * mr
+                     */
+                    prefix: "master" | "miss" | "mr" | "mrs" | "ms";
+                    /**
+                     * Education level of the user
+                     * example:
+                     * bachelor
+                     */
+                    education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
+                    /**
+                     * Telephone number of the user
+                     * example:
+                     * 0812345678
+                     */
+                    tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: UserContentMaps[];
+                };
+                /**
+                 * Creation date of the content
+                 * example:
+                 * 2024-01-01T10:00:00Z
+                 */
+                createdDT: string; // date-time
+                /**
+                 * Last update date of the content
+                 * example:
+                 * 2024-01-15T12:00:00Z
+                 */
+                updatedDT: string; // date-time
+            };
+            /**
+             * Timestamp when the user enrolled in the content
+             * example:
+             * 2025-04-01T10:00:00Z
+             */
+            enrolledDT: string; // date-time
+            /**
+             * Timestamp when the user completed the content
+             * example:
+             * 2025-04-03T15:30:00Z
+             */
+            completedDT: string; // date-time
         }
         export interface UsersReportDto {
             /**
@@ -1485,24 +2022,28 @@ declare namespace Components {
             coursesCompleted: number;
         }
         export interface VerifyTokenDto {
+            access_token: string;
         }
     }
 }
 declare namespace Paths {
     namespace AppControllerGetHello {
         namespace Responses {
-            export interface $200 {
-            }
+            export type $200 = string;
         }
     }
     namespace AuthControllerGoogleAuth {
         namespace Responses {
+            export interface $200 {
+            }
             export interface $302 {
             }
         }
     }
     namespace AuthControllerGoogleAuthCallback {
         namespace Responses {
+            export interface $200 {
+            }
             export interface $302 {
             }
         }
@@ -1536,6 +2077,8 @@ declare namespace Paths {
         namespace Responses {
             export interface $200 {
             }
+            export interface $201 {
+            }
         }
     }
     namespace ContentControllerCompleteContent {
@@ -1564,8 +2107,7 @@ declare namespace Paths {
             contentId: Parameters.ContentId;
         }
         namespace Responses {
-            export interface $201 {
-            }
+            export type $201 = Components.Schemas.UserContentMaps;
         }
     }
     namespace ContentControllerGetAllContents {
@@ -1606,6 +2148,56 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Project[];
         }
     }
+    namespace GetAllUsers {
+        namespace Parameters {
+            /**
+             * example:
+             * 10
+             */
+            export type Limit = any;
+            /**
+             * example:
+             * 1
+             */
+            export type Page = any;
+            /**
+             * example:
+             * user
+             */
+            export type Role = string;
+            /**
+             * example:
+             * kaew
+             */
+            export type Search = string;
+        }
+        export interface QueryParameters {
+            search?: /**
+             * example:
+             * kaew
+             */
+            Parameters.Search;
+            role?: /**
+             * example:
+             * user
+             */
+            Parameters.Role;
+            limit?: /**
+             * example:
+             * 10
+             */
+            Parameters.Limit;
+            page?: /**
+             * example:
+             * 1
+             */
+            Parameters.Page;
+        }
+        namespace Responses {
+            export interface $200 {
+            }
+        }
+    }
     namespace GetContentById {
         namespace Parameters {
             export type ContentId = string;
@@ -1622,12 +2214,58 @@ declare namespace Paths {
             export type $200 = Components.Schemas.ContentsReportDto[];
         }
     }
+    namespace GetDashboardMonthlyTraffic {
+        namespace Parameters {
+            export type Month = string;
+        }
+        export interface QueryParameters {
+            month?: Parameters.Month;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.MonthlyTrafficResponseDto;
+        }
+    }
+    namespace GetDashboardPopularContentCategories {
+        namespace Parameters {
+            export type Month = string;
+        }
+        export interface QueryParameters {
+            month?: Parameters.Month;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ContentCategoriesResponseDto;
+        }
+    }
+    namespace GetDashboardPopularContents {
+        namespace Parameters {
+            export type Limit = number;
+            export type Month = string;
+        }
+        export interface QueryParameters {
+            limit?: Parameters.Limit;
+            month?: Parameters.Month;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.PopularContentsResponseDto;
+        }
+    }
+    namespace GetDashboardSummary {
+        namespace Parameters {
+            export type Month = string;
+        }
+        export interface QueryParameters {
+            month?: Parameters.Month;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.DashboardSummaryResponseDto;
+        }
+    }
     namespace GetProjectById {
         namespace Parameters {
-            export type ProjectId = string;
+            export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            projectId: Parameters.ProjectId;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export type $200 = Components.Schemas.Project;
@@ -1635,9 +2273,34 @@ declare namespace Paths {
             }
         }
     }
+    namespace GetProjectDashboard {
+        namespace Parameters {
+            export type Month = string;
+        }
+        export interface QueryParameters {
+            month?: Parameters.Month;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectsDashboardResponseDto;
+        }
+    }
     namespace GetProjectsReport {
         namespace Responses {
             export type $200 = Components.Schemas.ProjectsReportDto[];
+        }
+    }
+    namespace GetUserById {
+        namespace Parameters {
+            export type UserId = string;
+        }
+        export interface PathParameters {
+            userId: Parameters.UserId;
+        }
+        namespace Responses {
+            export interface $200 {
+            }
+            export interface $404 {
+            }
         }
     }
     namespace GetUserProjects {
@@ -1647,15 +2310,48 @@ declare namespace Paths {
             }
         }
     }
+    namespace GetUserRoles {
+        namespace Responses {
+            export interface $200 {
+            }
+        }
+    }
     namespace GetUsersReport {
         namespace Responses {
             export type $200 = Components.Schemas.UsersReportDto[];
+        }
+    }
+    namespace PatchUserRole {
+        namespace Parameters {
+            /**
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            export type UserId = string;
+        }
+        export interface PathParameters {
+            userId: /**
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            Parameters.UserId;
+        }
+        export type RequestBody = Components.Schemas.UpdateUserRoleDto;
+        namespace Responses {
+            export interface $200 {
+            }
+            export interface $400 {
+            }
+            export interface $403 {
+            }
         }
     }
     namespace SubmitProject {
         export type RequestBody = Components.Schemas.SubmitProjectDto;
         namespace Responses {
             export type $200 = Components.Schemas.Project;
+            export interface $201 {
+            }
             export interface $400 {
             }
         }
@@ -1674,10 +2370,10 @@ declare namespace Paths {
     }
     namespace UpdateProjectStatus {
         namespace Parameters {
-            export type ProjectId = string;
+            export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            projectId: Parameters.ProjectId;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         export type RequestBody = Components.Schemas.UpdateProjectStatusDto;
         namespace Responses {
@@ -1685,6 +2381,21 @@ declare namespace Paths {
             export interface $400 {
             }
             export interface $404 {
+            }
+        }
+    }
+    namespace UpdateUserById {
+        namespace Parameters {
+            export type UserId = string;
+        }
+        export interface PathParameters {
+            userId: Parameters.UserId;
+        }
+        export type RequestBody = Components.Schemas.PatchUserByIdDto;
+        namespace Responses {
+            export interface $200 {
+            }
+            export interface $403 {
             }
         }
     }
@@ -1738,7 +2449,7 @@ export interface OperationMethods {
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: Paths.SubmitProject.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.SubmitProject.Responses.$200>
+  ): OperationResponse<Paths.SubmitProject.Responses.$200 | Paths.SubmitProject.Responses.$201>
   /**
    * AuthController_test - Test endpoint
    */
@@ -1778,7 +2489,7 @@ export interface OperationMethods {
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<any>
+  ): OperationResponse<Paths.AuthControllerGoogleAuth.Responses.$200>
   /**
    * AuthController_googleAuthCallback - Handle Google OAuth callback
    */
@@ -1786,7 +2497,7 @@ export interface OperationMethods {
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<any>
+  ): OperationResponse<Paths.AuthControllerGoogleAuthCallback.Responses.$200>
   /**
    * AuthController_verifyToken - Verify access token validity
    */
@@ -1794,7 +2505,49 @@ export interface OperationMethods {
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: Paths.AuthControllerVerifyToken.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.AuthControllerVerifyToken.Responses.$200>
+  ): OperationResponse<Paths.AuthControllerVerifyToken.Responses.$200 | Paths.AuthControllerVerifyToken.Responses.$201>
+  /**
+   * patchUserRole - Update user role (admin only)
+   * 
+   * Allows admin to update the role of any user.
+   */
+  'patchUserRole'(
+    parameters?: Parameters<Paths.PatchUserRole.PathParameters> | null,
+    data?: Paths.PatchUserRole.RequestBody,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.PatchUserRole.Responses.$200>
+  /**
+   * getUserRoles - Get all available user roles
+   */
+  'getUserRoles'(
+    parameters?: Parameters<UnknownParamsObject> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetUserRoles.Responses.$200>
+  /**
+   * getAllUsers - Get all users with pagination, search and role filter
+   */
+  'getAllUsers'(
+    parameters?: Parameters<Paths.GetAllUsers.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetAllUsers.Responses.$200>
+  /**
+   * getUserById - Get user by ID
+   */
+  'getUserById'(
+    parameters?: Parameters<Paths.GetUserById.PathParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetUserById.Responses.$200>
+  /**
+   * updateUserById - Update your own user info
+   */
+  'updateUserById'(
+    parameters?: Parameters<Paths.UpdateUserById.PathParameters> | null,
+    data?: Paths.UpdateUserById.RequestBody,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.UpdateUserById.Responses.$200>
   /**
    * ContentController_getAllContents - Get all contents
    */
@@ -1883,6 +2636,46 @@ export interface OperationMethods {
     data?: any,
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.GetProjectsReport.Responses.$200>
+  /**
+   * getDashboardSummary - Get dashboard summary statistics
+   */
+  'getDashboardSummary'(
+    parameters?: Parameters<Paths.GetDashboardSummary.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetDashboardSummary.Responses.$200>
+  /**
+   * getDashboardMonthlyTraffic - Get monthly traffic statistics
+   */
+  'getDashboardMonthlyTraffic'(
+    parameters?: Parameters<Paths.GetDashboardMonthlyTraffic.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetDashboardMonthlyTraffic.Responses.$200>
+  /**
+   * getDashboardPopularContentCategories - Get popular content categories
+   */
+  'getDashboardPopularContentCategories'(
+    parameters?: Parameters<Paths.GetDashboardPopularContentCategories.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetDashboardPopularContentCategories.Responses.$200>
+  /**
+   * getDashboardPopularContents - Get popular contents
+   */
+  'getDashboardPopularContents'(
+    parameters?: Parameters<Paths.GetDashboardPopularContents.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetDashboardPopularContents.Responses.$200>
+  /**
+   * getProjectDashboard - Get project dashboard statistics
+   */
+  'getProjectDashboard'(
+    parameters?: Parameters<Paths.GetProjectDashboard.QueryParameters> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetProjectDashboard.Responses.$200>
 }
 
 export interface PathsDictionary {
@@ -1944,7 +2737,7 @@ export interface PathsDictionary {
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: Paths.SubmitProject.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.SubmitProject.Responses.$200>
+    ): OperationResponse<Paths.SubmitProject.Responses.$200 | Paths.SubmitProject.Responses.$201>
   }
   ['/api/auth/test']: {
     /**
@@ -1994,7 +2787,7 @@ export interface PathsDictionary {
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<any>
+    ): OperationResponse<Paths.AuthControllerGoogleAuth.Responses.$200>
   }
   ['/api/auth/google/callback']: {
     /**
@@ -2004,7 +2797,7 @@ export interface PathsDictionary {
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<any>
+    ): OperationResponse<Paths.AuthControllerGoogleAuthCallback.Responses.$200>
   }
   ['/api/auth/verify']: {
     /**
@@ -2014,7 +2807,57 @@ export interface PathsDictionary {
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: Paths.AuthControllerVerifyToken.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.AuthControllerVerifyToken.Responses.$200>
+    ): OperationResponse<Paths.AuthControllerVerifyToken.Responses.$200 | Paths.AuthControllerVerifyToken.Responses.$201>
+  }
+  ['/api/users/{userId}/role']: {
+    /**
+     * patchUserRole - Update user role (admin only)
+     * 
+     * Allows admin to update the role of any user.
+     */
+    'patch'(
+      parameters?: Parameters<Paths.PatchUserRole.PathParameters> | null,
+      data?: Paths.PatchUserRole.RequestBody,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.PatchUserRole.Responses.$200>
+  }
+  ['/api/users/roles']: {
+    /**
+     * getUserRoles - Get all available user roles
+     */
+    'get'(
+      parameters?: Parameters<UnknownParamsObject> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetUserRoles.Responses.$200>
+  }
+  ['/api/users']: {
+    /**
+     * getAllUsers - Get all users with pagination, search and role filter
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetAllUsers.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetAllUsers.Responses.$200>
+  }
+  ['/api/users/{userId}']: {
+    /**
+     * getUserById - Get user by ID
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetUserById.PathParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetUserById.Responses.$200>
+    /**
+     * updateUserById - Update your own user info
+     */
+    'patch'(
+      parameters?: Parameters<Paths.UpdateUserById.PathParameters> | null,
+      data?: Paths.UpdateUserById.RequestBody,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.UpdateUserById.Responses.$200>
   }
   ['/api/content']: {
     /**
@@ -2124,18 +2967,92 @@ export interface PathsDictionary {
       config?: AxiosRequestConfig  
     ): OperationResponse<Paths.GetProjectsReport.Responses.$200>
   }
+  ['/api/dashboard/summary']: {
+    /**
+     * getDashboardSummary - Get dashboard summary statistics
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetDashboardSummary.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetDashboardSummary.Responses.$200>
+  }
+  ['/api/dashboard/monthly-traffic']: {
+    /**
+     * getDashboardMonthlyTraffic - Get monthly traffic statistics
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetDashboardMonthlyTraffic.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetDashboardMonthlyTraffic.Responses.$200>
+  }
+  ['/api/dashboard/content-categories']: {
+    /**
+     * getDashboardPopularContentCategories - Get popular content categories
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetDashboardPopularContentCategories.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetDashboardPopularContentCategories.Responses.$200>
+  }
+  ['/api/dashboard/popular-contents']: {
+    /**
+     * getDashboardPopularContents - Get popular contents
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetDashboardPopularContents.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetDashboardPopularContents.Responses.$200>
+  }
+  ['/api/dashboard/projects']: {
+    /**
+     * getProjectDashboard - Get project dashboard statistics
+     */
+    'get'(
+      parameters?: Parameters<Paths.GetProjectDashboard.QueryParameters> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetProjectDashboard.Responses.$200>
+  }
 }
 
 export type Client = OpenAPIClient<OperationMethods, PathsDictionary>
 
+export type ChildProjectsDto = Components.Schemas.ChildProjectsDto;
 export type Content = Components.Schemas.Content;
+export type ContentCategoriesDataDto = Components.Schemas.ContentCategoriesDataDto;
+export type ContentCategoriesResponseDto = Components.Schemas.ContentCategoriesResponseDto;
+export type ContentCategoryDto = Components.Schemas.ContentCategoryDto;
 export type ContentsReportDto = Components.Schemas.ContentsReportDto;
 export type CreateContentDto = Components.Schemas.CreateContentDto;
+export type DailyTrafficDto = Components.Schemas.DailyTrafficDto;
+export type DashboardSummaryDataDto = Components.Schemas.DashboardSummaryDataDto;
+export type DashboardSummaryResponseDto = Components.Schemas.DashboardSummaryResponseDto;
+export type EnrollCountDto = Components.Schemas.EnrollCountDto;
+export type LoginCountDto = Components.Schemas.LoginCountDto;
+export type MonthlyTrafficDataDto = Components.Schemas.MonthlyTrafficDataDto;
+export type MonthlyTrafficResponseDto = Components.Schemas.MonthlyTrafficResponseDto;
+export type patchUserByIdDto = Components.Schemas.PatchUserByIdDto;
+export type PopularContentDto = Components.Schemas.PopularContentDto;
+export type PopularContentsDataDto = Components.Schemas.PopularContentsDataDto;
+export type PopularContentsResponseDto = Components.Schemas.PopularContentsResponseDto;
 export type Project = Components.Schemas.Project;
+export type ProjectCountDto = Components.Schemas.ProjectCountDto;
+export type ProjectStatusDto = Components.Schemas.ProjectStatusDto;
+export type ProjectSummaryDto = Components.Schemas.ProjectSummaryDto;
+export type ProjectTypeDto = Components.Schemas.ProjectTypeDto;
+export type ProjectsDashboardDataDto = Components.Schemas.ProjectsDashboardDataDto;
+export type ProjectsDashboardResponseDto = Components.Schemas.ProjectsDashboardResponseDto;
 export type ProjectsReportDto = Components.Schemas.ProjectsReportDto;
+export type SdgTypeDto = Components.Schemas.SdgTypeDto;
 export type SubmitProjectDto = Components.Schemas.SubmitProjectDto;
 export type UpdateContentDto = Components.Schemas.UpdateContentDto;
 export type UpdateProjectStatusDto = Components.Schemas.UpdateProjectStatusDto;
+export type UpdateUserRoleDto = Components.Schemas.UpdateUserRoleDto;
 export type User = Components.Schemas.User;
+export type UserContentMaps = Components.Schemas.UserContentMaps;
 export type UsersReportDto = Components.Schemas.UsersReportDto;
 export type VerifyTokenDto = Components.Schemas.VerifyTokenDto;
