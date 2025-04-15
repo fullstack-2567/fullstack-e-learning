@@ -1,0 +1,102 @@
+.luxury-overlay {
+  backdrop-filter: blur(12px);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.luxury-dialog {
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom Select Styling */
+select {
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1em;
+}
+
+/* Remove default arrow in IE */
+select::-ms-expand {
+  display: none;
+}
+
+/* Custom styling for select focus state */
+select:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Hover effect for select */
+select:hover {
+  border-color: #cbd5e0;
+}
+
+/* Custom styling for option */
+option {
+  padding: 10px !important;
+  margin: 5px !important;
+  border-radius: 4px !important;
+}
+
+/* Style for role badge */
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.role-badge-admin {
+  background-color: rgba(124, 58, 237, 0.1);
+  color: rgb(109, 40, 217);
+}
+
+.role-badge-manager {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: rgb(37, 99, 235);
+}
+
+.role-badge-user {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: rgb(75, 85, 99);
+}
