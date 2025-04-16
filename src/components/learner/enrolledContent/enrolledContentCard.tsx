@@ -12,18 +12,25 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Content } from "@/components/admin/ContentManagement";
-import { openApiclient } from "@/utils/api-client";
-import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
-const ContentCard = ({
+interface Props {
+  contentId: string;
+  contentName: string;
+  contentCategory: string;
+  contentThumbnail: string;
+  contentDescription: string;
+  isCompleted: boolean;
+}
+
+const EnrolledContentCard = ({
   contentId,
   contentName,
   contentCategory,
   contentThumbnail,
   contentDescription = "...",
-}: Content) => {
+  isCompleted,
+}: Props) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
@@ -68,13 +75,22 @@ const ContentCard = ({
           </div>
         </div>
 
-        <CardContent className="border-red-500">
-          <CardTitle className="text-lg mb-2 line-clamp-2 transition-colors duration-200 font-prompt">
+        <CardContent className="space-y-2 border-red-500">
+          <CardTitle className="text-lg line-clamp-2 transition-colors duration-200 font-prompt">
             {contentName}
           </CardTitle>
           {contentDescription && (
             <p className="text-sm text-gray-600 line-clamp-2 font-prompt">
               {contentDescription}
+            </p>
+          )}
+          {isCompleted ? (
+            <p className="w-fit text-white text-xs rounded px-2 py-1 bg-green-600">
+              เรียนจบแล้ว
+            </p>
+          ) : (
+            <p className="w-fit text-white text-xs rounded px-2 py-1 bg-gray-600">
+              ยังเรียนไม่จบ
             </p>
           )}
         </CardContent>
@@ -127,23 +143,11 @@ const ContentCard = ({
                 <Button
                   size="lg"
                   className="w-full py-6 text-lg font-prompt font-medium transition-all hover:shadow-md"
-                  onClick={async () => {
-                    try {
-                      const response = await openApiclient.enroll({
-                        contentId: contentId!,
-                      });
-                      if (response.data) {
-                        toast.success(
-                          `Successfully enrolled to ${contentName}`
-                        );
-                        navigate("/enrolled");
-                      }
-                    } catch (error) {
-                      toast.error("Enrollment failed");
-                    }
+                  onClick={() => {
+                    navigate(`/video?videoId=${contentId}`);
                   }}
                 >
-                  ลงทะเบียนเรียน
+                  เริ่มเรียน
                 </Button>
               </DialogFooter>
             </div>
@@ -154,4 +158,4 @@ const ContentCard = ({
   );
 };
 
-export default ContentCard;
+export default EnrolledContentCard;

@@ -15,7 +15,7 @@ export default function LearningNavbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); 
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -37,16 +37,18 @@ export default function LearningNavbar() {
 
         <div className="flex items-center space-x-6">
           {[
-            { path: ROUTES.PROJECT_SUBMIT_PROJECT, 
-              label: "ส่งโครงการ" 
-            },
+            { path: ROUTES.PROJECT_SUBMIT_PROJECT, label: "ส่งโครงการ" },
             {
               path: ROUTES.PROJECT_LISTS,
               label: "สถานะโครงการ",
             },
-            { 
-              path: ROUTES.CONTENT_MENU, 
-              label: "คอร์สเรียน" 
+            {
+              path: ROUTES.CONTENT_MENU,
+              label: "คอร์สเรียน",
+            },
+            {
+              path: ROUTES.ENROLLED_CONTENTS,
+              label: "คอร์สเรียนของฉัน",
             },
           ].map(({ path, label }) => (
             <Link

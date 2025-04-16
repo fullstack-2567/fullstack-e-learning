@@ -728,7 +728,7 @@ declare namespace Components {
             /**
              * Thai name of the project
              * example:
-             * โครงการพัฒนาระบบจัดการข้อมูล
+             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
              */
             projectThaiName: string;
             /**
@@ -883,7 +883,7 @@ declare namespace Components {
                 /**
                  * Thai name of the project
                  * example:
-                 * โครงการพัฒนาระบบจัดการข้อมูล
+                 * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
                  */
                 projectThaiName: string;
                 /**
@@ -1773,7 +1773,7 @@ declare namespace Components {
             /**
              * The current status of the project
              * example:
-             * กำลังรอการตรวจสอบ
+             * α╕üα╕│α╕Ñα╕▒α╕çα╕úα╕¡α╕üα╕▓α╕úα╕òα╕úα╕ºα╕êα╕¬α╕¡α╕Ü
              */
             status: "\u0E01\u0E33\u0E25\u0E31\u0E07\u0E23\u0E2D\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 1" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 2" | "\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E2A\u0E33\u0E40\u0E23\u0E47\u0E08" | "\u0E16\u0E39\u0E01\u0E1B\u0E0F\u0E34\u0E40\u0E2A\u0E18";
         }
@@ -1791,7 +1791,7 @@ declare namespace Components {
             /**
              * Thai name of the project
              * example:
-             * โครงการพัฒนาระบบจัดการข้อมูล
+             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
              */
             projectThaiName: string;
             /**

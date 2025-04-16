@@ -21,6 +21,7 @@ import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject"
 import ApproverReport from "./pages/approver/ApproverReport";
 import UsersManagement from "./pages/admin/UsersManagement";
 import ProjectLists from "./pages/learner/ProjectLists";
+import EnrolledContent from "./pages/learner/EnrolledContent";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -37,6 +38,7 @@ export const ROUTES = {
   PROJECT_SUBMIT_SUCCESS: "/submit-success/:projectId",
   PROJECT_SUBMIT_SUCCESS_VIEW: (id: string) => `/submit-success/${id}`,
   PROJECT_LISTS: "/project-list",
+  ENROLLED_CONTENTS: "/enrolled",
 
   // Approver Routes
   APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
@@ -104,6 +106,15 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path={ROUTES.ENROLLED_CONTENTS}
+              element={
+                <ProtectedRoute>
+                  <EnrolledContent />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Protected Routes for Approver */}
             <Route
               path={ROUTES.APPROVER_DASHBOARD_PROJECT}
