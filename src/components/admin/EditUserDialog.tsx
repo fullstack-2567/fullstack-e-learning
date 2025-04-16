@@ -1,20 +1,21 @@
-import { X, ChevronDown } from "lucide-react";
+import { X } from "lucide-react";
 import { useState, useEffect, useCallback, memo } from "react";
 import "./EditUserDialog.css";
 import { useToast } from "../utils/Toast";
-
-interface RoleOption {
-  value: string;
-  label: string;
-  class?: string;
-}
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EditUserDialogProps {
   isOpen: boolean;
   userData: EditUserData | null;
   onClose: () => void;
   onSave: (data: EditUserData) => void;
-  roles: RoleOption[];
+  roles: string[]; // เปลี่ยนจาก RoleOption[]
 }
 
 export interface EditUserData {
@@ -24,14 +25,13 @@ export interface EditUserData {
   role: string;
 }
 
-// Memoized role badge to prevent unnecessary re-renders
 const RoleBadge = memo(({ role }: { role: string }) => {
   const getRoleClass = (roleName: string) => {
     switch (roleName.toLowerCase()) {
       case "admin":
         return "bg-purple-100 text-purple-800";
-      case "manager":
-        return "bg-blue-100 text-blue-800";
+      case "project-approver":
+        return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -45,7 +45,6 @@ const RoleBadge = memo(({ role }: { role: string }) => {
     </span>
   );
 });
-
 RoleBadge.displayName = "RoleBadge";
 
 const EditUserDialog: React.FC<EditUserDialogProps> = ({
@@ -57,7 +56,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 }) => {
   const { showToast } = useToast();
   const [isExiting, setIsExiting] = useState(false);
-  
+
   const [formData, setFormData] = useState<EditUserData>({
     id: "",
     name: "",
@@ -65,69 +64,49 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
     role: "",
   });
 
-  // Reset form when userData changes
   useEffect(() => {
-    if (userData) {
-      setFormData({ ...userData });
+    if (userData && roles.length > 0) {
+      const matched = roles.includes(userData.role);
+      setFormData({
+        ...userData,
+        role: matched ? userData.role : roles[0], // fallback ปลอดภัย
+      });
     }
-  }, [userData]);
+  }, [userData, roles]);
 
   useEffect(() => {
-    // Reset isExiting when dialog is explicitly closed from parent
     if (!isOpen) {
       setIsExiting(false);
     }
   }, [isOpen]);
 
-  // Handle modal closing with animation
   const handleClose = useCallback(() => {
     setIsExiting(true);
-    // Wait for animation to complete before actual closing
     setTimeout(() => {
       onClose();
-      setIsExiting(false); // Reset exiting state after closing
-    }, 450); // Match the animation duration in CSS (slightly longer to ensure completion)
+      setIsExiting(false);
+    }, 450);
   }, [onClose]);
-
-  const handleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    },
-    []
-  );
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-
-      try {
-        if (!formData.role) {
-          showToast("กรุณาเลือกบทบาท", "error");
-          return;
-        }
-
-        onSave(formData);
-        showToast("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
-        handleClose(); // Use the same close handler to ensure animation
-      } catch (error) {
-        showToast("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "error");
-        console.error("Save error:", error);
+      if (!formData.role) {
+        showToast("กรุณาเลือกบทบาท", "error");
+        return;
       }
+      onSave(formData);
+      showToast("บันทึกข้อมูลเรียบร้อยแล้ว", "success");
+      handleClose();
     },
     [formData, onSave, showToast, handleClose]
   );
 
-  // If dialog is not open and is not in exiting state, don't render anything
   if (!isOpen && !isExiting) return null;
 
   const dialogClasses = `bg-white/95 rounded-lg shadow-2xl w-full max-w-md mx-4 luxury-dialog ${
     isExiting ? "dialog-exit" : ""
   }`;
-
   const overlayClasses = `fixed inset-0 flex items-center justify-center z-50 backdrop-blur-md bg-black/25 luxury-overlay ${
     isExiting ? "overlay-exit" : ""
   }`;
@@ -150,7 +129,6 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
 
         <form onSubmit={handleSubmit} className="p-6">
           <div className="space-y-5">
-            {/* User ID (Read-only) */}
             <div className="relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 ID
@@ -163,70 +141,49 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({
               />
             </div>
 
-            {/* Name */}
             <div className="relative">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 ชื่อผู้ใช้
               </label>
-              <div className="relative">
-                <div className="w-full px-3 py-2 bg-gray-50/80 text-gray-700 rounded-md border border-gray-200">
-                  {formData.name || "-"}
-                </div>
+              <div className="w-full px-3 py-2 bg-gray-50/80 text-gray-700 rounded-md border border-gray-200">
+                {formData.name || "-"}
               </div>
             </div>
 
-            {/* Email */}
             <div className="relative">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 อีเมล
               </label>
-              <div className="relative">
-                <div className="w-full px-3 py-2 bg-gray-50/80 text-gray-700 rounded-md border border-gray-200">
-                  {formData.email || "-"}
-                </div>
+              <div className="w-full px-3 py-2 bg-gray-50/80 text-gray-700 rounded-md border border-gray-200">
+                {formData.email || "-"}
               </div>
             </div>
 
-            {/* Role - Improved Dropdown */}
+            {/* Role Dropdown */}
             <div className="relative">
-              <label
-                htmlFor="role"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 บทบาท
               </label>
-              <div className="relative">
-                <select
-                  id="role"
-                  name="role"
+              {roles.length > 0 && formData.role && (
+                <Select
                   value={formData.role}
-                  onChange={handleChange}
-                  className="appearance-none w-full px-3 py-2 pr-8 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition-colors duration-200 bg-white cursor-pointer"
-                  aria-label="Select role"
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, role: value }))
+                  }
                 >
-                  {roles.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                      className={option.class}
-                    >
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full px-3 py-2 border border-gray-200 rounded-md bg-gray-50/80 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400/60 transition-colors duration-200">
+                    <SelectValue placeholder="เลือกบทบาท" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role) => (
+                      <SelectItem key={role} value={role}>
+                        {role}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
 
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                  <ChevronDown className="w-4 h-4" />
-                </div>
-              </div>
-
-              {/* Current Role Badge */}
               <div className="mt-2">
                 <RoleBadge role={formData.role} />
               </div>
