@@ -547,6 +547,10 @@ declare namespace Components {
              */
             thisMonth: number;
         }
+        export interface MeDto {
+            success: string;
+            data: User;
+        }
         export interface MonthlyTrafficDataDto {
             days: DailyTrafficDto[];
         }
@@ -2032,37 +2036,11 @@ declare namespace Paths {
             export type $200 = string;
         }
     }
-    namespace AuthControllerGoogleAuth {
-        namespace Responses {
-            export interface $200 {
-            }
-            export interface $302 {
-            }
-        }
-    }
     namespace AuthControllerGoogleAuthCallback {
         namespace Responses {
             export interface $200 {
             }
             export interface $302 {
-            }
-        }
-    }
-    namespace AuthControllerLogout {
-        namespace Responses {
-            export interface $200 {
-            }
-        }
-    }
-    namespace AuthControllerMe {
-        namespace Responses {
-            export interface $200 {
-            }
-        }
-    }
-    namespace AuthControllerRefreshTokens {
-        namespace Responses {
-            export interface $200 {
             }
         }
     }
@@ -2093,7 +2071,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace ContentControllerCreateContent {
+    namespace CreateContent {
         export type RequestBody = Components.Schemas.CreateContentDto;
         namespace Responses {
             export type $201 = Components.Schemas.Content;
@@ -2196,6 +2174,11 @@ declare namespace Paths {
         namespace Responses {
             export interface $200 {
             }
+        }
+    }
+    namespace GetAuthMe {
+        namespace Responses {
+            export type $200 = Components.Schemas.MeDto;
         }
     }
     namespace GetContentById {
@@ -2333,6 +2316,20 @@ declare namespace Paths {
             export type $200 = Components.Schemas.UsersReportDto[];
         }
     }
+    namespace GoogleLogin {
+        namespace Responses {
+            export interface $200 {
+            }
+            export interface $302 {
+            }
+        }
+    }
+    namespace Logout {
+        namespace Responses {
+            export interface $200 {
+            }
+        }
+    }
     namespace PatchUserRole {
         namespace Parameters {
             /**
@@ -2355,6 +2352,12 @@ declare namespace Paths {
             export interface $400 {
             }
             export interface $403 {
+            }
+        }
+    }
+    namespace RefreshToken {
+        namespace Responses {
+            export interface $200 {
             }
         }
     }
@@ -2479,37 +2482,37 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.AuthControllerTest.Responses.$200>
   /**
-   * AuthController_me - Get current user info
+   * getAuthMe - Get current user info
    */
-  'AuthController_me'(
+  'getAuthMe'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.AuthControllerMe.Responses.$200>
+  ): OperationResponse<Paths.GetAuthMe.Responses.$200>
   /**
-   * AuthController_logout - Logout current user
+   * logout - Logout current user
    */
-  'AuthController_logout'(
+  'logout'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.AuthControllerLogout.Responses.$200>
+  ): OperationResponse<Paths.Logout.Responses.$200>
   /**
-   * AuthController_refreshTokens - Refresh access token using refresh token
+   * refreshToken - Refresh access token using refresh token
    */
-  'AuthController_refreshTokens'(
+  'refreshToken'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.AuthControllerRefreshTokens.Responses.$200>
+  ): OperationResponse<Paths.RefreshToken.Responses.$200>
   /**
-   * AuthController_googleAuth - Initiate Google OAuth login
+   * googleLogin - Initiate Google OAuth login
    */
-  'AuthController_googleAuth'(
+  'googleLogin'(
     parameters?: Parameters<UnknownParamsObject> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.AuthControllerGoogleAuth.Responses.$200>
+  ): OperationResponse<Paths.GoogleLogin.Responses.$200>
   /**
    * AuthController_googleAuthCallback - Handle Google OAuth callback
    */
@@ -2585,13 +2588,13 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.GetUserContents.Responses.$200>
   /**
-   * ContentController_createContent - Create content
+   * createContent - Create content
    */
-  'ContentController_createContent'(
+  'createContent'(
     parameters?: Parameters<UnknownParamsObject> | null,
-    data?: Paths.ContentControllerCreateContent.RequestBody,
+    data?: Paths.CreateContent.RequestBody,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerCreateContent.Responses.$201>
+  ): OperationResponse<Paths.CreateContent.Responses.$201>
   /**
    * updateContent - Update content
    */
@@ -2789,43 +2792,43 @@ export interface PathsDictionary {
   }
   ['/api/auth/me']: {
     /**
-     * AuthController_me - Get current user info
+     * getAuthMe - Get current user info
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.AuthControllerMe.Responses.$200>
+    ): OperationResponse<Paths.GetAuthMe.Responses.$200>
   }
   ['/api/auth/logout']: {
     /**
-     * AuthController_logout - Logout current user
+     * logout - Logout current user
      */
     'post'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.AuthControllerLogout.Responses.$200>
+    ): OperationResponse<Paths.Logout.Responses.$200>
   }
   ['/api/auth/refresh']: {
     /**
-     * AuthController_refreshTokens - Refresh access token using refresh token
+     * refreshToken - Refresh access token using refresh token
      */
     'post'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.AuthControllerRefreshTokens.Responses.$200>
+    ): OperationResponse<Paths.RefreshToken.Responses.$200>
   }
   ['/api/auth/google']: {
     /**
-     * AuthController_googleAuth - Initiate Google OAuth login
+     * googleLogin - Initiate Google OAuth login
      */
     'get'(
       parameters?: Parameters<UnknownParamsObject> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.AuthControllerGoogleAuth.Responses.$200>
+    ): OperationResponse<Paths.GoogleLogin.Responses.$200>
   }
   ['/api/auth/google/callback']: {
     /**
@@ -2919,13 +2922,13 @@ export interface PathsDictionary {
   }
   ['/api/content/create']: {
     /**
-     * ContentController_createContent - Create content
+     * createContent - Create content
      */
     'post'(
       parameters?: Parameters<UnknownParamsObject> | null,
-      data?: Paths.ContentControllerCreateContent.RequestBody,
+      data?: Paths.CreateContent.RequestBody,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerCreateContent.Responses.$201>
+    ): OperationResponse<Paths.CreateContent.Responses.$201>
   }
   ['/api/content/{contentId}/update']: {
     /**
@@ -3082,6 +3085,7 @@ export type DashboardSummaryResponseDto = Components.Schemas.DashboardSummaryRes
 export type EnrollCountDto = Components.Schemas.EnrollCountDto;
 export type Enrollment = Components.Schemas.Enrollment;
 export type LoginCountDto = Components.Schemas.LoginCountDto;
+export type MeDto = Components.Schemas.MeDto;
 export type MonthlyTrafficDataDto = Components.Schemas.MonthlyTrafficDataDto;
 export type MonthlyTrafficResponseDto = Components.Schemas.MonthlyTrafficResponseDto;
 export type patchUserByIdDto = Components.Schemas.PatchUserByIdDto;

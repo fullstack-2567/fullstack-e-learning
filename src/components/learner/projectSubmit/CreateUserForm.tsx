@@ -1,4 +1,3 @@
-import { getAllProject } from "@/api/ProjectApi";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,7 +9,6 @@ import {
 } from "@/components/ui/select";
 import { User } from "@/utils/backend-openapi";
 import { FormikProps } from "formik";
-import { useEffect } from "react";
 
 export const CreateUserForm = ({
   formik,

@@ -11,7 +11,7 @@ import { openApiclient } from "@/utils/api-client";
 // Types
 import { SubmitProjectDto, User } from "@/utils/backend-openapi";
 import ProjectInfoStep from "@/components/learner/ProjectInfoStep";
-import UserInfoStep from "@/components/learner/๊UserInfoStep";
+import UserInfoStep from "@/components/learner/UserInfoStep";
 import ReviewStep from "@/components/learner/ReviewStep";
 import { ROUTES } from "@/App";
 
@@ -102,15 +102,17 @@ const SubmitProject: React.FC = () => {
       try {
         const res = await openApiclient.getUserLatestProject();
         const latest = res.data;
-  
+
         const isRejected = !!latest.rejectedDT;
         const isFullyApproved = !!latest.thirdApprovedDT;
-  
+
         if (isRejected || isFullyApproved) {
           setCanSubmit(true);
         } else {
           setCanSubmit(false);
-          toast.warning("คุณไม่สามารถส่งโครงการใหม่ได้ในขณะนี้ เนื่องจากโครงการล่าสุดยังอยู่ระหว่างรออนุมัติ");
+          toast.warning(
+            "คุณไม่สามารถส่งโครงการใหม่ได้ในขณะนี้ เนื่องจากโครงการล่าสุดยังอยู่ระหว่างรออนุมัติ"
+          );
           navigate(`${ROUTES.PROJECT_SUBMIT_SUCCESS_VIEW(latest.projectId)}`);
         }
       } catch (error: any) {
@@ -124,10 +126,10 @@ const SubmitProject: React.FC = () => {
         }
       }
     };
-  
+
     checkLatestProject();
   }, [navigate]);
-  
+
   // Handlers for project data updates
   const updateProjectData = useCallback(
     (field: string, value: any) => {

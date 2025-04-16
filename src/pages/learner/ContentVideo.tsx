@@ -1,6 +1,5 @@
 import LearningNavbar from "@/components/learner/LearnerNavbar";
 import Player from "@/components/learner/contentVideo/Player";
-import { contentService } from "@/services/api";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Content } from "@/utils/backend-openapi";
@@ -16,9 +15,11 @@ export default function ContentVideo() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await contentService.getContentById(id);
+      const response = await openApiclient.getContentById({
+        contentId: id,
+      });
       if (response) {
-        setContent(response);
+        setContent(response.data);
       } else {
         setError("Failed to fetch content");
         console.error("Failed to fetch content:", response);

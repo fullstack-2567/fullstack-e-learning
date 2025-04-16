@@ -10,7 +10,7 @@ import {
 import ContentCard from "./contentCard";
 import { Badge } from "@/components/ui/badge";
 import { Content } from "@/components/admin/ContentManagement";
-import { contentService } from "@/services/api";
+import { openApiclient } from "@/utils/api-client";
 
 export default function ContentTable() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,9 +20,11 @@ export default function ContentTable() {
 
   const fetchContents = async () => {
     try {
-      const response = await contentService.getAllContents(true);
+      const response = await openApiclient.getAllContents({
+        thumbnail: true,
+      });
       if (response) {
-        setContents([...response]);
+        setContents([...response.data]);
       } else {
         console.error("Failed to fetch contents:", response);
       }
