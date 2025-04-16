@@ -7,22 +7,23 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import ContentCard from "./contentCard";
+import EnrolledContentCard from "./enrolledContentCard";
 import { Badge } from "@/components/ui/badge";
-import { Content } from "@/components/admin/ContentManagement";
-import { contentService } from "@/services/api";
+import { openApiclient } from "@/utils/api-client";
+import { Enrollment } from "@/utils/backend-openapi";
 
-export default function ContentTable() {
+export default function EnrolledContentTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const [contents, setContents] = useState<Content[]>([]);
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
 
   const fetchContents = async () => {
     try {
-      const response = await contentService.getAllContents(true);
-      if (response) {
-        setContents([...response]);
+      const response = await openApiclient.getUserContents();
+      const data = response.data;
+      if (data) {
+        setEnrollments([...data]);
       } else {
         console.error("Failed to fetch contents:", response);
       }
@@ -38,20 +39,27 @@ export default function ContentTable() {
 
   const categories = [
     "All",
-    ...new Set(contents.map((content) => content.contentCategory)),
+    ...new Set(
+      enrollments.map((enrollment) => enrollment.content.contentCategory)
+    ),
   ];
 
   const visibleCategories = showAllCategories
     ? categories
     : categories.slice(0, 5);
 
-  const filteredContents = contents.filter((content) => {
+  const filteredEnrollment = enrollments.filter((enrollment) => {
     const matchesSearch =
-      content.contentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      content.contentCategory.toLowerCase().includes(searchTerm.toLowerCase());
+      enrollment.content.contentName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      enrollment.content.contentCategory
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
 
     const matchesCategory =
-      activeFilter === "All" || content.contentCategory === activeFilter;
+      activeFilter === "All" ||
+      enrollment.content.contentCategory === activeFilter;
 
     return matchesSearch && matchesCategory;
   });
@@ -61,10 +69,10 @@ export default function ContentTable() {
       <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent font-prompt">
-            Course Library
+            My Courses
           </h1>
           <p className="text-gray-500 mb-4 md:mb-0 font-prompt">
-            Discover your next learning journey
+            Courses you've enrolled in
           </p>
         </div>
 
@@ -126,7 +134,7 @@ export default function ContentTable() {
         </div>
       </div>
 
-      {filteredContents.length === 0 ? (
+      {filteredEnrollment.length === 0 ? (
         <div className="bg-gray-50 rounded-xl text-center p-12 mt-6">
           <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-medium text-gray-700 mb-2 font-prompt">
@@ -140,17 +148,18 @@ export default function ContentTable() {
       ) : (
         <>
           <p className="text-sm text-gray-500 mb-4 font-prompt">
-            Showing {filteredContents.length} of {contents.length} courses
+            Showing {filteredEnrollment.length} of {enrollments.length} courses
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredContents.map((content) => (
-              <ContentCard
-                key={content.contentId}
-                contentId={content.contentId}
-                contentName={content.contentName}
-                contentCategory={content.contentCategory}
-                contentThumbnail={content.contentThumbnail}
-                contentDescription={content.contentDescription}
+            {filteredEnrollment.map((enrollment) => (
+              <EnrolledContentCard
+                key={enrollment.content.contentId}
+                contentId={enrollment.content.contentId}
+                contentName={enrollment.content.contentName}
+                contentCategory={enrollment.content.contentCategory}
+                contentThumbnail={enrollment.content.contentThumbnail}
+                contentDescription={enrollment.content.contentDescription}
+                isCompleted={enrollment.completedDT !== null}
               />
             ))}
           </div>

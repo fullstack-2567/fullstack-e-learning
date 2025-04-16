@@ -7,6 +7,7 @@ interface PlayerProps {
   videoSrc: string;
   videoType?: string;
   posterSrc?: string;
+  onEnded: () => void;
 }
 
 const Player: React.FC<PlayerProps> = ({
@@ -14,6 +15,7 @@ const Player: React.FC<PlayerProps> = ({
   videoSrc,
   videoType = "video/mp4",
   posterSrc,
+  onEnded,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<Plyr | null>(null);
@@ -75,6 +77,7 @@ const Player: React.FC<PlayerProps> = ({
               controls
               crossOrigin="anonymous"
               poster={posterSrc}
+              onEnded={onEnded}
             >
               {videoSrc && <source src={videoSrc} type={videoType} />}
               Your browser does not support the video tag.

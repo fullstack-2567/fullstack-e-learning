@@ -1,12 +1,12 @@
+import EnrolledContentTable from "@/components/learner-projectSubmiter/enrolledContent/enrolledContentTable";
 import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
-import ContentTable from "@/components/learner-projectSubmiter/contentMenu/contentTable";
 
-export default function ContentMenu() {
+export default function EnrolledContent() {
   return (
     <div>
       <LearningNavbar />
       <div className="min-h-screen bg-gray-100">
-        <ContentTable />
+        <EnrolledContentTable />
       </div>
     </div>
   );

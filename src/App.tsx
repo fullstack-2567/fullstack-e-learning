@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
 import ApproverReport from "./pages/approver/ApproverReport";
 import UsersManagement from "./pages/admin/UsersManagement";
+import EnrolledContent from "./pages/learner-projectSubmiter/EnrolledContent";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -35,6 +36,7 @@ const ROUTES = {
   // Learner Routes
   CONTENT_MENU: "/contents",
   CONTENT_VIDEO: "/video",
+  ENROLLED_CONTENTS: "/enrolled",
   SUBMIT_PROJECT: "/submit-project",
   SUBMIT_SUCCESS: "/submit-success/:projectId",
 
@@ -96,6 +98,14 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path={ROUTES.ENROLLED_CONTENTS}
+              element={
+                <ProtectedRoute>
+                  <EnrolledContent />
+                </ProtectedRoute>
+              }
+            ></Route>
 
             {/* Protected Routes for Approver */}
             <Route

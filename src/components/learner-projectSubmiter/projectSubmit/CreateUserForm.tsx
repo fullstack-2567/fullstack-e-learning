@@ -16,7 +16,7 @@ export const CreateUserForm = ({
   formik,
   readonly,
 }: {
-  formik: FormikProps<User>;
+  formik: FormikProps<Partial<User>>;
   readonly: boolean;
 }) => {
   return (

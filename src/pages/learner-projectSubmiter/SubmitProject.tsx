@@ -4,7 +4,7 @@ import { CreateUserForm } from "@/components/learner-projectSubmiter/projectSubm
 import { CreateProjectForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateProjectForm";
 import { ReviewForm } from "@/components/learner-projectSubmiter/projectSubmit/ReviewForm";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { SubmitProjectDto, User } from "@/utils/backend-openapi";
+import { Project, SubmitProjectDto, User } from "@/utils/backend-openapi";
 import { Label } from "@radix-ui/react-label";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ import { useNavigate } from "react-router";
 
 export default function SubmitProject() {
   // const [project, setProject] = useState<Project>();
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<Partial<User>>();
   const [step, setStep] = useState<number>(1);
   const [projectNameAndIds, setProjectNameAndIds] = useState<
     { name: string; id: string }[]
@@ -89,7 +89,7 @@ export default function SubmitProject() {
             sex: user?.sex,
           },
         });
-        const data = response.data;
+        const data = response.data as Project;
         navigate(`/submit-success/${data.projectId}`);
       } catch (error) {
         toast.error("เกิดข้อผิดพลาดในการส่งข้อมูล");
@@ -97,7 +97,7 @@ export default function SubmitProject() {
     },
   });
 
-  const formikForCreatingUser = useFormik<User>({
+  const formikForCreatingUser = useFormik<Partial<User>>({
     initialValues: {
       userId: "",
       email: "abcd@e.f",

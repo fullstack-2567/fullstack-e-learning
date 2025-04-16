@@ -59,7 +59,15 @@ export default function LearningNavbar() {
               isActive("/contents") ? "border-b-2 border-white text-white" : ""
             }`}
           >
-            เข้าสู่คอร์สเรียน
+            ค้นหาคอร์สเรียน
+          </Link>
+          <Link
+            to="/enrolled"
+            className={`text-white/80 hover:text-white transition-colors text-sm font-prompt ${
+              isActive("/enrolled") ? "border-b-2 border-white text-white" : ""
+            }`}
+          >
+            คอร์สเรียนของฉัน
           </Link>
           <Button variant="destructive" onClick={logout}>
             Logout

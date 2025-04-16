@@ -5,6 +5,7 @@ import { contentService } from "@/services/api";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Content } from "@/utils/backend-openapi";
+import { openApiclient } from "@/utils/api-client";
 
 export default function ContentVideo() {
   const location = useLocation();
@@ -58,6 +59,11 @@ export default function ContentVideo() {
           <Player
             title={content.contentName || "Untitled Video"}
             videoSrc={content.contentVideo || ""}
+            onEnded={async () => {
+              await openApiclient.complete({
+                contentId: content.contentId,
+              });
+            }}
           />
         ) : null}
       </div>

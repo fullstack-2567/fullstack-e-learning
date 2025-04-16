@@ -152,7 +152,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
             /**
              * Creation date of the content
@@ -277,6 +277,265 @@ declare namespace Components {
              * Number of enrollments in the current month
              */
             thisMonth: number;
+        }
+        export interface Enrollment {
+            /**
+             * ID of the user who enrolled in the content
+             * example:
+             * 123e4567-e89b-12d3-a456-426614174000
+             */
+            userId: string; // uuid
+            /**
+             * User who enrolled in the content
+             */
+            user: {
+                /**
+                 * Unique identifier of the user
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                userId: string; // uuid
+                /**
+                 * Email address of the user
+                 * example:
+                 * user@example.com
+                 */
+                email: string; // email
+                /**
+                 * Date when the user was created
+                 * example:
+                 * 2024-01-01T00:00:00Z
+                 */
+                createdDT: string; // date-time
+                /**
+                 * Date when the user was last updated
+                 * example:
+                 * 2024-01-01T00:00:00Z
+                 */
+                updatedDT: string; // date-time
+                /**
+                 * Role of the user
+                 * example:
+                 * user
+                 */
+                role: "admin" | "user" | "project-approver";
+                /**
+                 * Gender of the user
+                 * example:
+                 * male
+                 */
+                sex: "male" | "female" | "other";
+                /**
+                 * First name of the user
+                 * example:
+                 * John
+                 */
+                firstName: string;
+                /**
+                 * Last name of the user
+                 * example:
+                 * Doe
+                 */
+                lastName: string;
+                /**
+                 * Birth date of the user
+                 * example:
+                 * 1990-01-01
+                 */
+                birthDate: string; // date
+                /**
+                 * Title prefix of the user
+                 * example:
+                 * mr
+                 */
+                prefix: "master" | "miss" | "mr" | "mrs" | "ms";
+                /**
+                 * Education level of the user
+                 * example:
+                 * bachelor
+                 */
+                education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
+                /**
+                 * Telephone number of the user
+                 * example:
+                 * 0812345678
+                 */
+                tel: string; // ^[0-9]{10}$
+                picture: string;
+                googleId: string;
+                refreshToken: string | null;
+                contentReports: Enrollment[];
+            };
+            /**
+             * ID of the content in which the user enrolled
+             * example:
+             * 987e6543-a21c-43d3-a999-426614174999
+             */
+            contentId: string; // uuid
+            /**
+             * Content that the user enrolled in
+             */
+            content: {
+                /**
+                 * Unique identifier of the content
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                contentId: string; // uuid
+                /**
+                 * Name of the content
+                 * example:
+                 * Funny Cat Video
+                 */
+                contentName: string;
+                /**
+                 * Description of the content
+                 * example:
+                 * A video showing funny moments of cats
+                 */
+                contentDescription: string;
+                /**
+                 * Category of the content
+                 * example:
+                 * Comedy
+                 */
+                contentCategory: "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
+                /**
+                 * Thumbnail image file name in storage
+                 * example:
+                 * 1232f565-a106-4160-b6d0-9c859877ce9a.jpg
+                 */
+                contentThumbnail: string;
+                /**
+                 * Video file name in storage
+                 * example:
+                 * 1232f565-a106-4160-b6d0-9c859877ce9a.mp4
+                 */
+                contentVideo: string;
+                /**
+                 * Video duration in seconds
+                 * example:
+                 * 60
+                 */
+                videoDuration: number;
+                /**
+                 * Is the content publicly available
+                 * example:
+                 * true
+                 */
+                isPublic: boolean;
+                /**
+                 * ID of the user who created the content
+                 * example:
+                 * 123e4567-e89b-12d3-a456-426614174000
+                 */
+                createdByUserId: string; // uuid
+                /**
+                 * User who created the content
+                 */
+                createdByUser: {
+                    /**
+                     * Unique identifier of the user
+                     * example:
+                     * 123e4567-e89b-12d3-a456-426614174000
+                     */
+                    userId: string; // uuid
+                    /**
+                     * Email address of the user
+                     * example:
+                     * user@example.com
+                     */
+                    email: string; // email
+                    /**
+                     * Date when the user was created
+                     * example:
+                     * 2024-01-01T00:00:00Z
+                     */
+                    createdDT: string; // date-time
+                    /**
+                     * Date when the user was last updated
+                     * example:
+                     * 2024-01-01T00:00:00Z
+                     */
+                    updatedDT: string; // date-time
+                    /**
+                     * Role of the user
+                     * example:
+                     * user
+                     */
+                    role: "admin" | "user" | "project-approver";
+                    /**
+                     * Gender of the user
+                     * example:
+                     * male
+                     */
+                    sex: "male" | "female" | "other";
+                    /**
+                     * First name of the user
+                     * example:
+                     * John
+                     */
+                    firstName: string;
+                    /**
+                     * Last name of the user
+                     * example:
+                     * Doe
+                     */
+                    lastName: string;
+                    /**
+                     * Birth date of the user
+                     * example:
+                     * 1990-01-01
+                     */
+                    birthDate: string; // date
+                    /**
+                     * Title prefix of the user
+                     * example:
+                     * mr
+                     */
+                    prefix: "master" | "miss" | "mr" | "mrs" | "ms";
+                    /**
+                     * Education level of the user
+                     * example:
+                     * bachelor
+                     */
+                    education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
+                    /**
+                     * Telephone number of the user
+                     * example:
+                     * 0812345678
+                     */
+                    tel: string; // ^[0-9]{10}$
+                    picture: string;
+                    googleId: string;
+                    refreshToken: string | null;
+                    contentReports: Enrollment[];
+                };
+                /**
+                 * Creation date of the content
+                 * example:
+                 * 2024-01-01T10:00:00Z
+                 */
+                createdDT: string; // date-time
+                /**
+                 * Last update date of the content
+                 * example:
+                 * 2024-01-15T12:00:00Z
+                 */
+                updatedDT: string; // date-time
+            };
+            /**
+             * Timestamp when the user enrolled in the content
+             * example:
+             * 2025-04-01T10:00:00Z
+             */
+            enrolledDT: string; // date-time
+            /**
+             * Timestamp when the user completed the content
+             * example:
+             * 2025-04-03T15:30:00Z
+             */
+            completedDT: string; // date-time
         }
         export interface LoginCountDto {
             /**
@@ -458,7 +717,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
             /**
              * Date and time when the project was submitted
@@ -469,7 +728,7 @@ declare namespace Components {
             /**
              * Thai name of the project
              * example:
-             * โครงการพัฒนาระบบจัดการข้อมูล
+             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
              */
             projectThaiName: string;
             /**
@@ -613,7 +872,7 @@ declare namespace Components {
                     picture: string;
                     googleId: string;
                     refreshToken: string | null;
-                    contentReports: UserContentMaps[];
+                    contentReports: Enrollment[];
                 };
                 /**
                  * Date and time when the project was submitted
@@ -624,7 +883,7 @@ declare namespace Components {
                 /**
                  * Thai name of the project
                  * example:
-                 * โครงการพัฒนาระบบจัดการข้อมูล
+                 * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
                  */
                 projectThaiName: string;
                 /**
@@ -772,7 +1031,7 @@ declare namespace Components {
                     picture: string;
                     googleId: string;
                     refreshToken: string | null;
-                    contentReports: UserContentMaps[];
+                    contentReports: Enrollment[];
                 };
                 /**
                  * Second approval date
@@ -865,7 +1124,7 @@ declare namespace Components {
                     picture: string;
                     googleId: string;
                     refreshToken: string | null;
-                    contentReports: UserContentMaps[];
+                    contentReports: Enrollment[];
                 };
                 /**
                  * Third approval date
@@ -958,7 +1217,7 @@ declare namespace Components {
                     picture: string;
                     googleId: string;
                     refreshToken: string | null;
-                    contentReports: UserContentMaps[];
+                    contentReports: Enrollment[];
                 };
                 /**
                  * Third approval date
@@ -1051,7 +1310,7 @@ declare namespace Components {
                     picture: string;
                     googleId: string;
                     refreshToken: string | null;
-                    contentReports: UserContentMaps[];
+                    contentReports: Enrollment[];
                 };
             };
             /**
@@ -1149,7 +1408,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
             /**
              * Second approval date
@@ -1242,7 +1501,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
             /**
              * Third approval date
@@ -1335,7 +1594,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
             /**
              * Third approval date
@@ -1428,7 +1687,7 @@ declare namespace Components {
                 picture: string;
                 googleId: string;
                 refreshToken: string | null;
-                contentReports: UserContentMaps[];
+                contentReports: Enrollment[];
             };
         }
         export interface ProjectCountDto {
@@ -1514,7 +1773,7 @@ declare namespace Components {
             /**
              * The current status of the project
              * example:
-             * กำลังรอการตรวจสอบ
+             * α╕üα╕│α╕Ñα╕▒α╕çα╕úα╕¡α╕üα╕▓α╕úα╕òα╕úα╕ºα╕êα╕¬α╕¡α╕Ü
              */
             status: "\u0E01\u0E33\u0E25\u0E31\u0E07\u0E23\u0E2D\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 1" | "\u0E1C\u0E48\u0E32\u0E19\u0E01\u0E32\u0E23\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E23\u0E2D\u0E1A\u0E17\u0E35\u0E48 2" | "\u0E15\u0E23\u0E27\u0E08\u0E2A\u0E2D\u0E1A\u0E2A\u0E33\u0E40\u0E23\u0E47\u0E08" | "\u0E16\u0E39\u0E01\u0E1B\u0E0F\u0E34\u0E40\u0E2A\u0E18";
         }
@@ -1532,7 +1791,7 @@ declare namespace Components {
             /**
              * Thai name of the project
              * example:
-             * โครงการพัฒนาระบบจัดการข้อมูล
+             * α╣éα╕äα╕úα╕çα╕üα╕▓α╕úα╕₧α╕▒α╕Æα╕Öα╕▓α╕úα╕░α╕Üα╕Üα╕êα╕▒α╕öα╕üα╕▓α╕úα╕éα╣ëα╕¡α╕íα╕╣α╕Ñ
              */
             projectThaiName: string;
             /**
@@ -1734,266 +1993,7 @@ declare namespace Components {
             picture: string;
             googleId: string;
             refreshToken: string | null;
-            contentReports: UserContentMaps[];
-        }
-        export interface UserContentMaps {
-            /**
-             * ID of the user who enrolled in the content
-             * example:
-             * 123e4567-e89b-12d3-a456-426614174000
-             */
-            userId: string; // uuid
-            /**
-             * User who enrolled in the content
-             */
-            user: {
-                /**
-                 * Unique identifier of the user
-                 * example:
-                 * 123e4567-e89b-12d3-a456-426614174000
-                 */
-                userId: string; // uuid
-                /**
-                 * Email address of the user
-                 * example:
-                 * user@example.com
-                 */
-                email: string; // email
-                /**
-                 * Date when the user was created
-                 * example:
-                 * 2024-01-01T00:00:00Z
-                 */
-                createdDT: string; // date-time
-                /**
-                 * Date when the user was last updated
-                 * example:
-                 * 2024-01-01T00:00:00Z
-                 */
-                updatedDT: string; // date-time
-                /**
-                 * Role of the user
-                 * example:
-                 * user
-                 */
-                role: "admin" | "user" | "project-approver";
-                /**
-                 * Gender of the user
-                 * example:
-                 * male
-                 */
-                sex: "male" | "female" | "other";
-                /**
-                 * First name of the user
-                 * example:
-                 * John
-                 */
-                firstName: string;
-                /**
-                 * Last name of the user
-                 * example:
-                 * Doe
-                 */
-                lastName: string;
-                /**
-                 * Birth date of the user
-                 * example:
-                 * 1990-01-01
-                 */
-                birthDate: string; // date
-                /**
-                 * Title prefix of the user
-                 * example:
-                 * mr
-                 */
-                prefix: "master" | "miss" | "mr" | "mrs" | "ms";
-                /**
-                 * Education level of the user
-                 * example:
-                 * bachelor
-                 */
-                education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
-                /**
-                 * Telephone number of the user
-                 * example:
-                 * 0812345678
-                 */
-                tel: string; // ^[0-9]{10}$
-                picture: string;
-                googleId: string;
-                refreshToken: string | null;
-                contentReports: UserContentMaps[];
-            };
-            /**
-             * ID of the content in which the user enrolled
-             * example:
-             * 987e6543-a21c-43d3-a999-426614174999
-             */
-            contentId: string; // uuid
-            /**
-             * Content that the user enrolled in
-             */
-            content: {
-                /**
-                 * Unique identifier of the content
-                 * example:
-                 * 123e4567-e89b-12d3-a456-426614174000
-                 */
-                contentId: string; // uuid
-                /**
-                 * Name of the content
-                 * example:
-                 * Funny Cat Video
-                 */
-                contentName: string;
-                /**
-                 * Description of the content
-                 * example:
-                 * A video showing funny moments of cats
-                 */
-                contentDescription: string;
-                /**
-                 * Category of the content
-                 * example:
-                 * Comedy
-                 */
-                contentCategory: "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
-                /**
-                 * Thumbnail image file name in storage
-                 * example:
-                 * 1232f565-a106-4160-b6d0-9c859877ce9a.jpg
-                 */
-                contentThumbnail: string;
-                /**
-                 * Video file name in storage
-                 * example:
-                 * 1232f565-a106-4160-b6d0-9c859877ce9a.mp4
-                 */
-                contentVideo: string;
-                /**
-                 * Video duration in seconds
-                 * example:
-                 * 60
-                 */
-                videoDuration: number;
-                /**
-                 * Is the content publicly available
-                 * example:
-                 * true
-                 */
-                isPublic: boolean;
-                /**
-                 * ID of the user who created the content
-                 * example:
-                 * 123e4567-e89b-12d3-a456-426614174000
-                 */
-                createdByUserId: string; // uuid
-                /**
-                 * User who created the content
-                 */
-                createdByUser: {
-                    /**
-                     * Unique identifier of the user
-                     * example:
-                     * 123e4567-e89b-12d3-a456-426614174000
-                     */
-                    userId: string; // uuid
-                    /**
-                     * Email address of the user
-                     * example:
-                     * user@example.com
-                     */
-                    email: string; // email
-                    /**
-                     * Date when the user was created
-                     * example:
-                     * 2024-01-01T00:00:00Z
-                     */
-                    createdDT: string; // date-time
-                    /**
-                     * Date when the user was last updated
-                     * example:
-                     * 2024-01-01T00:00:00Z
-                     */
-                    updatedDT: string; // date-time
-                    /**
-                     * Role of the user
-                     * example:
-                     * user
-                     */
-                    role: "admin" | "user" | "project-approver";
-                    /**
-                     * Gender of the user
-                     * example:
-                     * male
-                     */
-                    sex: "male" | "female" | "other";
-                    /**
-                     * First name of the user
-                     * example:
-                     * John
-                     */
-                    firstName: string;
-                    /**
-                     * Last name of the user
-                     * example:
-                     * Doe
-                     */
-                    lastName: string;
-                    /**
-                     * Birth date of the user
-                     * example:
-                     * 1990-01-01
-                     */
-                    birthDate: string; // date
-                    /**
-                     * Title prefix of the user
-                     * example:
-                     * mr
-                     */
-                    prefix: "master" | "miss" | "mr" | "mrs" | "ms";
-                    /**
-                     * Education level of the user
-                     * example:
-                     * bachelor
-                     */
-                    education: "elementary" | "secondary" | "bachelor" | "master" | "doctoral" | "vocational_certificate" | "high_vocational_certificate";
-                    /**
-                     * Telephone number of the user
-                     * example:
-                     * 0812345678
-                     */
-                    tel: string; // ^[0-9]{10}$
-                    picture: string;
-                    googleId: string;
-                    refreshToken: string | null;
-                    contentReports: UserContentMaps[];
-                };
-                /**
-                 * Creation date of the content
-                 * example:
-                 * 2024-01-01T10:00:00Z
-                 */
-                createdDT: string; // date-time
-                /**
-                 * Last update date of the content
-                 * example:
-                 * 2024-01-15T12:00:00Z
-                 */
-                updatedDT: string; // date-time
-            };
-            /**
-             * Timestamp when the user enrolled in the content
-             * example:
-             * 2025-04-01T10:00:00Z
-             */
-            enrolledDT: string; // date-time
-            /**
-             * Timestamp when the user completed the content
-             * example:
-             * 2025-04-03T15:30:00Z
-             */
-            completedDT: string; // date-time
+            contentReports: Enrollment[];
         }
         export interface UsersReportDto {
             /**
@@ -2081,7 +2081,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace ContentControllerCompleteContent {
+    namespace Complete {
         namespace Parameters {
             export type ContentId = string;
         }
@@ -2099,28 +2099,6 @@ declare namespace Paths {
             export type $201 = Components.Schemas.Content;
         }
     }
-    namespace ContentControllerEnrollContent {
-        namespace Parameters {
-            export type ContentId = string;
-        }
-        export interface PathParameters {
-            contentId: Parameters.ContentId;
-        }
-        namespace Responses {
-            export type $201 = Components.Schemas.UserContentMaps;
-        }
-    }
-    namespace ContentControllerGetAllContents {
-        namespace Parameters {
-            export type Thumbnail = boolean;
-        }
-        export interface QueryParameters {
-            thumbnail: Parameters.Thumbnail;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.Content[];
-        }
-    }
     namespace DeleteContent {
         namespace Parameters {
             export type ContentId = string;
@@ -2132,12 +2110,34 @@ declare namespace Paths {
             export type $200 = Components.Schemas.Content;
         }
     }
+    namespace Enroll {
+        namespace Parameters {
+            export type ContentId = string;
+        }
+        export interface PathParameters {
+            contentId: Parameters.ContentId;
+        }
+        namespace Responses {
+            export type $201 = Components.Schemas.Enrollment;
+        }
+    }
     namespace FilterContentByCategory {
         namespace Parameters {
             export type Category = "cybersecurity" | "frontend_development" | "backend_development" | "fullstack_development" | "food" | "fashion" | "language";
         }
         export interface PathParameters {
             category: Parameters.Category;
+        }
+        namespace Responses {
+            export type $200 = Components.Schemas.Content[];
+        }
+    }
+    namespace GetAllContents {
+        namespace Parameters {
+            export type Thumbnail = boolean;
+        }
+        export interface QueryParameters {
+            thumbnail: Parameters.Thumbnail;
         }
         namespace Responses {
             export type $200 = Components.Schemas.Content[];
@@ -2301,6 +2301,11 @@ declare namespace Paths {
             }
             export interface $404 {
             }
+        }
+    }
+    namespace GetUserContents {
+        namespace Responses {
+            export type $200 = Components.Schemas.Enrollment[];
         }
     }
     namespace GetUserProjects {
@@ -2549,13 +2554,21 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.UpdateUserById.Responses.$200>
   /**
-   * ContentController_getAllContents - Get all contents
+   * getAllContents - Get all contents
    */
-  'ContentController_getAllContents'(
-    parameters?: Parameters<Paths.ContentControllerGetAllContents.QueryParameters> | null,
+  'getAllContents'(
+    parameters?: Parameters<Paths.GetAllContents.QueryParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerGetAllContents.Responses.$200>
+  ): OperationResponse<Paths.GetAllContents.Responses.$200>
+  /**
+   * getUserContents - Get user enrolled contents
+   */
+  'getUserContents'(
+    parameters?: Parameters<UnknownParamsObject> | null,
+    data?: any,
+    config?: AxiosRequestConfig  
+  ): OperationResponse<Paths.GetUserContents.Responses.$200>
   /**
    * ContentController_createContent - Create content
    */
@@ -2597,21 +2610,21 @@ export interface OperationMethods {
     config?: AxiosRequestConfig  
   ): OperationResponse<Paths.DeleteContent.Responses.$200>
   /**
-   * ContentController_enrollContent
+   * enroll - Enroll to a content
    */
-  'ContentController_enrollContent'(
-    parameters?: Parameters<Paths.ContentControllerEnrollContent.PathParameters> | null,
+  'enroll'(
+    parameters?: Parameters<Paths.Enroll.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerEnrollContent.Responses.$201>
+  ): OperationResponse<Paths.Enroll.Responses.$201>
   /**
-   * ContentController_completeContent
+   * complete - Complete an enrolled content
    */
-  'ContentController_completeContent'(
-    parameters?: Parameters<Paths.ContentControllerCompleteContent.PathParameters> | null,
+  'complete'(
+    parameters?: Parameters<Paths.Complete.PathParameters> | null,
     data?: any,
     config?: AxiosRequestConfig  
-  ): OperationResponse<Paths.ContentControllerCompleteContent.Responses.$200>
+  ): OperationResponse<Paths.Complete.Responses.$200>
   /**
    * getUsersReport - Get users report
    */
@@ -2861,13 +2874,23 @@ export interface PathsDictionary {
   }
   ['/api/content']: {
     /**
-     * ContentController_getAllContents - Get all contents
+     * getAllContents - Get all contents
      */
     'get'(
-      parameters?: Parameters<Paths.ContentControllerGetAllContents.QueryParameters> | null,
+      parameters?: Parameters<Paths.GetAllContents.QueryParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerGetAllContents.Responses.$200>
+    ): OperationResponse<Paths.GetAllContents.Responses.$200>
+  }
+  ['/api/content/me']: {
+    /**
+     * getUserContents - Get user enrolled contents
+     */
+    'get'(
+      parameters?: Parameters<UnknownParamsObject> | null,
+      data?: any,
+      config?: AxiosRequestConfig  
+    ): OperationResponse<Paths.GetUserContents.Responses.$200>
   }
   ['/api/content/create']: {
     /**
@@ -2919,23 +2942,23 @@ export interface PathsDictionary {
   }
   ['/api/content/enroll/{contentId}']: {
     /**
-     * ContentController_enrollContent
+     * enroll - Enroll to a content
      */
     'post'(
-      parameters?: Parameters<Paths.ContentControllerEnrollContent.PathParameters> | null,
+      parameters?: Parameters<Paths.Enroll.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerEnrollContent.Responses.$201>
+    ): OperationResponse<Paths.Enroll.Responses.$201>
   }
   ['/api/content/complete/{contentId}']: {
     /**
-     * ContentController_completeContent
+     * complete - Complete an enrolled content
      */
     'patch'(
-      parameters?: Parameters<Paths.ContentControllerCompleteContent.PathParameters> | null,
+      parameters?: Parameters<Paths.Complete.PathParameters> | null,
       data?: any,
       config?: AxiosRequestConfig  
-    ): OperationResponse<Paths.ContentControllerCompleteContent.Responses.$200>
+    ): OperationResponse<Paths.Complete.Responses.$200>
   }
   ['/api/reports/users']: {
     /**
@@ -3032,6 +3055,7 @@ export type DailyTrafficDto = Components.Schemas.DailyTrafficDto;
 export type DashboardSummaryDataDto = Components.Schemas.DashboardSummaryDataDto;
 export type DashboardSummaryResponseDto = Components.Schemas.DashboardSummaryResponseDto;
 export type EnrollCountDto = Components.Schemas.EnrollCountDto;
+export type Enrollment = Components.Schemas.Enrollment;
 export type LoginCountDto = Components.Schemas.LoginCountDto;
 export type MonthlyTrafficDataDto = Components.Schemas.MonthlyTrafficDataDto;
 export type MonthlyTrafficResponseDto = Components.Schemas.MonthlyTrafficResponseDto;
@@ -3053,6 +3077,5 @@ export type UpdateContentDto = Components.Schemas.UpdateContentDto;
 export type UpdateProjectStatusDto = Components.Schemas.UpdateProjectStatusDto;
 export type UpdateUserRoleDto = Components.Schemas.UpdateUserRoleDto;
 export type User = Components.Schemas.User;
-export type UserContentMaps = Components.Schemas.UserContentMaps;
 export type UsersReportDto = Components.Schemas.UsersReportDto;
 export type VerifyTokenDto = Components.Schemas.VerifyTokenDto;
