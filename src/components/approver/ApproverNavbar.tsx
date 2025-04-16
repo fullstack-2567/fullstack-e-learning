@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router";
 
 export default function ApproverNavbar() {
@@ -37,7 +36,7 @@ export default function ApproverNavbar() {
           to="/contents"
           className="text-white text-lg font-medium font-prompt"
         >
-          Web
+          FULLSTACK TEAM B
         </Link>
 
         <div className="flex items-center space-x-6">

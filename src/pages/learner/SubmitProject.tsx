@@ -3,16 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 // Components
-import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
+import LearningNavbar from "@/components/learner/LearnerNavbar";
 
 // API
 import { openApiclient } from "@/utils/api-client";
 
 // Types
 import { SubmitProjectDto, User } from "@/utils/backend-openapi";
-import ProjectInfoStep from "@/components/learner-projectSubmiter/ProjectInfoStep";
-import UserInfoStep from "@/components/learner-projectSubmiter/๊UserInfoStep";
-import ReviewStep from "@/components/learner-projectSubmiter/ReviewStep";
+import ProjectInfoStep from "@/components/learner/ProjectInfoStep";
+import UserInfoStep from "@/components/learner/๊UserInfoStep";
+import ReviewStep from "@/components/learner/ReviewStep";
 
 const initialProjectState: SubmitProjectDto = {
   projectThaiName: "",
@@ -255,7 +255,7 @@ const SubmitProject: React.FC = () => {
       try {
         setIsSubmitting(true);
 
-        // กรณีที่ไม่มีไฟล์ ให้ใส่ค่าว่างเพื่อให้ backend จัดการ
+        // กรณีที่ไม่มีไฟล์ ให้แจ้งเตือนผู้ใช้
         if (!projectData.projectDescriptionFile) {
           toast.error("กรุณาอัปโหลดไฟล์รายละเอียดโครงการ");
           setIsSubmitting(false);
@@ -354,61 +354,72 @@ const SubmitProject: React.FC = () => {
             ลงทะเบียนโครงการ
           </h1>
 
-          {/* Step indicators */}
-          <div className="flex justify-between mb-8">
-            {[1, 2, 3].map((stepNumber) => (
-              <div
-                key={stepNumber}
-                className={`relative flex flex-col items-center w-1/3 ${
-                  stepNumber < step
-                    ? "text-green-600"
-                    : stepNumber === step
-                      ? "text-blue-600"
-                      : "text-gray-400"
-                }`}
-              >
+          {/* Step indicators - ปรับให้เหมือนรูปที่ต้องการ */}
+          <div className="flex items-center justify-between max-w-2xl mx-auto mb-8 relative">
+            {[1, 2, 3].map((s, i) => {
+              const isCompleted = step > s;
+              const isActive = step === s;
+
+              return (
                 <div
-                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                    stepNumber < step
-                      ? "bg-green-100 border-green-600"
-                      : stepNumber === step
-                        ? "bg-blue-100 border-blue-600"
-                        : "bg-gray-100 border-gray-400"
-                  }`}
+                  key={s}
+                  className="relative flex flex-col items-center w-1/3 z-10"
                 >
-                  {stepNumber < step ? (
-                    <svg
-                      className="w-6 h-6"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  ) : (
-                    <span className="text-sm font-medium">{stepNumber}</span>
+                  {/* เส้นพื้นหลัง */}
+                  {i < 2 && (
+                    <div className="absolute top-4 left-1/2 w-full h-0.5 bg-gray-300 -z-10" />
                   )}
-                </div>
-                <div className="mt-2 text-sm font-medium">
-                  {stepNumber === 1
-                    ? "ข้อมูลโครงการ"
-                    : stepNumber === 2
-                      ? "ข้อมูลผู้ใช้"
-                      : "ตรวจสอบ"}
-                </div>
-                {stepNumber < 3 && (
+
+                  {/* เส้น active (ขยับตาม step) */}
+                  {i < 2 && step > s && (
+                    <div
+                      className="absolute top-4 left-1/2 h-0.5 bg-blue-600 -z-10 transition-all duration-500 ease-in-out"
+                      style={{ width: "100%" }}
+                    />
+                  )}
+
+                  {/* จุด Step */}
                   <div
-                    className={`absolute top-5 w-full h-0.5 ${
-                      stepNumber < step ? "bg-green-600" : "bg-gray-300"
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ease-out transform ${
+                      isCompleted || isActive
+                        ? "bg-blue-600 text-white scale-110"
+                        : "bg-gray-300 text-gray-700 scale-100"
                     }`}
-                    style={{ left: "50%", width: "100%" }}
-                  ></div>
-                )}
-              </div>
-            ))}
+                  >
+                    {isCompleted ? (
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    ) : (
+                      <span className="text-sm">{s}</span>
+                    )}
+                  </div>
+
+                  {/* ชื่อขั้นตอน */}
+                  <span
+                    className={`mt-2 text-sm font-medium transition-colors duration-300 ${
+                      step >= s ? "text-blue-600" : "text-gray-500"
+                    }`}
+                  >
+                    {s === 1
+                      ? "ข้อมูลโครงการ"
+                      : s === 2
+                        ? "ข้อมูลผู้ใช้"
+                        : "ตรวจสอบ"}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           <form onSubmit={handleSubmit}>

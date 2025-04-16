@@ -2,17 +2,17 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import ContentMenu from "./pages/learner-projectSubmiter/ContentMenu";
-import ContentVideo from "./pages/learner-projectSubmiter/ContentVideo";
+import ContentMenu from "./pages/learner/ContentMenu";
+import ContentVideo from "./pages/learner/ContentVideo";
 import Login from "./pages/Login";
-import SubmitProject from "./pages/learner-projectSubmiter/SubmitProject";
+import SubmitProject from "./pages/learner/SubmitProject";
 import ApproveProjectMenu from "./pages/approver/ApproveProjectMenu";
 import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 
 // เพิ่มการ import หน้าจัดการคอร์ส
-import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/SubmitSuccess";
+import SubmitSuccess from "./components/learner/projectSubmit/SubmitSuccess";
 
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 import AdminCourses from "./pages/admin/AdminCourses";

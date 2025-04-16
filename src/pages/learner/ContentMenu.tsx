@@ -1,5 +1,5 @@
-import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
-import ContentTable from "@/components/learner-projectSubmiter/contentMenu/contentTable";
+import LearningNavbar from "@/components/learner/LearnerNavbar";
+import ContentTable from "@/components/learner/contentMenu/contentTable";
 
 export default function ContentMenu() {
     return (
