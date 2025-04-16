@@ -8,7 +8,6 @@ import Login from "./pages/Login";
 import SubmitProject from "./pages/learner-projectSubmiter/SubmitProject";
 import ApproveProjectMenu from "./pages/approver/ApproveProjectMenu";
 import ApproveProjectDetails from "./pages/approver/ApproveProjectDetails";
-import AdminDashboardProject from "./pages/approver/ApproverDashboardProject";
 import AdminDashboardElearning from "./pages/admin/AdminDashboardElearing";
 import AdminReport from "./pages/admin/AdminReport";
 
@@ -18,8 +17,6 @@ import SubmitSuccess from "./components/learner-projectSubmiter/projectSubmit/Su
 import AdminCourseManagement from "./pages/admin/AdminCourseManagement";
 import AdminCourses from "./pages/admin/AdminCourses";
 import AdminPM from "./pages/admin/AdminPM";
-import AdminNewCourses from "./pages/admin/AdminNewCourse";
-import { useEffect } from "react";
 import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
 import ApproverReport from "./pages/approver/ApproverReport";
 import UsersManagement from "./pages/admin/UsersManagement";

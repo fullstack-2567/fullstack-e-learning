@@ -1,4 +1,3 @@
-// import { Content } from "@/components/admin/ContentManagement";
 import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
 import Player from "@/components/learner-projectSubmiter/contentVideo/Player";
 import { contentService } from "@/services/api";

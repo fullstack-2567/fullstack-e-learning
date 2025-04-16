@@ -1,277 +1,519 @@
-import { createProject, getUserProjects } from "@/api/ProjectApi";
-import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
-import { CreateUserForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateUserForm";
-import { CreateProjectForm } from "@/components/learner-projectSubmiter/projectSubmit/CreateProjectForm";
-import { ReviewForm } from "@/components/learner-projectSubmiter/projectSubmit/ReviewForm";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { SubmitProjectDto, User } from "@/utils/backend-openapi";
-import { Label } from "@radix-ui/react-label";
-import { useFormik } from "formik";
-import { useEffect, useState } from "react";
-import * as yup from "yup";
+import React, { useState, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { openApiclient } from "@/utils/api-client";
-import { useNavigate } from "react-router";
 
-export default function SubmitProject() {
-  // const [project, setProject] = useState<Project>();
-  const [user, setUser] = useState<User>();
-  const [step, setStep] = useState<number>(1);
-  const [projectNameAndIds, setProjectNameAndIds] = useState<
-    { name: string; id: string }[]
-  >([]);
+// Components
+import LearningNavbar from "@/components/learner-projectSubmiter/LearnerNavbar";
+
+// API
+import { openApiclient } from "@/utils/api-client";
+
+// Types
+import { SubmitProjectDto, User } from "@/utils/backend-openapi";
+import ProjectInfoStep from "@/components/learner-projectSubmiter/ProjectInfoStep";
+import UserInfoStep from "@/components/learner-projectSubmiter/๊UserInfoStep";
+import ReviewStep from "@/components/learner-projectSubmiter/ReviewStep";
+
+const initialProjectState: SubmitProjectDto = {
+  projectThaiName: "",
+  projectEngName: "",
+  projectSummary: "",
+  startDate: "",
+  endDate: "",
+  sdgType: "SDG1",
+  projectDescriptionFile: "",
+  projectType: "energy_and_environment",
+  parentProjectID: undefined,
+  userInfo: {},
+};
+
+const initialUserState: User = {
+  userId: "",
+  email: "",
+  createdDT: "",
+  updatedDT: "",
+  role: "user",
+  sex: "male",
+  firstName: "",
+  lastName: "",
+  birthDate: "",
+  prefix: "master",
+  education: "bachelor",
+  tel: "",
+  picture: "",
+  googleId: "",
+  refreshToken: null,
+  contentReports: [],
+};
+
+const SubmitProject: React.FC = () => {
+  // Navigation
   const navigate = useNavigate();
 
+  // State for current step
+  const [step, setStep] = useState(1);
+
+  // Loading states
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+
+  // Form data
+  const [projectData, setProjectData] =
+    useState<SubmitProjectDto>(initialProjectState);
+  const [userData, setUserData] = useState<User>(initialUserState);
+  const [projectList, setProjectList] = useState<
+    { name: string; id: string }[]
+  >([]);
+
+  // Form validation
+  const [projectErrors, setProjectErrors] = useState<Record<string, string>>(
+    {}
+  );
+  const [userErrors, setUserErrors] = useState<Record<string, string>>({});
+
+  // Fetch projects on mount
   useEffect(() => {
     const fetchProjects = async () => {
-      const response = await openApiclient.getUserProjects();
-      const projectData = response.data.map((project) => ({
-        name: project.projectThaiName,
-        id: project.projectId,
-      }));
-      setProjectNameAndIds(projectData);
+      try {
+        setIsLoadingProjects(true);
+        const response = await openApiclient.getUserProjects();
+
+        const formattedProjects = response.data.map((project) => ({
+          name: project.projectThaiName,
+          id: project.projectId,
+        }));
+
+        setProjectList(formattedProjects);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+        toast.error("ไม่สามารถดึงข้อมูลโครงการได้");
+      } finally {
+        setIsLoadingProjects(false);
+      }
     };
+
     fetchProjects();
   }, []);
 
-  const formikForCreateProject = useFormik<SubmitProjectDto>({
-    initialValues: {
-      projectThaiName: "",
-      projectEngName: "",
-      projectSummary: "",
-      startDate: "",
-      endDate: "",
-      sdgType: "SDG1",
-      //base64 encoded string of file
-      projectDescriptionFile: "",
-      projectType: "energy_and_environment",
-      parentProjectID: undefined,
-      userInfo: {},
-    },
-    validationSchema: yup.object({
-      projectThaiName: yup
-        .string()
-        .required("Required")
-        .min(1, "Too short")
-        .max(255, "Too long"),
-      projectEngName: yup
-        .string()
-        .required("Required")
-        .min(1, "Too short")
-        .max(255, "Too long"),
-      projectSummary: yup
-        .string()
-        .required("Required")
-        .min(1, "Too short")
-        .max(1000, "Too long"),
-      startDate: yup.date().required("Required"),
-      endDate: yup
-        .date()
-        .required("Required")
-        .min(yup.ref("startDate"), "End date must be after start date"),
-      sdgType: yup.string().required("Required"),
-      projectDescriptionFile: yup.mixed().required("กรุณาเลือกไฟล์"),
-      projectType: yup.string().required("Required"),
-      parentProjectID: yup.string(),
-      userInfo: yup.object().optional(),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const response = await openApiclient.submitProject(null, {
-          ...values,
-          userInfo: {
-            prefix: user?.prefix,
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-            birthDate: user?.birthDate,
-            education: user?.education,
-            tel: user?.tel,
-            sex: user?.sex,
-          },
+  // Handlers for project data updates
+  const updateProjectData = useCallback(
+    (field: string, value: any) => {
+      setProjectData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+
+      // Clear error when field is updated
+      if (projectErrors[field]) {
+        setProjectErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
         });
-        const data = response.data;
-        navigate(`/submit-success/${data.projectId}`);
-      } catch (error) {
-        toast.error("เกิดข้อผิดพลาดในการส่งข้อมูล");
       }
     },
-  });
+    [projectErrors]
+  );
 
-  const formikForCreatingUser = useFormik<User>({
-    initialValues: {
-      userId: "",
-      email: "abcd@e.f",
-      createdDT: "",
-      updatedDT: "",
-      role: "user",
-      sex: "male",
-      firstName: "",
-      lastName: "",
-      birthDate: "",
-      prefix: "master",
-      education: "bachelor",
-      tel: "",
+  // Handlers for user data updates
+  const updateUserData = useCallback(
+    (field: string, value: any) => {
+      setUserData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+
+      // Clear error when field is updated
+      if (userErrors[field]) {
+        setUserErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
     },
-    validationSchema: yup.object({
-      email: yup.string().email("Invalid email").required("Required"),
-      role: yup.string().required("Required"),
-      sex: yup.string().required("Required"),
-      firstName: yup
-        .string()
-        .required("Required")
-        .min(1, "Too short")
-        .max(100, "Too long"),
-      lastName: yup
-        .string()
-        .required("Required")
-        .min(1, "Too short")
-        .max(100, "Too long"),
-      birthDate: yup
-        .date()
-        .required("Required")
-        .max(new Date(), "Date must be in the past"),
-      prefix: yup.string().required("Required"),
-      education: yup.string().required("Required"),
-      tel: yup
-        .string()
-        .required("Required")
-        .matches(/^[0-9]+$/, "Only numbers are allowed"),
-    }),
+    [userErrors]
+  );
 
-    onSubmit: async (values) => {
-      setUser(values);
-    },
-  });
+  // Validate project data
+  const validateProjectData = useCallback(() => {
+    const errors: Record<string, string> = {};
 
-  useEffect(() => {
-    // use react-router-dom to navigate to /learner-projectSubmiter/submitsuccess
-    if (step === 4) {
-      window.location.href = "/submitsuccess";
+    // Required fields for step 1
+    if (!projectData.projectThaiName)
+      errors.projectThaiName = "กรุณากรอกชื่อโครงการภาษาไทย";
+    if (!projectData.projectEngName)
+      errors.projectEngName = "กรุณากรอกชื่อโครงการภาษาอังกฤษ";
+    if (!projectData.projectSummary)
+      errors.projectSummary = "กรุณากรอกสรุปโครงการ";
+    if (!projectData.startDate)
+      errors.startDate = "กรุณาเลือกวันที่เริ่มต้นโครงการ";
+    if (!projectData.endDate) errors.endDate = "กรุณาเลือกวันสิ้นสุดโครงการ";
+
+    // Check if end date is after start date
+    if (projectData.startDate && projectData.endDate) {
+      const start = new Date(projectData.startDate);
+      const end = new Date(projectData.endDate);
+      if (end < start) {
+        errors.endDate = "วันสิ้นสุดโครงการต้องอยู่หลังวันเริ่มต้นโครงการ";
+      }
     }
-    // if (formikForCreateProject.isSubmitting) {
-    //     setStep(3);
-    // }
-  }, [formikForCreateProject.isSubmitting]);
+
+    if (!projectData.projectDescriptionFile)
+      errors.projectDescriptionFile = "กรุณาอัปโหลดไฟล์คำอธิบายโครงการ";
+
+    setProjectErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [projectData]);
+
+  // Validate user data
+  const validateUserData = useCallback(() => {
+    const errors: Record<string, string> = {};
+
+    // Required fields for step 2
+    if (!userData.firstName) errors.firstName = "กรุณากรอกชื่อจริง";
+    if (!userData.lastName) errors.lastName = "กรุณากรอกนามสกุล";
+
+    // Email validation
+    if (!userData.email) {
+      errors.email = "กรุณากรอกอีเมล";
+    } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
+      errors.email = "กรุณากรอกอีเมลที่ถูกต้อง";
+    }
+
+    // Phone validation
+    if (!userData.tel) {
+      errors.tel = "กรุณากรอกเบอร์โทรศัพท์";
+    } else if (!/^\d+$/.test(userData.tel)) {
+      errors.tel = "เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น";
+    }
+
+    // Birth date validation
+    if (!userData.birthDate) {
+      errors.birthDate = "กรุณาเลือกวันเกิด";
+    } else {
+      const birthDate = new Date(userData.birthDate);
+      const today = new Date();
+      if (birthDate > today) {
+        errors.birthDate = "วันเกิดต้องเป็นวันที่ผ่านมาแล้ว";
+      }
+    }
+
+    setUserErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [userData]);
+
+  // Handle next step
+  const handleNext = useCallback(() => {
+    if (step === 1) {
+      if (validateProjectData()) {
+        setStep(2);
+      } else {
+        toast.error("กรุณากรอกข้อมูลโครงการให้ครบถ้วน");
+      }
+    } else if (step === 2) {
+      if (validateUserData()) {
+        setStep(3);
+      } else {
+        toast.error("กรุณากรอกข้อมูลผู้ใช้ให้ครบถ้วน");
+      }
+    }
+  }, [step, validateProjectData, validateUserData]);
+
+  // Handle previous step
+  const handlePrevious = useCallback(() => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  }, [step]);
+
+  // Handle form reset
+  const handleReset = useCallback(() => {
+    if (window.confirm("คุณต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?")) {
+      setProjectData(initialProjectState);
+      setUserData(initialUserState);
+      setProjectErrors({});
+      setUserErrors({});
+      setStep(1);
+    }
+  }, []);
+
+  // Handle form submission
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+
+      // Validate both forms before submitting
+      const isProjectValid = validateProjectData();
+      const isUserValid = validateUserData();
+
+      if (!isProjectValid || !isUserValid) {
+        toast.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+        return;
+      }
+
+      try {
+        setIsSubmitting(true);
+
+        // กรณีที่ไม่มีไฟล์ ให้ใส่ค่าว่างเพื่อให้ backend จัดการ
+        if (!projectData.projectDescriptionFile) {
+          toast.error("กรุณาอัปโหลดไฟล์รายละเอียดโครงการ");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // ส่งข้อมูลไปยัง API
+        const response = await openApiclient.submitProject(null, {
+          ...projectData,
+          userInfo: {
+            prefix: userData.prefix,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            birthDate: userData.birthDate,
+            education: userData.education,
+            tel: userData.tel,
+            sex: userData.sex,
+          },
+        });
+
+        const data = response.data;
+        if ("projectId" in data) {
+          toast.success("บันทึกข้อมูลสำเร็จ");
+          navigate(`/submit-success/${data.projectId}`);
+        } else {
+          toast.error("รูปแบบการตอบกลับไม่ถูกต้อง");
+        }
+      } catch (error) {
+        console.error("Error submitting project:", error);
+        toast.error(
+          "เกิดข้อผิดพลาดในการส่งข้อมูล โปรดตรวจสอบข้อมูลและลองใหม่อีกครั้ง"
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [projectData, userData, validateProjectData, validateUserData, navigate]
+  );
+
+  // Render loading skeleton
+  const renderLoadingSkeleton = () => (
+    <div className="bg-white rounded-lg shadow p-6 mb-4">
+      <div className="h-6 bg-gray-200 rounded animate-pulse w-1/3 mb-6"></div>
+      <div className="space-y-4">
+        <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+        <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6"></div>
+      </div>
+    </div>
+  );
+
+  // Render current step content
+  const renderStepContent = () => {
+    if (isLoadingProjects) {
+      return renderLoadingSkeleton();
+    }
+
+    switch (step) {
+      case 1:
+        return (
+          <ProjectInfoStep
+            data={projectData}
+            errors={projectErrors}
+            updateData={updateProjectData}
+            projectList={projectList}
+          />
+        );
+      case 2:
+        return (
+          <UserInfoStep
+            data={userData}
+            errors={userErrors}
+            updateData={updateUserData}
+          />
+        );
+      case 3:
+        return (
+          <ReviewStep
+            projectData={projectData}
+            userData={userData}
+            projectList={projectList}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50">
       <LearningNavbar />
-      <div className="min-h-screen bg-gray-100 font-inter p-8 flex flex-col  gap-4">
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            await formikForCreatingUser.handleSubmit();
-            await formikForCreateProject.handleSubmit();
-            console.log("submit project");
-          }}
-        >
-          <div>
-            <h1 className="text-3xl">ลงทะเบียนโครงการ</h1>
-          </div>
-          <div className={`${step === 1 ? "" : "hidden"}`}>
-            <CreateProjectForm
-              formik={formikForCreateProject}
-              projectNameAndIds={projectNameAndIds}
-              readonly={false}
-            />
-          </div>
-          <div className={`${step === 2 ? "" : "hidden"}`}>
-            <CreateUserForm formik={formikForCreatingUser} readonly={false} />
-          </div>
-          <div className={`${step === 3 ? "" : "hidden"}`}>
-            <ReviewForm
-              projectFormik={formikForCreateProject}
-              userFormik={formikForCreatingUser}
-              projectNameAndIds={projectNameAndIds}
-            />
+
+      <div className="container mx-auto py-8 px-4 max-w-5xl">
+        <div className="bg-white rounded-lg shadow-md p-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-8">
+            ลงทะเบียนโครงการ
+          </h1>
+
+          {/* Step indicators */}
+          <div className="flex justify-between mb-8">
+            {[1, 2, 3].map((stepNumber) => (
+              <div
+                key={stepNumber}
+                className={`relative flex flex-col items-center w-1/3 ${
+                  stepNumber < step
+                    ? "text-green-600"
+                    : stepNumber === step
+                      ? "text-blue-600"
+                      : "text-gray-400"
+                }`}
+              >
+                <div
+                  className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                    stepNumber < step
+                      ? "bg-green-100 border-green-600"
+                      : stepNumber === step
+                        ? "bg-blue-100 border-blue-600"
+                        : "bg-gray-100 border-gray-400"
+                  }`}
+                >
+                  {stepNumber < step ? (
+                    <svg
+                      className="w-6 h-6"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  ) : (
+                    <span className="text-sm font-medium">{stepNumber}</span>
+                  )}
+                </div>
+                <div className="mt-2 text-sm font-medium">
+                  {stepNumber === 1
+                    ? "ข้อมูลโครงการ"
+                    : stepNumber === 2
+                      ? "ข้อมูลผู้ใช้"
+                      : "ตรวจสอบ"}
+                </div>
+                {stepNumber < 3 && (
+                  <div
+                    className={`absolute top-5 w-full h-0.5 ${
+                      stepNumber < step ? "bg-green-600" : "bg-gray-300"
+                    }`}
+                    style={{ left: "50%", width: "100%" }}
+                  ></div>
+                )}
+              </div>
+            ))}
           </div>
 
-          <div className="flex flex-row justify-between  gap-4 mt-4">
-            <div className="flex flex-row gap-4">
-              <button
-                type="button"
-                className={`bg-blue-500 text-white px-4 py-2 rounded ${step === 1 ? "hidden" : ""}`}
-                onClick={() => setStep(step - 1)}
-              >
-                ย้อนกลับ
-              </button>
-              <button
-                type="button"
-                className="bg-red-500 text-white px-4 py-2 rounded"
-                onClick={() => {
-                  formikForCreateProject.resetForm();
-                  formikForCreatingUser.resetForm();
-                  setStep(1);
-                }}
-              >
-                ล้างข้อมูล
-              </button>
-            </div>
-            <div className="flex flex-row gap-4">
-              <div className={`w-100 ${step === 3 ? "" : "hidden"}`}>
-                <p>
-                  ข้าพเจ้าตกลงยินยอมให้บริษัทจัดเก็บเก็บข้อมูลส่วนบุคคลที่ข้าพเจ้าได้ให้ไว้ในการลงทะเบียนโครงการ
+          <form onSubmit={handleSubmit}>
+            {renderStepContent()}
+
+            {/* Consent (only on step 3) */}
+            {step === 3 && (
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-sm text-gray-700 mb-4">
+                  ข้าพเจ้าตกลงยินยอมให้บริษัทจัดเก็บข้อมูลส่วนบุคคลที่ข้าพเจ้าได้ให้ไว้ในการลงทะเบียนโครงการ
                   และยินยอมให้เปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้าต่อหน่วยงานที่เกี่ยวข้อง
                   เพื่อพิจารณาและดำเนินการตามวัตถุประสงค์ของระบบ ทั้งนี้
                   ข้าพเจ้าขอรับรองว่าโครงการนี้เป็นความคิดริเริ่มของนักพัฒนาโครงการ
                   และไม่ได้ลอกเลียนแบบมาจากผู้อื่นผู้ใด
                 </p>
-                <RadioGroup defaultValue="agree">
-                  <div className="flex items-center space-x-2 mt-4">
-                    <RadioGroupItem
-                      value="agree"
-                      id="agree"
-                      className="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    />
-                    <Label
-                      htmlFor="agree"
-                      className="text-sm text-gray-700 cursor-pointer "
-                    >
-                      ข้าพเจ้ายอมรับ
-                    </Label>
-                  </div>
-                </RadioGroup>
+                <div className="flex items-center">
+                  <input
+                    id="consent"
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    required
+                  />
+                  <label
+                    htmlFor="consent"
+                    className="ml-2 text-sm font-medium text-gray-700"
+                  >
+                    ข้าพเจ้ายอมรับ
+                  </label>
+                </div>
               </div>
-              <button
-                type="button"
-                className={`bg-gray-500 text-white px-4 py-2 rounded " ${step >= 3 ? "hidden" : ""}`}
-                onClick={() => {
-                  if (
-                    (step === 1 && !formikForCreateProject.isValid) ||
-                    (step === 2 && !formikForCreatingUser.isValid)
-                  ) {
-                    console.log(
-                      step === 1
-                        ? formikForCreateProject.errors
-                        : formikForCreatingUser.errors
-                    );
-                    toast.error(
-                      "กรุณากรอกข้อมูลให้ครบถ้วน ตอนนี้ยังขาดตรงที่ " +
-                        (step === 1
-                          ? formikForCreateProject.errors
-                          : formikForCreatingUser.errors)
-                    );
-                    return;
-                  }
-                  setStep(step + 1);
-                }}
-              >
-                ถัดไป
-              </button>
-              <button
-                type="submit"
-                className={`bg-emerald-500 text-white px-4 py-2 rounded ${step === 3 ? "" : "hidden"}`}
-                // onClick={() => {
-                //   formikForCreatingUser.handleSubmit();
-                //   console.log("submit user");
-                // }}
-              >
-                ส่งข้อมูล
-              </button>
+            )}
+
+            {/* Form buttons */}
+            <div className="flex justify-between mt-8">
+              <div className="flex gap-2">
+                {step > 1 && (
+                  <button
+                    type="button"
+                    onClick={handlePrevious}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
+                  >
+                    ย้อนกลับ
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors disabled:opacity-50"
+                >
+                  ล้างข้อมูล
+                </button>
+              </div>
+
+              {step < 3 ? (
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={isSubmitting}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  ถัดไป
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 flex items-center"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      กำลังส่งข้อมูล...
+                    </>
+                  ) : (
+                    "ส่งข้อมูล"
+                  )}
+                </button>
+              )}
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default SubmitProject;
