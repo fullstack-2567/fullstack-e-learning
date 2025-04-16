@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { openApiclient } from "@/utils/api-client";
 import { formatDate } from "@/utils/dateUtils";
+import { ROUTES } from "@/App";
 
 interface TimelineItemProps {
   status: "pending" | "approved" | "rejected";
@@ -161,7 +162,7 @@ export default function SubmitSuccess() {
           <div className="mt-8 text-center">
             <button
               className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              onClick={() => navigate("/contents")}
+              onClick={() => navigate(ROUTES.CONTENT_MENU)}
             >
               กลับสู่หน้าแรก
             </button>

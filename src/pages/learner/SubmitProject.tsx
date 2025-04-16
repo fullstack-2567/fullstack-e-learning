@@ -13,6 +13,7 @@ import { SubmitProjectDto, User } from "@/utils/backend-openapi";
 import ProjectInfoStep from "@/components/learner/ProjectInfoStep";
 import UserInfoStep from "@/components/learner/๊UserInfoStep";
 import ReviewStep from "@/components/learner/ReviewStep";
+import { ROUTES } from "@/App";
 
 const initialProjectState: SubmitProjectDto = {
   projectThaiName: "",
@@ -71,6 +72,8 @@ const SubmitProject: React.FC = () => {
   );
   const [userErrors, setUserErrors] = useState<Record<string, string>>({});
 
+  // State for form submission
+  const [canSubmit, setCanSubmit] = useState<boolean | null>(null);
   // Fetch projects on mount
   useEffect(() => {
     const fetchProjects = async () => {
@@ -94,7 +97,37 @@ const SubmitProject: React.FC = () => {
 
     fetchProjects();
   }, []);
-
+  useEffect(() => {
+    const checkLatestProject = async () => {
+      try {
+        const res = await openApiclient.getUserLatestProject();
+        const latest = res.data;
+  
+        const isRejected = !!latest.rejectedDT;
+        const isFullyApproved = !!latest.thirdApprovedDT;
+  
+        if (isRejected || isFullyApproved) {
+          setCanSubmit(true);
+        } else {
+          setCanSubmit(false);
+          toast.warning("คุณไม่สามารถส่งโครงการใหม่ได้ในขณะนี้ เนื่องจากโครงการล่าสุดยังอยู่ระหว่างรออนุมัติ");
+          navigate(`${ROUTES.PROJECT_SUBMIT_SUCCESS_VIEW(latest.projectId)}`);
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 404) {
+          // ✅ ยังไม่เคยยื่นโครงการ → ยื่นได้
+          setCanSubmit(true);
+        } else {
+          console.error("เกิดข้อผิดพลาดในการตรวจสอบโครงการล่าสุด", error);
+          toast.error("ไม่สามารถโหลดสถานะโครงการล่าสุดได้");
+          navigate("/contents");
+        }
+      }
+    };
+  
+    checkLatestProject();
+  }, [navigate]);
+  
   // Handlers for project data updates
   const updateProjectData = useCallback(
     (field: string, value: any) => {

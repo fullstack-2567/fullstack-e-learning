@@ -20,20 +20,23 @@ import AdminPM from "./pages/admin/AdminPM";
 import ApproverDashboardProject from "./pages/approver/ApproverDashboardProject";
 import ApproverReport from "./pages/approver/ApproverReport";
 import UsersManagement from "./pages/admin/UsersManagement";
+import ProjectLists from "./pages/learner/ProjectLists";
 
 // ใช้ค่าจาก .env
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Centralized route definitions for better maintainability
-const ROUTES = {
+export const ROUTES = {
   // Public Routes
   LOGIN: "/login",
 
   // Learner Routes
   CONTENT_MENU: "/contents",
   CONTENT_VIDEO: "/video",
-  SUBMIT_PROJECT: "/submit-project",
-  SUBMIT_SUCCESS: "/submit-success/:projectId",
+  PROJECT_SUBMIT_PROJECT: "/submit-project",
+  PROJECT_SUBMIT_SUCCESS: "/submit-success/:projectId",
+  PROJECT_SUBMIT_SUCCESS_VIEW: (id: string) => `/submit-success/${id}`,
+  PROJECT_LISTS: "/project-list",
 
   // Approver Routes
   APPROVER_DASHBOARD_PROJECT: "/approver/dashboard",
@@ -78,7 +81,7 @@ export default function App() {
               }
             />
             <Route
-              path={ROUTES.SUBMIT_PROJECT}
+              path={ROUTES.PROJECT_SUBMIT_PROJECT}
               element={
                 <ProtectedRoute>
                   <SubmitProject />
@@ -86,14 +89,21 @@ export default function App() {
               }
             />
             <Route
-              path={ROUTES.SUBMIT_SUCCESS}
+              path={ROUTES.PROJECT_SUBMIT_SUCCESS}
               element={
                 <ProtectedRoute>
                   <SubmitSuccess />
                 </ProtectedRoute>
               }
             />
-
+            <Route
+              path={ROUTES.PROJECT_LISTS}
+              element={
+                <ProtectedRoute>
+                  <ProjectLists />
+                </ProtectedRoute>
+              }
+            />
             {/* Protected Routes for Approver */}
             <Route
               path={ROUTES.APPROVER_DASHBOARD_PROJECT}

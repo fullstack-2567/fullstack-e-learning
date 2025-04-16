@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { ROUTES } from "@/App";
 
 export default function LearningNavbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,7 +15,7 @@ export default function LearningNavbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // check on mount
+    handleScroll(); 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -27,18 +28,26 @@ export default function LearningNavbar() {
       }`}
     >
       <div className="container mx-auto flex justify-between items-center py-3 px-4">
-        <Link to="/contents" className="text-white text-lg font-medium font-prompt">
+        <Link
+          to="/contents"
+          className="text-white text-lg font-medium font-prompt"
+        >
           FULLSTACK TEAM B
         </Link>
 
         <div className="flex items-center space-x-6">
           {[
-            { path: "/submit-project", label: "ส่งโครงการ" },
+            { path: ROUTES.PROJECT_SUBMIT_PROJECT, 
+              label: "ส่งโครงการ" 
+            },
             {
-              path: "/submit-success",
+              path: ROUTES.PROJECT_LISTS,
               label: "สถานะโครงการ",
             },
-            { path: "/contents", label: "คอร์สเรียน" },
+            { 
+              path: ROUTES.CONTENT_MENU, 
+              label: "คอร์สเรียน" 
+            },
           ].map(({ path, label }) => (
             <Link
               key={path}
