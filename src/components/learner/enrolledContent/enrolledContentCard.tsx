@@ -13,6 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router";
+import { getContentCategoryInThai } from "@/utils/enumMapping";
 
 interface Props {
   contentId: string;
@@ -63,7 +64,7 @@ const EnrolledContentCard = ({
             variant="outline"
             className="absolute top-3 left-3 bg-slate-50 text-xs font-medium px-2 py-1 rounded-full"
           >
-            {contentCategory}
+            {getContentCategoryInThai(contentCategory)}
           </Badge>
 
           <div

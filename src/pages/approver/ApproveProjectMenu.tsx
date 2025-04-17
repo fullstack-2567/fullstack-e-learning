@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -131,32 +131,22 @@ export default function ApproveProjectMenu() {
             <CardContent className="p-0">
               {/* Search bar */}
               <div className="p-4 bg-gray-50">
-                <div className="flex items-center gap-4">
-                  <div className="relative flex-1">
+                <div className="relative max-w-md w-full">
+                  <div className="flex items-center border rounded-xl overflow-hidden shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                    <div className="pl-3 flex items-center">
+                      <Search className="h-5 w-5 text-gray-400" />
+                    </div>
                     <Input
-                      type="text"
                       placeholder="Search..."
-                      className="pl-10 bg-white"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
+                      className="font-prompt w-full px-3 py-2 bg-transparent focus:outline-none"
+                      style={{
+                        border: "none",
+                        outline: "none",
+                        boxShadow: "none",
+                      }}
                     />
-                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-gray-400"
-                      >
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <path d="m21 21-4.3-4.3"></path>
-                      </svg>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -184,12 +174,6 @@ export default function ApproveProjectMenu() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b text-left">
-                        <th className="p-4 w-10">
-                          <input
-                            type="checkbox"
-                            className="rounded border-gray-300"
-                          />
-                        </th>
                         <th className="p-4 w-14 font-medium text-sm">
                           <div className="flex items-center gap-1">
                             # <ChevronDown size={14} />
@@ -218,12 +202,6 @@ export default function ApproveProjectMenu() {
                             key={project.projectId}
                             className="border-b hover:bg-gray-50"
                           >
-                            <td className="p-4 w-10">
-                              <input
-                                type="checkbox"
-                                className="rounded border-gray-300"
-                              />
-                            </td>
                             <td className="p-4 w-14 align-top">
                               {startIndex + index + 1}
                             </td>
