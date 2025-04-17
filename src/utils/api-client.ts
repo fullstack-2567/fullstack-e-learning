@@ -22,13 +22,11 @@ const openApiclientPromise = api.init().then(() =>
   })
 );
 
-// ✅ export แบบ async-safe สำหรับไฟล์ที่ await ได้
 export const waitForApi = async () => {
   if (_client) return _client;
   return openApiclientPromise;
 };
 
-// ✅ export ตรงชื่อเดิม (แก้ error import เดิมได้)
 export let openApiclient: Client;
 openApiclientPromise.then((client) => {
   openApiclient = client;
