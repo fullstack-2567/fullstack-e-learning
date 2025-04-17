@@ -182,7 +182,7 @@ const ReportComponent: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {contentsReport.sort((a,b) => a.studentsCompleted - b.studentsCompleted).filter((content, idx)=> idx < 5).map((course) => (
+                            {contentsReport.sort((a,b) => b.studentsCompleted - a.studentsCompleted).filter((content, idx)=> idx < 5).map((course) => (
                               <tr
                                 key={course.id}
                                 className="bg-white border-b hover:bg-gray-50"
@@ -218,7 +218,7 @@ const ReportComponent: React.FC = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {contentsReport.sort((a,b) => a.studentsEnrolled - b.studentsEnrolled).filter((content, idx)=> idx < 5).map((course) => (
+                            {contentsReport.sort((a,b) => b.studentsEnrolled - a.studentsEnrolled).filter((content, idx)=> idx < 5).map((course) => (
                               <tr
                                 key={course.id}
                                 className="bg-white border-b hover:bg-gray-50"
@@ -249,7 +249,7 @@ const ReportComponent: React.FC = () => {
                           <tr>
                             <th className="py-3 px-4 w-[35%]">Title</th>
                             <th className="py-3 px-4 w-[15%]">
-                              จำนวนผู้เข้าเรียน
+                              จำนวนผู้ลงทะเบียนเรียน
                             </th>
                             <th className="py-3 px-4 w-[15%]">
                               จำนวนผู้ที่จบคอร์ส
