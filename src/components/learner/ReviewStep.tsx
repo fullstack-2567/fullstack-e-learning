@@ -10,7 +10,7 @@ const PROJECT_TYPES_MAP = {
   finance_and_investment: "การเงินและการลงทุน",
   technology_and_innovation: "เทคโนโลยีและนวัตกรรม",
   medicine_and_health: "การแพทย์และสุขภาพ",
-  human_resources_development: "การศึกษาและพัฒนาทรัพยากรมนุษย์",
+  human_resource_development: "การศึกษาและพัฒนาทรัพยากรมนุษย์",
   manufacturing_and_automotive: "อุตสาหกรรมการผลิตและหุ่นยนต์",
   electronics_and_retail: "พาณิชย์อิเล็กทรอนิกส์และค้าปลีก",
   real_estate_and_urban_development: "อสังหาริมทรัพย์และการพัฒนาเมือง",

@@ -14,7 +14,7 @@ const PROJECT_TYPES = [
   { value: "technology_and_innovation", label: "เทคโนโลยีและนวัตกรรม" },
   { value: "medicine_and_health", label: "การแพทย์และสุขภาพ" },
   {
-    value: "human_resources_development",
+    value: "human_resource_development",
     label: "การศึกษาและพัฒนาทรัพยากรมนุษย์",
   },
   {

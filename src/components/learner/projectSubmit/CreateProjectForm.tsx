@@ -301,7 +301,7 @@ export const CreateProjectForm = ({
               <SelectItem value="medicine_and_health">
                 การแพทย์และสุขภาพ
               </SelectItem>
-              <SelectItem value="human_resources_development">
+              <SelectItem value="human_resource_development">
                 การศึกษาและพัฒนาทรัพยากรมนุษย์
               </SelectItem>
               <SelectItem value="manufacturing_and_automotive">
