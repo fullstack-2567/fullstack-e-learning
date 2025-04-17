@@ -243,9 +243,7 @@ const Dashboard: React.FC = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">
-                    จำนวนผู้ใช้ที่เข้าสู่ระบบ
-                  </p>
+                  <p className="text-sm text-gray-500">จำนวนการเข้าสู่ระบบ</p>
                   <p
                     className={`text-2xl font-bold ${summaryData.loginCount.thisMonth < summaryData.loginCount.lastMonth ? "text-red-500" : "text-green-500"}`}
                   >
