@@ -184,12 +184,6 @@ export default function ApproveProjectMenu() {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b text-left">
-                        <th className="p-4 w-10">
-                          <input
-                            type="checkbox"
-                            className="rounded border-gray-300"
-                          />
-                        </th>
                         <th className="p-4 w-14 font-medium text-sm">
                           <div className="flex items-center gap-1">
                             # <ChevronDown size={14} />
@@ -218,12 +212,6 @@ export default function ApproveProjectMenu() {
                             key={project.projectId}
                             className="border-b hover:bg-gray-50"
                           >
-                            <td className="p-4 w-10">
-                              <input
-                                type="checkbox"
-                                className="rounded border-gray-300"
-                              />
-                            </td>
                             <td className="p-4 w-14 align-top">
                               {startIndex + index + 1}
                             </td>
