@@ -1,8 +1,27 @@
 import { useEffect, useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ArrowDown, ArrowUp, Users, Calendar } from "lucide-react";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { getProjectsDashboard, ProjectsDashboard }  from "@/api/DashboardAPI";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import { openApiclient } from "@/utils/api-client";
+import { ProjectsDashboardDataDto } from "@/utils/backend-openapi";
 
 // Types
 interface MonthOption {
@@ -46,14 +65,17 @@ interface ChildProjectChartItem {
 const COLORS: string[] = ["#D4E7A5", "#77C9A5", "#6C8DC6", "#D68383"];
 
 const ApproverDashboard: React.FC = () => {
-  const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentYearMonth());
-  const [dashboardData, setDashboardData] = useState<ProjectsDashboard | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<string>(
+    getCurrentYearMonth()
+  );
+  const [dashboardData, setDashboardData] =
+    useState<ProjectsDashboardDataDto | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   // Helper function to get current year-month in YYYY-MM format
   function getCurrentYearMonth(): string {
     const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   }
 
   const handleMonthChange = (value: string): void => {
@@ -64,8 +86,11 @@ const ApproverDashboard: React.FC = () => {
   const monthOptions: MonthOption[] = Array.from({ length: 12 }, (_, i) => {
     const date = new Date();
     date.setMonth(date.getMonth() - i);
-    const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    const label = new Intl.DateTimeFormat('th-TH', { year: 'numeric', month: 'long' }).format(date);
+    const value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    const label = new Intl.DateTimeFormat("th-TH", {
+      year: "numeric",
+      month: "long",
+    }).format(date);
     return { value, label };
   });
 
@@ -73,8 +98,10 @@ const ApproverDashboard: React.FC = () => {
     const fetchDashboardData = async (): Promise<void> => {
       setLoading(true);
       try {
-        const data = await getProjectsDashboard(selectedMonth);
-        setDashboardData(data);
+        const response = await openApiclient.getProjectDashboard({
+          month: selectedMonth,
+        });
+        setDashboardData(response.data.data);
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -86,66 +113,108 @@ const ApproverDashboard: React.FC = () => {
   }, [selectedMonth]);
 
   // Format project types data for pie chart
-  const projectTypesData: ChartDataItem[] = dashboardData?.data.popular_project_types.map((item, index) => ({
-    name: `Category ${index + 1}`,
-    value: item.count,
-    color: COLORS[index % COLORS.length],
-    realName: item.type
-  })) || [];
+  const projectTypesData: ChartDataItem[] =
+    dashboardData?.popular_project_types.map((item, index) => ({
+      name: `Category ${index + 1}`,
+      value: item.count,
+      color: COLORS[index % COLORS.length],
+      realName: item.type,
+    })) || [];
 
   // Format SDG types data for pie chart
-  const sdgTypesData: ChartDataItem[] = dashboardData?.data.popular_sdg_types.map((item, index) => ({
-    name: `Category ${index + 1}`,
-    value: item.count,
-    color: COLORS[index % COLORS.length],
-    realName: item.sdg
-  })) || [];
+  const sdgTypesData: ChartDataItem[] =
+    dashboardData?.popular_sdg_types.map((item, index) => ({
+      name: `Category ${index + 1}`,
+      value: item.count,
+      color: COLORS[index % COLORS.length],
+      realName: item.sdg,
+    })) || [];
 
   // Format project status data for bar chart
-  const projectStatusData: StatusChartItem[] = dashboardData?.data.project_status ? [
-    { name: "รอรีวิว", value: dashboardData.data.project_status.pending_first_approval, fill: "#77C9A5" },
-    { name: "ผ่านการตรวจสอบครั้งที่1", value: dashboardData.data.project_status.first_approved, fill: "#6C8DC6" },
-    { name: "ผ่านการตรวจสอบครั้งที่2", value: dashboardData.data.project_status.second_approved, fill: "#6C8DC6" },
-    { name: "ผ่านการตรวจสอบครั้งที่3", value: dashboardData.data.project_status.third_approved, fill: "#6C8DC6" },
-    { name: "ถูกปฏิเสธ", value: dashboardData.data.project_status.rejected, fill: "#D68383" }
-  ] : [];
+  const projectStatusData: StatusChartItem[] = dashboardData?.project_status
+    ? [
+        {
+          name: "รอรีวิว",
+          value: dashboardData.project_status.pending_first_approval,
+          fill: "#77C9A5",
+        },
+        {
+          name: "ผ่านการตรวจสอบครั้งที่1",
+          value: dashboardData.project_status.first_approved,
+          fill: "#6C8DC6",
+        },
+        {
+          name: "ผ่านการตรวจสอบครั้งที่2",
+          value: dashboardData.project_status.second_approved,
+          fill: "#6C8DC6",
+        },
+        {
+          name: "ผ่านการตรวจสอบครั้งที่3",
+          value: dashboardData.project_status.third_approved,
+          fill: "#6C8DC6",
+        },
+        {
+          name: "ถูกปฏิเสธ",
+          value: dashboardData.project_status.rejected,
+          fill: "#D68383",
+        },
+      ]
+    : [];
 
   // Format child projects data for bar chart
-  const childProjectsData: ChildProjectChartItem[] = dashboardData?.data.child_projects ? [
-    { name: "โครงการต้นแบบ", value: dashboardData.data.child_projects.normal, fill: "#6C8DC6" },
-    { name: "โครงการต่อยอด", value: dashboardData.data.child_projects.child, fill: "#6C8DC6" }
-  ] : [];
+  const childProjectsData: ChildProjectChartItem[] =
+    dashboardData?.child_projects
+      ? [
+          {
+            name: "โครงการต้นแบบ",
+            value: dashboardData.child_projects.normal,
+            fill: "#6C8DC6",
+          },
+          {
+            name: "โครงการต่อยอด",
+            value: dashboardData.child_projects.child,
+            fill: "#6C8DC6",
+          },
+        ]
+      : [];
 
   // Helper for determining up/down indicator and color
   const getIndicator = (current: number, previous: number): Indicator => {
     if (current === previous) return { icon: null, color: "text-gray-500" };
-    if (current > previous) return { icon: <ArrowUp className="text-green-500" />, color: "text-green-500" };
-    return { icon: <ArrowDown className="text-red-500" />, color: "text-red-500" };
+    if (current > previous)
+      return {
+        icon: <ArrowUp className="text-green-500" />,
+        color: "text-green-500",
+      };
+    return {
+      icon: <ArrowDown className="text-red-500" />,
+      color: "text-red-500",
+    };
   };
 
   // Summary card data
   const summaryCards: SummaryCard[] = [
     {
       title: "คงค้างระเบียนโปรเจคใหม่",
-      current: dashboardData?.data.summary.pending_projects.thisMonth || 0,
-      previous: dashboardData?.data.summary.pending_projects.lastMonth || 0,
+      current: dashboardData?.summary.pending_projects.thisMonth || 0,
+      previous: dashboardData?.summary.pending_projects.lastMonth || 0,
       icon: <Users className="h-8 w-8 text-gray-500" />,
-      isNegative: true
+      isNegative: true,
     },
     {
       title: "จำนวนโปรเจคท์ที่อยู่ในระบบ",
-      current: dashboardData?.data.summary.total_projects.thisMonth || 0,
-      previous: dashboardData?.data.summary.total_projects.lastMonth || 0,
+      current: dashboardData?.summary.total_projects.thisMonth || 0,
+      previous: dashboardData?.summary.total_projects.lastMonth || 0,
       icon: <Users className="h-8 w-8 text-gray-500" />,
-      isNegative: false
+      isNegative: false,
     },
     {
       title: "จำนวนโปรเจคท์ที่โดนตีตก",
-      current: dashboardData?.data.summary.rejected_projects.thisMonth || 0,
-      previous: dashboardData?.data.summary.rejected_projects.lastMonth || 0,
+      current: dashboardData?.summary.rejected_projects.thisMonth || 0,
+      previous: dashboardData?.summary.rejected_projects.lastMonth || 0,
       icon: <Users className="h-8 w-8 text-gray-500" />,
-      isNegative: true
-    }
+      isNegative: true,
+    },
   ];
 
   return (
@@ -188,14 +257,14 @@ const ApproverDashboard: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">{card.title}</p>
-                        <p className={`text-2xl font-bold ${card.isNegative ? 'text-red-500' : 'text-green-500'}`}>
+                        <p
+                          className={`text-2xl font-bold ${card.isNegative ? "text-red-500" : "text-green-500"}`}
+                        >
                           {card.current}
                         </p>
                       </div>
                     </div>
-                    <div>
-                      {indicator.icon}
-                    </div>
+                    <div>{indicator.icon}</div>
                   </div>
                 </div>
               );
@@ -236,7 +305,9 @@ const ApproverDashboard: React.FC = () => {
                     />
                     <Tooltip
                       formatter={(value: number, name: string, props: any) => {
-                        const item = projectTypesData.find(item => item.name === name);
+                        const item = projectTypesData.find(
+                          (item) => item.name === name
+                        );
                         return [`${value} projects`, item?.realName || name];
                       }}
                     />
@@ -281,7 +352,9 @@ const ApproverDashboard: React.FC = () => {
 
             {/* SDG Types Pie Chart */}
             <div className="bg-white p-4 rounded shadow">
-              <h2 className="text-lg font-semibold mb-2">เป้าหมายการพัฒนาโครงการ</h2>
+              <h2 className="text-lg font-semibold mb-2">
+                เป้าหมายการพัฒนาโครงการ
+              </h2>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -311,7 +384,9 @@ const ApproverDashboard: React.FC = () => {
                     />
                     <Tooltip
                       formatter={(value: number, name: string, props: any) => {
-                        const item = sdgTypesData.find(item => item.name === name);
+                        const item = sdgTypesData.find(
+                          (item) => item.name === name
+                        );
                         return [`${value} projects`, item?.realName || name];
                       }}
                     />

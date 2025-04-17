@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
   CardContent,
@@ -38,7 +37,7 @@ export default function LoginPage() {
           <div className="flex flex-col items-center  mt-2">
             <div className="text-center"></div>
             <a
-              href={`${import.meta.env.VITE_API_BASE_URL}/auth/google`}
+              href={`${import.meta.env.VITE_END_POINT}/api/auth/google`}
               className="group relative flex items-center justify-center w-full gap-3 rounded-full border border-gray-300 bg-white px-6 py-3 text-sm font-medium text-gray-700 transition hover:shadow-md hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-200 dark:border-gray-700 dark:hover:bg-gray-800"
             >
               <FcGoogle className="text-xl" />

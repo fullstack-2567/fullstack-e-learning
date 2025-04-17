@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "openapi:generate": "npx openapicmd typegen http://localhost:3000/api/openapi.json > src/utils/backend-openapi.d.ts"
+    "openapi:generate": "npx openapicmd typegen https://fullstack-b.vishsiri.dev/api/openapi.json > src/utils/backend-openapi.d.ts"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -27,6 +27,7 @@
     "chroma-js": "^3.1.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "e-learning-frontend": "file:",
     "formik": "^2.4.6",
     "html2canvas": "^1.4.1",

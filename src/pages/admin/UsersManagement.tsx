@@ -6,10 +6,17 @@ import { ToastProvider, useToast } from "@/components/utils/Toast";
 import EditUserDialog, {
   EditUserData,
 } from "@/components/admin/EditUserDialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { openApiclient } from "@/utils/api-client";
-import { ChevronDown, EditIcon, SearchIcon } from "lucide-react";
+import { EditIcon, SearchIcon } from "lucide-react";
 
-export type UserRole = 'admin' | 'user' | 'project-approver';
+export type UserRole = "admin" | "user" | "project-approver";
 
 // User Data Structure
 interface UserListItem {
@@ -26,64 +33,66 @@ interface UserListItem {
 const ROWS_PER_PAGE_OPTIONS = [10, 25, 50];
 
 // Memoized user table row component
-const UserTableRow = memo(({ 
-  user, 
-  onEditClick,
-  copyToClipboard,
-  formatUuid,
-  getRoleClass
-}: { 
-  user: UserListItem; 
-  onEditClick: (user: UserListItem) => void;
-  copyToClipboard: (text: string) => void;
-  formatUuid: (uuid: string) => string;
-  getRoleClass: (role: string) => string;
-}) => (
-  <tr key={user.userId}>
-    <td className="idCol">
-      <span
-        className="cursor-pointer text-blue-600 hover:underline"
-        onClick={() => copyToClipboard(user.userId)}
-      >
-        {formatUuid(user.userId)}
-      </span>
-    </td>
-    <td>
-      <div className="flex items-center space-x-2">
-        <img
-          src={user.picture}
-          alt="avatar"
-          className="w-8 h-8 rounded-full"
-          loading="lazy"
-        />
-        <span>
-          {[user.firstName, user.lastName]
-            .filter(Boolean)
-            .join(" ") || "ไม่ระบุชื่อ"}
+const UserTableRow = memo(
+  ({
+    user,
+    onEditClick,
+    copyToClipboard,
+    formatUuid,
+    getRoleClass,
+  }: {
+    user: UserListItem;
+    onEditClick: (user: UserListItem) => void;
+    copyToClipboard: (text: string) => void;
+    formatUuid: (uuid: string) => string;
+    getRoleClass: (role: string) => string;
+  }) => (
+    <tr key={user.userId}>
+      <td className="idCol">
+        <span
+          className="cursor-pointer text-blue-600 hover:underline"
+          onClick={() => copyToClipboard(user.userId)}
+        >
+          {formatUuid(user.userId)}
         </span>
-      </div>
-    </td>
-    <td>{user.email}</td>
-    <td>
-      <span
-        className={`px-2 py-1 text-xs rounded ${getRoleClass(user.role)}`}
-      >
-        {user.role}
-      </span>
-    </td>
-    <td>
-      <button
-        onClick={() => onEditClick(user)}
-        className="text-sm text-blue-600 hover:underline"
-        aria-label={`Edit user ${user.email}`}
-      >
-        <EditIcon className="w-4 h-4 inline-block" />
-      </button>
-    </td>
-  </tr>
-));
+      </td>
+      <td>
+        <div className="flex items-center space-x-2">
+          <img
+            src={user.picture}
+            alt="avatar"
+            className="w-8 h-8 rounded-full"
+            loading="lazy"
+            referrerPolicy="no-referrer"
+          />
+          <span>
+            {[user.firstName, user.lastName].filter(Boolean).join(" ") ||
+              "ไม่ระบุชื่อ"}
+          </span>
+        </div>
+      </td>
+      <td>{user.email}</td>
+      <td>
+        <span
+          className={`px-2 py-1 text-xs rounded ${getRoleClass(user.role)}`}
+        >
+          {user.role}
+        </span>
+      </td>
+      <td>
+        <button
+          onClick={() => onEditClick(user)}
+          className="text-sm text-blue-600 hover:underline"
+          aria-label={`Edit user ${user.email}`}
+        >
+          <EditIcon className="w-4 h-4 inline-block" />
+        </button>
+      </td>
+    </tr>
+  )
+);
 
-UserTableRow.displayName = 'UserTableRow';
+UserTableRow.displayName = "UserTableRow";
 
 // Inner component that uses the toast
 const UserManagementContent: React.FC = () => {
@@ -102,7 +111,10 @@ const UserManagementContent: React.FC = () => {
   const [availableRoles, setAvailableRoles] = useState<string[]>([]);
 
   // Memoize derived values
-  const totalPages = useMemo(() => Math.ceil(totalUsers / rowsPerPage), [totalUsers, rowsPerPage]);
+  const totalPages = useMemo(
+    () => Math.ceil(totalUsers / rowsPerPage),
+    [totalUsers, rowsPerPage]
+  );
 
   // Load users with debounce for search
   useEffect(() => {
@@ -153,7 +165,7 @@ const UserManagementContent: React.FC = () => {
 
     // Add debounce for search
     const timerId = setTimeout(fetchUsers, searchTerm ? 300 : 0);
-    
+
     return () => {
       isMounted = false;
       clearTimeout(timerId);
@@ -163,7 +175,7 @@ const UserManagementContent: React.FC = () => {
   // Fetch available roles once
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchRoles = async () => {
       try {
         const response = await openApiclient.getUserRoles();
@@ -181,7 +193,7 @@ const UserManagementContent: React.FC = () => {
     };
 
     fetchRoles();
-    
+
     return () => {
       isMounted = false;
     };
@@ -193,17 +205,20 @@ const UserManagementContent: React.FC = () => {
     return uuid.substring(0, 8) + "...";
   }, []);
 
-  const copyToClipboard = useCallback((text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        showToast("คัดลอก ID เรียบร้อยแล้ว", "success");
-      })
-      .catch((err) => {
-        showToast("ไม่สามารถคัดลอก ID ได้", "error");
-        console.error("Failed to copy text: ", err);
-      });
-  }, [showToast]);
+  const copyToClipboard = useCallback(
+    (text: string) => {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          showToast("คัดลอก ID เรียบร้อยแล้ว", "success");
+        })
+        .catch((err) => {
+          showToast("ไม่สามารถคัดลอก ID ได้", "error");
+          console.error("Failed to copy text: ", err);
+        });
+    },
+    [showToast]
+  );
 
   const getRoleClass = useCallback((role: string) => {
     switch (role.toLowerCase()) {
@@ -234,41 +249,45 @@ const UserManagementContent: React.FC = () => {
     }, 500);
   }, []);
 
-  const handleSaveUser = useCallback(async (updatedUser: EditUserData) => {
-    try {
-      await openApiclient.patchUserRole(updatedUser.id, {
-        role: updatedUser.role as UserRole,
-      });
+  const handleSaveUser = useCallback(
+    async (updatedUser: EditUserData) => {
+      try {
+        await openApiclient.patchUserRole(updatedUser.id, {
+          role: updatedUser.role as UserRole,
+        });
 
-      showToast("อัปเดตบทบาทเรียบร้อยแล้ว", "success");
+        showToast("อัปเดตบทบาทเรียบร้อยแล้ว", "success");
 
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.userId === updatedUser.id
-            ? { ...user, role: updatedUser.role }
-            : user
-        )
-      );
-      
-      // Dialog will close itself after the animation completes
-      // We need to clean up the current user reference here
-      setTimeout(() => {
-        setCurrentUser(null);
-      }, 500);
-    } catch (error) {
-      console.error("Update failed", error);
-      showToast("เกิดข้อผิดพลาดในการอัปเดต", "error");
-    }
-  }, [showToast]);
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.userId === updatedUser.id
+              ? { ...user, role: updatedUser.role }
+              : user
+          )
+        );
+
+        // Dialog will close itself after the animation completes
+        // We need to clean up the current user reference here
+        setTimeout(() => {
+          setCurrentUser(null);
+        }, 500);
+      } catch (error) {
+        console.error("Update failed", error);
+        showToast("เกิดข้อผิดพลาดในการอัปเดต", "error");
+      }
+    },
+    [showToast]
+  );
 
   // Memoize role options for dialog
-  const roleOptions = useMemo(() => 
-    availableRoles
-      .filter((r) => r !== "All")
-      .map((r) => ({
-        value: r,
-        label: r,
-      })), 
+  const roleOptions = useMemo(
+    () =>
+      availableRoles
+        .filter((r) => r !== "All")
+        .map((r) => ({
+          value: r,
+          label: r,
+        })),
     [availableRoles]
   );
 
@@ -283,24 +302,24 @@ const UserManagementContent: React.FC = () => {
         {/* Toolbar */}
         <div className="toolbar">
           <div className="relative mr-4">
-            <select
+            <Select
               value={roleFilter}
-              onChange={(e) => {
-                setRoleFilter(e.target.value);
-                setCurrentPage(1); // Reset to first page when filter changes
+              onValueChange={(value) => {
+                setRoleFilter(value);
+                setCurrentPage(1);
               }}
-              className="appearance-none border rounded-md px-4 py-2 pr-8 text-sm bg-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors"
-              aria-label="Filter by role"
             >
-              {availableRoles.map((role) => (
-                <option key={role} value={role}>
-                  {role === "All" ? "ทุกบทบาท" : role}
-                </option>
-              ))}
-            </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <ChevronDown className="w-4 h-4" />
-            </div>
+              <SelectTrigger className="w-[160px] border px-4 py-2 text-sm rounded-md shadow-sm focus:ring-2 focus:ring-blue-200">
+                <SelectValue placeholder="เลือกบทบาท" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableRoles.map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role === "All" ? "ทุกบทบาท" : role}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="searchContainer">
             <SearchIcon className="searchIcon" />
@@ -337,7 +356,7 @@ const UserManagementContent: React.FC = () => {
               <tbody>
                 {users.length > 0 ? (
                   users.map((user) => (
-                    <UserTableRow 
+                    <UserTableRow
                       key={user.userId}
                       user={user}
                       onEditClick={handleEditClick}
@@ -403,13 +422,15 @@ const UserManagementContent: React.FC = () => {
       </div>
 
       {/* Using the EditUserDialog component */}
-      <EditUserDialog
-        isOpen={dialogOpen}
-        onClose={handleCloseDialog}
-        onSave={handleSaveUser}
-        userData={currentUser}
-        roles={roleOptions}
-      />
+      {dialogOpen && roleOptions.length > 0 && (
+        <EditUserDialog
+          isOpen={dialogOpen}
+          onClose={handleCloseDialog}
+          onSave={handleSaveUser}
+          userData={currentUser}
+          roles={availableRoles.filter((r) => r !== "All")}
+        />
+      )}
     </div>
   );
 };

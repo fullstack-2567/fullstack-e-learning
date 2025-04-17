@@ -57,7 +57,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { contentService } from "@/services/api";
+import { openApiclient } from "@/utils/api-client";
+import { ContentCategory } from "@/types";
 
 // Types ตามโครงสร้าง API
 export interface Content {
@@ -107,9 +108,9 @@ const ContentManagement = () => {
   const fetchContents = async () => {
     setIsLoading(true);
     try {
-      const response = await contentService.getAllContents();
+      const response = await openApiclient.getAllContents();
       if (response) {
-        setContents([...response]);
+        setContents([...response.data]);
       } else {
         console.error("Failed to fetch contents:", response);
       }
@@ -219,7 +220,14 @@ const ContentManagement = () => {
     };
 
     try {
-      const response = await contentService.createNewContent(contentToCreate);
+      const response = await openApiclient.createContent(null, {
+        contentName: contentToCreate.contentName,
+        contentDescription: contentToCreate.contentDescription,
+        contentCategory: contentToCreate.contentCategory as ContentCategory,
+        contentVideo: contentToCreate.contentVideo as string,
+        contentThumbnail: contentToCreate.contentThumbnail,
+        isPublic: contentToCreate.isPublic as boolean,
+      });
 
       if (response) {
         // Refresh the content list
@@ -250,7 +258,12 @@ const ContentManagement = () => {
 
     try {
       // Assuming there's an updateContent method in the API service
-      const response = await contentService.updateContent(selectedContent);
+      const response = await openApiclient.updateContent(
+        {
+          contentId: selectedContent.contentId as string,
+        },
+        selectedContent
+      );
 
       if (response) {
         // Refresh the content list
@@ -271,7 +284,9 @@ const ContentManagement = () => {
 
     try {
       // Assuming there's a deleteContent method in the API service
-      const response = await contentService.deleteContent(id);
+      const response = await openApiclient.deleteContent({
+        contentId: id,
+      });
 
       if (response) {
         // Refresh the content list

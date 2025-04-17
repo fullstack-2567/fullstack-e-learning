@@ -6,8 +6,8 @@ import {
   ReactNode,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { authService } from "../services/api";
 import { User } from "@/utils/backend-openapi";
+import { openApiclient } from "@/utils/api-client";
 
 interface AuthContextType {
   user: User | null;
@@ -74,8 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkAuth = async () => {
     try {
-      const response = await authService.getCurrentUser(); // /me
-      const userData = response.data;
+      const response = await openApiclient.getAuthMe();
+      const userData = response.data.data;
 
       setUser(userData);
       setIsAuthenticated(true);
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async () => {
     setIsLoading(true);
     try {
-      await authService.googleLogin(); // trigger server-side OAuth login
+      await openApiclient.googleLogin(); // trigger server-side OAuth login
       const role = await checkAuth(); // fetch user
       if (role) {
         console.log(`role: ${role}`);
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async () => {
     setIsLoading(true);
     try {
-      await authService.logout();
+      await openApiclient.logout();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
@@ -125,7 +125,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const refreshToken = async (): Promise<boolean> => {
     try {
-      await authService.refreshToken(); // refresh via cookie
+      await openApiclient.refreshToken(); // refresh via cookie
       return true;
     } catch (error) {
       console.error("Refresh token failed:", error);

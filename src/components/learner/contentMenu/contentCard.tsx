@@ -13,6 +13,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Content } from "@/components/admin/ContentManagement";
+import { openApiclient } from "@/utils/api-client";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const ContentCard = ({
   contentId,
@@ -23,6 +26,7 @@ const ContentCard = ({
 }: Content) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -123,9 +127,20 @@ const ContentCard = ({
                 <Button
                   size="lg"
                   className="w-full py-6 text-lg font-prompt font-medium transition-all hover:shadow-md"
-                  onClick={() => {
-                    console.log(`Registering for ${contentName}`);
-                    window.location.href = `/video?videoId=${contentId}`;
+                  onClick={async () => {
+                    try {
+                      const response = await openApiclient.enroll({
+                        contentId: contentId!,
+                      });
+                      if (response.data) {
+                        toast.success(
+                          `Successfully enrolled to ${contentName}`
+                        );
+                        navigate("/enrolled");
+                      }
+                    } catch (error) {
+                      toast.error("Enrollment failed");
+                    }
                   }}
                 >
                   ลงทะเบียนเรียน
