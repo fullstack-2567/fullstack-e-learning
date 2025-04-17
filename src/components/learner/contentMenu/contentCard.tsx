@@ -16,6 +16,7 @@ import { Content } from "@/components/admin/ContentManagement";
 import { openApiclient } from "@/utils/api-client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
+import { getContentCategoryInThai } from "@/utils/enumMapping";
 
 const ContentCard = ({
   contentId,
@@ -56,7 +57,7 @@ const ContentCard = ({
             variant="outline"
             className="absolute top-3 left-3 bg-slate-50 text-xs font-medium px-2 py-1 rounded-full"
           >
-            {contentCategory}
+            {getContentCategoryInThai(contentCategory)}
           </Badge>
 
           <div

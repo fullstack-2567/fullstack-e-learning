@@ -59,6 +59,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { openApiclient } from "@/utils/api-client";
 import { ContentCategory } from "@/types";
+import { getContentCategoryInThai } from "@/utils/enumMapping";
 
 // Types ตามโครงสร้าง API
 export interface Content {
@@ -387,7 +388,7 @@ const ContentManagement = () => {
                       <SelectContent className="font-prompt">
                         {categories.map((category) => (
                           <SelectItem key={category.id} value={category.name}>
-                            {category.name}
+                            {getContentCategoryInThai(category.name)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -533,7 +534,7 @@ const ContentManagement = () => {
                       {content.contentName}
                     </TableCell>
                     <TableCell className="font-prompt">
-                      {content.contentCategory}
+                      {getContentCategoryInThai(content.contentCategory)}
                     </TableCell>
                     <TableCell className="font-prompt">
                       {new Date(content.createdDT!).toLocaleDateString("th-TH")}
@@ -606,7 +607,9 @@ const ContentManagement = () => {
                                           key={category.id}
                                           value={category.name}
                                         >
-                                          {category.name}
+                                          {getContentCategoryInThai(
+                                            category.name
+                                          )}
                                         </SelectItem>
                                       ))}
                                     </SelectContent>

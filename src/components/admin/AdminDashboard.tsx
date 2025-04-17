@@ -28,6 +28,7 @@ import {
   DashboardSummaryDataDto,
   PopularContentDto,
 } from "@/utils/backend-openapi";
+import { getContentCategoryInThai } from "@/utils/enumMapping";
 
 // Define colors for categories
 const COLORS: string[] = [
@@ -127,7 +128,8 @@ const Dashboard: React.FC = () => {
         // Add colors to categories data
         const categoriesWithColors: CategoryDataWithColor[] =
           categoriesResponse.data.data.categories.map((category, index) => ({
-            ...category,
+            category: getContentCategoryInThai(category.category),
+            contentCount: category.contentCount,
             color: COLORS[index % COLORS.length],
           }));
         setCategoriesData(categoriesWithColors);

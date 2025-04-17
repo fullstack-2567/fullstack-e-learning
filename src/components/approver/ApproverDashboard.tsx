@@ -22,7 +22,7 @@ import {
 } from "recharts";
 import { openApiclient } from "@/utils/api-client";
 import { ProjectsDashboardDataDto } from "@/utils/backend-openapi";
-import { getProjectTypeInThai } from "@/pages/approver/ProjectTypeConvert";
+import { getProjectTypeInThai } from "@/utils/enumMapping";
 
 // Types
 interface MonthOption {

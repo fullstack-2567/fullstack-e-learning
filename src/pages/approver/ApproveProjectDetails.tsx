@@ -24,7 +24,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Project } from "@/utils/backend-openapi";
 import { openApiclient } from "@/utils/api-client";
 import { formatDate } from "@/utils/dateUtils";
-import { getProjectTypeInThai } from "./ProjectTypeConvert";
+import { getProjectTypeInThai } from "@/utils/enumMapping";
 
 export default function ApproveProjectDetails() {
   const navigate = useNavigate();
