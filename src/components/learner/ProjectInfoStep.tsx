@@ -4,10 +4,31 @@ import { SubmitProjectDto } from "@/utils/backend-openapi";
 // Project types
 const PROJECT_TYPES = [
   { value: "energy_and_environment", label: "พลังงานและสิ่งแวดล้อม" },
-  { value: "agriculture_and_food", label: "อาหารและการเกษตร" },
-  { value: "health_and_medicine", label: "สุขภาพและการแพทย์" },
-  { value: "education", label: "การศึกษา" },
-  { value: "other", label: "อื่นๆ" },
+  {
+    value: "construction_and_infrastructure",
+    label: "การก่อสร้างและโครงสร้าง",
+  },
+  { value: "agriculture_and_food", label: "การเกษตรและอาหาร" },
+  { value: "materials_and_minerals", label: "วัสดุและแร่ธาตุ" },
+  { value: "finance_and_investment", label: "การเงินและการลงทุน" },
+  { value: "technology_and_innovation", label: "เทคโนโลยีและนวัตกรรม" },
+  { value: "medicine_and_health", label: "การแพทย์และสุขภาพ" },
+  {
+    value: "human_resources_development",
+    label: "การศึกษาและพัฒนาทรัพยากรมนุษย์",
+  },
+  {
+    value: "manufacturing_and_automotive",
+    label: "อุตสาหกรรมการผลิตและหุ่นยนต์",
+  },
+  { value: "electronics_and_retail", label: "พาณิชย์อิเล็กทรอนิกส์และค้าปลีก" },
+  {
+    value: "real_estate_and_urban_development",
+    label: "อสังหาริมทรัพย์และการพัฒนาเมือง",
+  },
+  { value: "media_and_entertainment", label: "สื่อและบันเทิง" },
+  { value: "tourism_and_services", label: "การท่องเที่ยวและบริการ" },
+  { value: "society_and_community", label: "สังคมและชุมชน" },
 ];
 
 // SDG types
