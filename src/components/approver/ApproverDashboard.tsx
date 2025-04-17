@@ -22,6 +22,7 @@ import {
 } from "recharts";
 import { openApiclient } from "@/utils/api-client";
 import { ProjectsDashboardDataDto } from "@/utils/backend-openapi";
+import { getProjectTypeInThai } from "@/pages/approver/ProjectTypeConvert";
 
 // Types
 interface MonthOption {
@@ -118,7 +119,7 @@ const ApproverDashboard: React.FC = () => {
       name: `Category ${index + 1}`,
       value: item.count,
       color: COLORS[index % COLORS.length],
-      realName: item.type,
+      realName: getProjectTypeInThai(item.type),
     })) || [];
 
   // Format SDG types data for pie chart
