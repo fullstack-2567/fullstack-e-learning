@@ -319,17 +319,17 @@ const ContentManagement = () => {
         </CardHeader>
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-4 w-1/2">
-              <div className="relative w-full">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={18}
-                />
+            <div className="relative max-w-md w-full">
+              <div className="flex items-center border rounded-xl overflow-hidden shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                <div className="pl-3 flex items-center">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
                 <Input
                   placeholder="ค้นหาคอร์สเรียน..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 border-[#E5E7EB] font-prompt"
+                  className="font-prompt w-full px-3 py-2 bg-transparent focus:outline-none"
+                  style={{ border: "none", outline: "none", boxShadow: "none" }}
                 />
               </div>
             </div>
