@@ -196,7 +196,7 @@ const ApproverDashboard: React.FC = () => {
   // Summary card data
   const summaryCards: SummaryCard[] = [
     {
-      title: "คงค้างระเบียนโปรเจคใหม่",
+      title: "จำนวนโปรเจคท์ที่รอการอนุมัติ",
       current: dashboardData?.summary.pending_projects.thisMonth || 0,
       previous: dashboardData?.summary.pending_projects.lastMonth || 0,
       icon: <Users className="h-8 w-8 text-gray-500" />,
