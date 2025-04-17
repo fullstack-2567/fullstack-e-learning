@@ -14,25 +14,26 @@ const api = new OpenAPIClientAxios({
 
 let _client: Client | null = null;
 
-// export เป็น Promise ที่ถูก init แล้ว
-const openApiclientPromise = api.init().then(() =>
+const initPromise = api.init().then(() =>
   api.getClient<Client>().then((client) => {
     _client = client;
     return client;
   })
 );
 
-export const waitForApi = async () => {
+const waitForApi = async (): Promise<Client> => {
   if (_client) return _client;
-  return openApiclientPromise;
+  return await initPromise;
 };
 
-export let openApiclient: Client;
-openApiclientPromise.then((client) => {
+let openApiclient: Client;
+initPromise.then((client) => {
   openApiclient = client;
 });
 
-export const client = axios.create({
+const client = axios.create({
   baseURL: `${BACKEND_URL}/api`,
   withCredentials: true,
 });
+
+export { openApiclient, waitForApi, client };

@@ -7,7 +7,7 @@ import {
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "@/utils/backend-openapi";
-import { openApiclient } from "@/utils/api-client";
+import { openApiclient, waitForApi } from "@/utils/api-client";
 
 interface AuthContextType {
   user: User | null;
@@ -74,13 +74,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const checkAuth = async () => {
     try {
-      const response = await openApiclient.getAuthMe();
+      const client = await waitForApi();
+      const response = await client.getAuthMe();
       const userData = response.data.data;
-
+  
       setUser(userData);
       setIsAuthenticated(true);
-
-      // // Don't automatically redirect - let the ProtectedRoute component handle navigation
+  
       return userData.role;
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -90,6 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsLoading(false);
     }
   };
+  
 
   const login = async () => {
     setIsLoading(true);
