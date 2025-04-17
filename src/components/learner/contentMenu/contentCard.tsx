@@ -113,7 +113,7 @@ const ContentCard = ({
                   variant="outline"
                   className="w-fit mt-2 font-medium text-xs px-3 py-1"
                 >
-                  {contentCategory}
+                  {getContentCategoryInThai(contentCategory)}
                 </Badge>
               </DialogHeader>
 
