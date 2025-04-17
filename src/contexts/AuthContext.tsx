@@ -32,7 +32,7 @@ interface AuthProviderProps {
 
 export const getRouteByRole = (role?: string): string => {
   if (role === "admin") return "/admin/dashboard";
-  if (role === "project-approver") return "/approver/dashboard";
+  if (role === "project-approver") return "/approver/project-menu";
   return "/contents"; // default learner
 };
 
