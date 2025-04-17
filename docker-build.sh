@@ -10,7 +10,7 @@ fi
 VERSION=$1
 
 # Run the docker build command with the provided version
-docker build --build-arg VITE_END_POINT=https://fullstack-b.vishsiri.dev -t  2567-2-fullstack-final-frontend:$VERSION .
+docker build --no-cache --build-arg VITE_END_POINT=https://fullstack-b.vishsiri.dev -t  2567-2-fullstack-final-frontend:$VERSION .
 
 # Output the result
 echo "Docker image ' 2567-2-fullstack-final-frontend:$VERSION' has been built successfully."

@@ -12,13 +12,29 @@ const api = new OpenAPIClientAxios({
   },
 });
 
-await api.init();
-const openApiclient = await api.getClient<Client>();
+let _client: Client | null = null;
 
-// TO DO: Get rid of this after convert all api fetching to use openapiClient
-const client = axios.create({
+// export เป็น Promise ที่ถูก init แล้ว
+const openApiclientPromise = api.init().then(() =>
+  api.getClient<Client>().then((client) => {
+    _client = client;
+    return client;
+  })
+);
+
+// ✅ export แบบ async-safe สำหรับไฟล์ที่ await ได้
+export const waitForApi = async () => {
+  if (_client) return _client;
+  return openApiclientPromise;
+};
+
+// ✅ export ตรงชื่อเดิม (แก้ error import เดิมได้)
+export let openApiclient: Client;
+openApiclientPromise.then((client) => {
+  openApiclient = client;
+});
+
+export const client = axios.create({
   baseURL: `${BACKEND_URL}/api`,
   withCredentials: true,
 });
-
-export { openApiclient, client };

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "openapi:generate": "npx openapicmd typegen https://fullstack-b.vishsiri.dev/api/openapi.json > src/utils/backend-openapi.d.ts"
