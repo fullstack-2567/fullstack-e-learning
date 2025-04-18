@@ -54,7 +54,7 @@ const EDUCATION_MAP = {
   vocational: "ปวช./ปวส.",
   bachelor: "ปริญญาตรี",
   master: "ปริญญาโท",
-  doctorate: "ปริญญาเอก",
+  doctoral: "ปริญญาเอก",
   other: "อื่นๆ",
 };
 

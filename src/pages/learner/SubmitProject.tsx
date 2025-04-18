@@ -119,7 +119,7 @@ const SubmitProject: React.FC = () => {
   
         console.error("เกิดข้อผิดพลาดในการตรวจสอบโครงการล่าสุด", error);
         toast.error("ไม่สามารถโหลดสถานะโครงการล่าสุดได้");
-        navigate(ROUTES.CONTENT_MENU);
+        navigate(ROUTES.PROJECT_LISTS);
       }
     };
   
