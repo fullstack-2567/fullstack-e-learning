@@ -18,7 +18,7 @@ const EDUCATION_OPTIONS = [
   { value: "vocational", label: "ปวช./ปวส." },
   { value: "bachelor", label: "ปริญญาตรี" },
   { value: "master", label: "ปริญญาโท" },
-  { value: "doctorate", label: "ปริญญาเอก" },
+  { value: "doctoral", label: "ปริญญาเอก" },
   { value: "other", label: "อื่นๆ" },
 ];
 
