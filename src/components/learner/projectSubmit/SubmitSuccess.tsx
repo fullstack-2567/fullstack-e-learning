@@ -162,7 +162,7 @@ export default function SubmitSuccess() {
           <div className="mt-8 text-center">
             <button
               className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              onClick={() => navigate(ROUTES.CONTENT_MENU)}
+              onClick={() => navigate(ROUTES.PROJECT_LISTS)}
             >
               กลับสู่หน้าแรก
             </button>
